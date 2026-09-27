@@ -45,7 +45,7 @@ fn n(v: &Num) -> Result<f64, String> {
 fn input_or_window(action: &Action) -> Result<(), String> {
     use windows::Win32::UI::WindowsAndMessaging::{SW_MAXIMIZE, SW_MINIMIZE, SW_RESTORE};
 
-    use crate::{keys, window};
+    use crate::{audio, keys, window};
     let at = |x: &Option<Num>, y: &Option<Num>| -> Result<(), String> {
         match (x, y) {
             (Some(x), Some(y)) => keys::move_to(n(x)? as i32, n(y)? as i32),
@@ -82,6 +82,16 @@ fn input_or_window(action: &Action) -> Result<(), String> {
         Action::MouseDouble { x, y } => at(x, y).and_then(|_| keys::click(false, 2)),
         Action::MouseLc { n: times } => keys::click(false, n(times)? as u32),
         Action::MouseScroll { dy } => keys::scroll(n(dy)? as i32),
+        Action::VolumeSet { level } => audio::set_volume(n(level)?),
+        Action::VolumeUp { step } => audio::change_volume(n(step)?),
+        Action::VolumeDown { step } => audio::change_volume(-n(step)?),
+        Action::Mute => audio::set_mute(true),
+        Action::Unmute => audio::set_mute(false),
+        Action::MediaPlayPause => keys::press(&[0xB3]),
+        Action::MediaNext => keys::press(&[0xB0]),
+        Action::MediaPrev => keys::press(&[0xB1]),
+        Action::MediaStop => keys::press(&[0xB2]),
+        Action::AudioSwitchDevice { name } => audio::switch_device(name),
         other => Err(format!("{other:?}: not supported yet")),
     }
 }

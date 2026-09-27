@@ -14,6 +14,7 @@ strsim.workspace = true
 [target.'cfg(windows)'.dependencies]
 winreg.workspace = true
 windows.workspace = true
+windows-core = "0.62"
 
 [dev-dependencies]
 tempfile.workspace = true

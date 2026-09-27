@@ -2,6 +2,8 @@
 //! Every side effect is exposed through a trait so tests run against a dry-run mock.
 
 pub mod apps;
+#[cfg(windows)]
+pub mod audio;
 pub mod backend;
 pub mod keys;
 #[cfg(windows)]

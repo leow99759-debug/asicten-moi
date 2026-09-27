@@ -2228,6 +2228,7 @@ dependencies = [
  "tempfile",
  "tracing",
  "windows",
+ "windows-core",
  "winreg 0.56.0",
 ]
 
