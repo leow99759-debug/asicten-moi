@@ -1,5 +1,6 @@
 # Offline assets (SPEC §6, §13): streaming zipformer small-ru (Vosk team, sherpa-onnx format), Silero VAD, Piper RU voice,
-# Priler rustpotter wake models + voice packs, FitoDomik/Jarvis-Sound.
+# Priler rustpotter wake models + voice packs, FitoDomik/Jarvis-Sound,
+# voice-jarvis.zip = curated Jarvis voice pack built by tools/voice/build_pack.py (originals + Fish Audio).
 # Binaries never go to git: they live in GitHub Release `assets-v1`, sha256 in tools/assets.sha256.
 #
 #   pwsh tools/fetch-assets.ps1                    # download from Release (needs `gh auth`), verify, extract to assets/
@@ -66,6 +67,9 @@ try {
             else { Invoke-WebRequest $src -OutFile (Join-Path $Cache $name) -TimeoutSec 600 }
             "$(Get-Sha (Join-Path $Cache $name))  $name"
         }
+        # assets built elsewhere (voice-jarvis.zip ← tools/voice/build_pack.py) keep their line
+        $old = Read-Sums
+        $lines += foreach ($name in $old.Keys) { if (-not $Upstream.Contains($name)) { "$($old[$name])  $name" } }
         Set-Content $SumsFile $lines
         if (-not $NoUpload) {
             gh release view $Tag *> $null

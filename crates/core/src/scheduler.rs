@@ -57,12 +57,14 @@ fn run(rx: Receiver<Ctl>, fired: Sender<Job>) {
     let mut jobs: BTreeMap<u64, (Instant, Job)> = BTreeMap::new();
     loop {
         let now = Instant::now();
-        let due: Vec<u64> = jobs
+        // fire in due-time order even when several are late (busy machine)
+        let mut due: Vec<(Instant, u64)> = jobs
             .iter()
             .filter(|(_, (t, _))| *t <= now)
-            .map(|(id, _)| *id)
+            .map(|(id, (t, _))| (*t, *id))
             .collect();
-        for id in due {
+        due.sort();
+        for (_, id) in due {
             if let Some((_, job)) = jobs.remove(&id) {
                 if fired.send(job).is_err() {
                     return;
@@ -91,6 +93,24 @@ fn run(rx: Receiver<Ctl>, fired: Sender<Job>) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn late_jobs_fire_in_due_order() {
+        let (mut s, rx) = Scheduler::start();
+        // both already due when the thread wakes: order must follow due time, not id
+        s.add(Duration::from_millis(20), Job::Remind("второй".into()));
+        s.add(Duration::ZERO, Job::Remind("первый".into()));
+        std::thread::sleep(Duration::from_millis(60));
+        let t = Duration::from_secs(2);
+        let got = [rx.recv_timeout(t), rx.recv_timeout(t)];
+        assert_eq!(
+            got,
+            [
+                Ok(Job::Remind("первый".into())),
+                Ok(Job::Remind("второй".into()))
+            ]
+        );
+    }
 
     #[test]
     fn fires_in_order_and_cancels() {

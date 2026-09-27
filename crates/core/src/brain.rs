@@ -50,6 +50,9 @@ impl Outcome {
     }
 }
 
+/// SPEC §0.1: spoken when a command needs the network.
+pub const NO_INTERNET_PHRASE: &str = "Сэр, нет подключения к интернету. Эта функция требует сети.";
+
 /// One thing to say: a clip from the first available category, else `text` via TTS.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct Line {
@@ -94,7 +97,7 @@ impl Outcome {
                 text: last.reply.text.clone(),
             }),
             Status::Cancelled => Some(Line::new(&["cancel"], "Отменено, сэр")),
-            Status::NoInternet => Some(Line::new(&["no_internet"], crate::NO_INTERNET)),
+            Status::NoInternet => Some(Line::new(&["no_internet"], NO_INTERNET_PHRASE)),
             Status::Error => Some(Line::new(
                 &["error"],
                 format!("Сэр, не удалось выполнить: {error}"),

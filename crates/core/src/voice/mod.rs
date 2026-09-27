@@ -32,6 +32,8 @@ pub struct VoiceMeta {
 pub struct VoicePack {
     pub meta: VoiceMeta,
     clips: BTreeMap<String, Vec<PathBuf>>,
+    /// Normalized spoken text → clip (from `voice.json` texts).
+    by_text: BTreeMap<String, PathBuf>,
     last: Mutex<BTreeMap<String, usize>>,
     rng: Mutex<u64>,
 }
@@ -86,6 +88,13 @@ impl VoicePack {
                 root.join(lang).display()
             )));
         }
+        let meta: VoiceMeta = meta;
+        let by_text = meta
+            .texts
+            .iter()
+            .map(|(file, text)| (norm_text(text), root.join(lang).join(file)))
+            .filter(|(_, p)| p.exists())
+            .collect();
         let seed = std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
             .map(|d| d.as_nanos() as u64)
@@ -93,6 +102,7 @@ impl VoicePack {
         Ok(Self {
             meta,
             clips,
+            by_text,
             last: Mutex::default(),
             rng: Mutex::new(seed | 1),
         })
@@ -100,6 +110,11 @@ impl VoicePack {
 
     pub fn categories(&self) -> impl Iterator<Item = &str> {
         self.clips.keys().map(String::as_str)
+    }
+
+    /// Recording of exactly this text (pre-generated replies, §6.1), punctuation/case-insensitive.
+    pub fn by_text(&self, text: &str) -> Option<&Path> {
+        self.by_text.get(&norm_text(text)).map(PathBuf::as_path)
     }
 
     pub fn has(&self, category: &str) -> bool {
@@ -129,6 +144,16 @@ impl VoicePack {
         *s ^= *s << 17;
         *s
     }
+}
+
+/// Lowercase letters/digits only, single spaces, ё→е: the key for text lookups.
+pub fn norm_text(text: &str) -> String {
+    text.to_lowercase()
+        .replace('ё', "е")
+        .split(|c: char| !c.is_alphanumeric())
+        .filter(|w| !w.is_empty())
+        .collect::<Vec<_>>()
+        .join(" ")
 }
 
 /// Decode a WAV file to mono f32 and its sample rate.
@@ -187,7 +212,7 @@ pub fn category_text(category: &str) -> Option<&'static str> {
         "thanks" => "Всегда рад помочь, сэр",
         "status" => "Все системы работают нормально, сэр",
         "not_found" => "Простите, сэр, не понял команду",
-        "no_internet" => "Нет подключения к интернету, сэр",
+        "no_internet" => crate::brain::NO_INTERNET_PHRASE,
         "cancel" => "Отменено, сэр",
         "error" => "Сэр, не удалось выполнить",
         "off" | "goodbye" => "До свидания, сэр",
@@ -253,7 +278,7 @@ mod tests {
         std::fs::write(ru.join("ok/readme.txt"), "x").expect("txt");
         std::fs::write(
             dir.path().join("voice.json"),
-            r#"{"id":"jarvis","name":"Джарвис"}"#,
+            r#"{"id":"jarvis","name":"Джарвис","texts":{"done/x.wav":"Запрос выполнен, сэр!","ok/gone.wav":"нет файла"}}"#,
         )
         .expect("json");
         let p = VoicePack::load(dir.path(), "ru").expect("load");
@@ -273,6 +298,11 @@ mod tests {
             .expect("fallback")
             .ends_with("x.wav"));
         assert!(p.pick(&["missing"]).is_none());
+        assert!(p
+            .by_text("запрос выполнён сэр")
+            .expect("text")
+            .ends_with("x.wav"));
+        assert!(p.by_text("нет файла").is_none());
         assert!(VoicePack::load(dir.path(), "en").is_err());
     }
 
@@ -303,5 +333,46 @@ mod tests {
         assert!(p.has("ok") && p.has("not_found"));
         let (s, rate) = read_wav(p.pick(&["ok"]).expect("ok")).expect("wav");
         assert!(rate >= 16_000 && !s.is_empty());
+    }
+
+    /// Every fixed reply in the repo packs has a recording: category clip or exact text (T044).
+    #[test]
+    fn curated_pack_covers_repo_replies() {
+        let Some(root) = crate::test_util::asset("voice-jarvis") else {
+            return;
+        };
+        let p = VoicePack::load(&root, "ru").expect("load");
+        let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../packs");
+        let mut missing = Vec::new();
+        for pack in crate::commands::load_dir(&dir).0 {
+            for c in pack.commands {
+                let r = &c.reply;
+                if r.clips.iter().any(|k| p.has(k)) {
+                    continue;
+                }
+                for t in r.text.iter().flat_map(|t| t.split('|')) {
+                    if p.by_text(t).is_none() {
+                        missing.push(format!("{}: {t}", c.id));
+                    }
+                }
+            }
+        }
+        assert!(missing.is_empty(), "{missing:#?}");
+        for cat in [
+            "reply",
+            "ok",
+            "loading",
+            "done",
+            "ready",
+            "thanks",
+            "not_found",
+            "cancel",
+            "error",
+            "no_internet",
+            "greet",
+            "calibration",
+        ] {
+            assert!(p.has(cat), "{cat}");
+        }
     }
 }

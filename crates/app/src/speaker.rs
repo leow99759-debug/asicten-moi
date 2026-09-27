@@ -23,7 +23,7 @@ pub struct Speaker {
 
 /// Preferred voice pack under assets: our curated Jarvis pack, else Priler's original.
 fn pack_dir(assets: &Path) -> Option<PathBuf> {
-    ["voices/jarvis", "voices-priler/jarvis-og"]
+    ["voice-jarvis", "voices-priler/jarvis-og"]
         .iter()
         .map(|rel| assets.join(rel))
         .find(|p| p.exists())
@@ -75,10 +75,6 @@ impl Speaker {
                 c.voice_engine,
             )
         };
-        let clip = match engine {
-            VoiceEngine::Jarvis => self.pack.as_ref().and_then(|p| p.pick(&line.clips)),
-            VoiceEngine::Windows => None,
-        };
         // no recording (or Windows voice): speak the category's words
         let text = line
             .text
@@ -90,6 +86,13 @@ impl Speaker {
                     .find_map(|c| voice::category_text(c))
                     .map(str::to_owned)
             });
+        // category recording first (variety), then a recording of this exact text
+        let clip = match (engine, &self.pack) {
+            (VoiceEngine::Jarvis, Some(p)) => p
+                .pick(&line.clips)
+                .or_else(|| text.as_deref().and_then(|t| p.by_text(t))),
+            _ => None,
+        };
         if let Some(t) = text.clone().or_else(|| {
             clip.and_then(|c| c.file_stem())
                 .map(|s| s.to_string_lossy().into_owned())

@@ -1,0 +1,24 @@
+# Category phrases the originals lack (SPEC §6.1), generated with Fish Audio (fish_gen.py).
+# Categories that have originals get Fish lines only as `phrases` (found by exact text), never as category variants.
+# category<TAB>file_stem<TAB>text
+cancel	cancel1	Отменено, сэр.
+cancel	cancel2	Как скажете, отменяю.
+error	error1	Сэр, не удалось выполнить команду.
+error	error2	Простите, сэр, что-то пошло не так.
+no_internet	no_internet1	Сэр, нет подключения к интернету. Эта функция требует сети.
+phrases	not_found1	Простите, сэр, не понял команду.
+phrases	not_found2	Повторите, пожалуйста, сэр.
+status	status1	Все системы работают в штатном режиме, сэр.
+status	status2	Всё в порядке, сэр. Я функционирую нормально.
+greet_day	greet_day1	Добрый день, сэр.
+greet_evening	greet_evening1	Добрый вечер, сэр.
+greet_night	greet_night1	Доброй ночи, сэр.
+phrases	greet_morning1	Доброе утро, сэр.
+phrases	reply_listen	Слушаю, сэр.
+phrases	ok_done	Готово, сэр.
+phrases	ok_will_do	Будет сделано, сэр.
+phrases	loading_open	Открываю, сэр.
+phrases	off_bye	До свидания, сэр.
+phrases	thanks_glad	Всегда рад помочь, сэр.
+confirm	confirm1	Сэр, подтвердите, пожалуйста.
+remind	remind1	Сэр, напоминаю.
