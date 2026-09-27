@@ -1,0 +1,35 @@
+[workspace]
+members = ["crates/core", "crates/win", "crates/ai", "crates/remote", "crates/app"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.80"
+license = "LicenseRef-Private"
+publish = false
+
+[workspace.dependencies]
+jarvis-core = { path = "crates/core" }
+jarvis-win = { path = "crates/win" }
+jarvis-ai = { path = "crates/ai" }
+jarvis-remote = { path = "crates/remote" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+anyhow = "1"
+tauri = { version = "2", features = [] }
+tauri-build = { version = "2", features = [] }
+
+[workspace.lints.rust]
+unsafe_op_in_unsafe_fn = "deny"
+
+[workspace.lints.clippy]
+unwrap_used = "deny"
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

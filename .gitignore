@@ -10,3 +10,4 @@ voices/**/*.wav
 .env
 .worktrees/
 *.log
+crates/app/gen/

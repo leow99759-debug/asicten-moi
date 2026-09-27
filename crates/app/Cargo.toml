@@ -1,0 +1,31 @@
+[package]
+name = "jarvis-app"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+default-run = "jarvis"
+
+[[bin]]
+name = "jarvis"
+path = "src/main.rs"
+
+[lib]
+name = "jarvis_app"
+path = "src/lib.rs"
+
+[dependencies]
+jarvis-core.workspace = true
+tauri.workspace = true
+anyhow.workspace = true
+
+[build-dependencies]
+tauri-build.workspace = true
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
+
+[lints]
+workspace = true
