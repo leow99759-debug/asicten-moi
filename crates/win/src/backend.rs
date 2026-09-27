@@ -1,6 +1,6 @@
 //! Real Windows side effects for the executor (SPEC §4.4). Grows task by task (T023–T027).
 
-use jarvis_core::commands::Action;
+use jarvis_core::commands::{Action, Num, Side};
 use jarvis_core::executor::Backend;
 
 use crate::apps;
@@ -28,9 +28,69 @@ impl Backend for WinBackend {
                 shell_open(&lnk.to_string_lossy(), "", None, false)
             }
             Action::ProcessKill { name } => kill(name),
-            other => Err(format!("{other:?}: not supported yet")),
+            other => input_or_window(other),
         }
     }
+}
+
+/// Value of a numeric param; slots are already filled by the executor.
+fn n(v: &Num) -> Result<f64, String> {
+    match v {
+        Num::Value(x) => Ok(*x),
+        Num::Slot(s) => Err(format!("не заполнен слот {s}")),
+    }
+}
+
+#[cfg(windows)]
+fn input_or_window(action: &Action) -> Result<(), String> {
+    use windows::Win32::UI::WindowsAndMessaging::{SW_MAXIMIZE, SW_MINIMIZE, SW_RESTORE};
+
+    use crate::{keys, window};
+    let at = |x: &Option<Num>, y: &Option<Num>| -> Result<(), String> {
+        match (x, y) {
+            (Some(x), Some(y)) => keys::move_to(n(x)? as i32, n(y)? as i32),
+            _ => Ok(()),
+        }
+    };
+    match action {
+        Action::WindowClose => window::close(),
+        Action::WindowMinimize => window::show(SW_MINIMIZE),
+        Action::WindowMaximize => window::show(SW_MAXIMIZE),
+        Action::WindowRestore => window::show(SW_RESTORE),
+        Action::WindowMinimizeAll => keys::press(&keys::parse_combo("win+d")?),
+        Action::WindowFocus { target } => window::focus(target),
+        Action::WindowSnap { side } => keys::press(&keys::parse_combo(match side {
+            Side::Left => "win+left",
+            Side::Right => "win+right",
+            Side::Top => "win+up",
+        })?),
+        Action::WindowMoveToMonitor { n: m } => window::move_to_monitor(n(m)? as usize),
+        Action::WindowFullscreen => keys::press(&keys::parse_combo("f11")?),
+        Action::KeysPress { keys: combo } => keys::press(&keys::parse_combo(combo)?),
+        Action::KeysType { text } => keys::type_text(text),
+        Action::KeysHold { key, ms } => {
+            let vks = keys::parse_combo(key)?;
+            keys::down(&vks)?;
+            std::thread::sleep(std::time::Duration::from_millis(
+                n(ms)?.clamp(0.0, 30_000.0) as u64,
+            ));
+            keys::up(&vks)
+        }
+        Action::MouseToCoords { x, y } => keys::move_to(n(x)? as i32, n(y)? as i32),
+        Action::MouseClickLeft { x, y } => at(x, y).and_then(|_| keys::click(false, 1)),
+        Action::MouseClickRight { x, y } => at(x, y).and_then(|_| keys::click(true, 1)),
+        Action::MouseDouble { x, y } => at(x, y).and_then(|_| keys::click(false, 2)),
+        Action::MouseLc { n: times } => keys::click(false, n(times)? as u32),
+        Action::MouseScroll { dy } => keys::scroll(n(dy)? as i32),
+        other => Err(format!("{other:?}: not supported yet")),
+    }
+}
+
+#[cfg(not(windows))]
+fn input_or_window(action: &Action) -> Result<(), String> {
+    let _ = n;
+    let _ = Side::Left;
+    Err(format!("{action:?}: Windows only"))
 }
 
 #[cfg(windows)]

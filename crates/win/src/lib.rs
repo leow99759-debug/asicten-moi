@@ -3,6 +3,9 @@
 
 pub mod apps;
 pub mod backend;
+pub mod keys;
+#[cfg(windows)]
+pub mod window;
 
 /// True when compiled for Windows; other targets only get mock executors.
 pub const fn is_windows() -> bool {
