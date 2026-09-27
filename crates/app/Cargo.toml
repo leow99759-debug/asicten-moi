@@ -19,6 +19,7 @@ path = "src/lib.rs"
 jarvis-core.workspace = true
 tauri.workspace = true
 anyhow.workspace = true
+tracing.workspace = true
 
 [build-dependencies]
 tauri-build.workspace = true

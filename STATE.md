@@ -1,5 +1,5 @@
-last: T002 (pending activation) GitHub Actions windows-latest CI (frontend check/build/vitest, fmt, clippy -D warnings, test) + badge
-next: T003
+last: T003 core: Paths(%APPDATA%/Jarvis), Config JSON (atomic save, .bak on corrupt), Db SQLite (history≤500, settings kv), tracing daily logs keep 7; app loads all at start
+next: T004
 blocked: T002 needs-user: GitHub App lacks `workflows` permission; workflow ready at tools/ci/ci.yml → move to .github/workflows/ci.yml
 decisions: dev agent runs on Linux (no mic/GUI) → windows-latest CI is the source of truth for build/tests; Windows-only code behind cfg(windows) + traits so Linux `cargo check` works for pure crates
 decisions: .rpw wake models also gitignored (Release assets only)

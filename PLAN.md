@@ -4,7 +4,7 @@ Rule: take the FIRST `[ ]` in order. M13 is optional and runs only after v1.0.0.
 ## M0 Bootstrap
 - [x] T001 Cargo workspace (core, win, ai, remote, app) + Tauri 2 + Svelte5/TS/Vite frontend skeleton; `cargo tauri dev` opens empty frameless window §1
 - [!] T002 GitHub Actions (windows-latest): fmt, clippy -D warnings, cargo test, npm ci/build/vitest; cache; badge §14
-- [ ] T003 Config (serde JSON in %APPDATA%/Jarvis) + SQLite (history, settings) + tracing logs with rotation §1
+- [x] T003 Config (serde JSON in %APPDATA%/Jarvis) + SQLite (history, settings) + tracing logs with rotation §1
 - [ ] T004 IPC events core→UI (state, transcript, history, level) + typed TS bindings §1
 - [ ] T005 `tools/fetch-assets.ps1`: download Vosk small-ru, Priler rustpotter .rpw + voice packs, FitoDomik/Jarvis-Sound, Piper ru voice, sha256; upload to GitHub Release `assets-v1`; CI pulls from that release §6 §13
 
