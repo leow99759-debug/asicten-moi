@@ -11,6 +11,9 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 env:
   CARGO_TERM_COLOR: always
   CARGO_INCREMENTAL: 0
@@ -21,6 +24,18 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+
+      - name: Cache offline assets
+        uses: actions/cache@v4
+        with:
+          path: assets/.download
+          key: assets-${{ hashFiles('tools/assets.sha256') }}
+
+      - name: Fetch offline assets (Release assets-v1)
+        shell: pwsh
+        run: ./tools/fetch-assets.ps1
+        env:
+          GH_TOKEN: ${{ github.token }}
 
       - uses: actions/setup-node@v4
         with:
