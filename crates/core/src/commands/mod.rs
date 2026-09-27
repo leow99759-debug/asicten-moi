@@ -11,7 +11,10 @@ use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 pub use action::{Action, AssistantMode, Num, PowerPlan, Side};
-pub use library::{read_user, user_pack, write_user, Entry, Library};
+pub use library::{
+    addons, builtin_packs, drop_overrides, read_installed, read_user, user_pack, write_installed,
+    write_user, Addon, Entry, Library,
+};
 pub use pathvars::{expand, AppLocator, APP_VARS};
 
 /// Slot placeholders allowed in phrases (§4.1).
@@ -90,7 +93,7 @@ impl Command {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct Pack {
     pub id: String,
@@ -101,6 +104,13 @@ pub struct Pack {
     pub category: String,
     #[serde(default)]
     pub version: String,
+    /// Add-on card (§9): brand key for the app icon, its colour, «Популярное» shelf.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub icon: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub color: String,
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub popular: bool,
     pub commands: Vec<Command>,
     /// Folders the editor keeps even while empty (user pack only).
     #[serde(default)]
@@ -288,9 +298,11 @@ mod tests {
     #[test]
     fn repo_packs_are_valid() {
         let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../packs");
-        let (packs, report) = load_dir(&dir);
-        assert!(!packs.is_empty());
-        assert!(report.is_empty(), "{report:#?}");
+        for d in [dir.clone(), dir.join("addons")] {
+            let (packs, report) = load_dir(&d);
+            assert!(!packs.is_empty());
+            assert!(report.is_empty(), "{report:#?}");
+        }
     }
 
     #[test]

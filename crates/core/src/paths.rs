@@ -39,6 +39,11 @@ impl Paths {
     pub fn user_commands(&self) -> PathBuf {
         self.root.join("commands.json")
     }
+
+    /// Installed add-on pack ids (§9).
+    pub fn addons(&self) -> PathBuf {
+        self.root.join("addons.json")
+    }
 }
 
 /// Where models/voices live: `JARVIS_ASSETS`, then `assets/` next to the exe or in the

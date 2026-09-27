@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import type { Action } from "./bindings/Action";
+import type { Addon } from "./bindings/Addon";
 import type { Config } from "./bindings/Config";
 import type { Command } from "./bindings/Command";
 import type { HistoryEntry } from "./bindings/HistoryEntry";
@@ -40,3 +41,5 @@ export const recorderStart = () => call("recorder_start");
 export const recorderStop = () => call<Action[]>("recorder_stop");
 export const packWrite = (path: string, pack: Pack) => call("pack_write", { path, pack });
 export const packRead = (path: string) => call<[Pack, string[]]>("pack_read", { path });
+export const addonsList = () => call<Addon[]>("addons_list");
+export const addonSet = (id: string, on: boolean) => call<number>("addon_set", { id, on });

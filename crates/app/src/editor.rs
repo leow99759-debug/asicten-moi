@@ -9,12 +9,13 @@ use jarvis_win::recorder;
 use crate::brain_worker::Work;
 use crate::AppState;
 
-fn builtin(state: &AppState) -> Vec<Pack> {
+/// Default packs + installed add-ons (§9).
+pub(crate) fn builtin(state: &AppState) -> Vec<Pack> {
     state
         .packs
         .get()
         .and_then(|p| p.as_deref())
-        .map(|d| commands::load_dir(d).0)
+        .map(|d| commands::builtin_packs(d, &commands::read_installed(&state.paths.addons())))
         .unwrap_or_default()
 }
 
@@ -39,12 +40,19 @@ pub fn editor_save(
     let path = state.paths.user_commands();
     commands::write_user(&path, &pack).map_err(|e| e.to_string())?;
     let lib = Library::merge(packs, Some(pack));
-    let active = lib.clone().active();
+    reload(&state, lib.clone());
+    Ok(lib)
+}
+
+/// Hot-swap the brain's command set; returns how many are active (dashboard counter).
+pub(crate) fn reload(state: &AppState, lib: Library) -> usize {
+    let active = lib.active();
+    let n = active.len();
     state
         .commands
-        .store(active.len(), std::sync::atomic::Ordering::Relaxed);
+        .store(n, std::sync::atomic::Ordering::Relaxed);
     let _ = state.work.send(Work::Reload(active));
-    Ok(lib)
+    n
 }
 
 /// Which command each sample phrase reaches with the editor's current (unsaved) set.

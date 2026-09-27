@@ -138,10 +138,15 @@ impl Assistant for AppAssistant {
     }
 }
 
-/// Built-in packs + the user's commands.json (overrides by id, switched-off dropped).
-pub fn load_commands(packs_dir: Option<&Path>, user_file: &Path) -> Vec<commands::Command> {
+/// Default packs + installed add-ons + the user's commands.json (overrides by id,
+/// switched-off dropped).
+pub fn load_commands(
+    packs_dir: Option<&Path>,
+    installed: &[String],
+    user_file: &Path,
+) -> Vec<commands::Command> {
     let packs: Vec<Pack> = packs_dir
-        .map(|d| commands::load_dir(d).0)
+        .map(|d| commands::builtin_packs(d, installed))
         .unwrap_or_default();
     let cmds = commands::Library::merge(packs, commands::read_user(user_file)).active();
     tracing::info!(count = cmds.len(), "commands loaded");

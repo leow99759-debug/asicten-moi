@@ -8,7 +8,7 @@ use std::path::Path;
 use serde::Serialize;
 use ts_rs::TS;
 
-use super::{validate, Command, Pack};
+use super::{load_dir, validate, Command, Pack};
 
 #[derive(Debug, Clone, PartialEq, Serialize, TS)]
 #[ts(export)]
@@ -83,14 +83,12 @@ pub fn user_pack(builtin: &[Command], edited: Vec<Command>, folders: Vec<Vec<Str
     Pack {
         id: "user".into(),
         name: "Мои команды".into(),
-        description: String::new(),
-        category: String::new(),
-        version: String::new(),
         commands: edited
             .into_iter()
             .filter(|c| orig.get(c.id.as_str()).is_none_or(|o| *o != c))
             .collect(),
         folders,
+        ..Pack::default()
     }
 }
 
@@ -110,6 +108,73 @@ pub fn write_user(path: &Path, pack: &Pack) -> crate::Result<()> {
     Ok(())
 }
 
+/// Add-on catalog folder (§9): shipped with the app, installed on demand.
+const CATALOG: &str = "addons";
+
+/// One catalog card for the «Дополнения» screen.
+#[derive(Debug, Clone, PartialEq, Serialize, TS)]
+#[ts(export)]
+pub struct Addon {
+    pub pack: Pack,
+    pub installed: bool,
+    /// Ships switched on (`packs/*.json`, «Команды по умолчанию»), can't be removed.
+    pub default: bool,
+}
+
+/// Installed add-on ids (`addons.json`); missing or broken file = nothing installed.
+pub fn read_installed(path: &Path) -> Vec<String> {
+    std::fs::read_to_string(path)
+        .ok()
+        .and_then(|t| serde_json::from_str(&t).ok())
+        .unwrap_or_default()
+}
+
+pub fn write_installed(path: &Path, ids: &[String]) -> crate::Result<()> {
+    let tmp = path.with_extension("json.tmp");
+    std::fs::write(&tmp, serde_json::to_string_pretty(ids)?)?;
+    std::fs::rename(&tmp, path)?;
+    Ok(())
+}
+
+/// What the brain and the editor see: default packs + installed add-ons.
+pub fn builtin_packs(dir: &Path, installed: &[String]) -> Vec<Pack> {
+    let mut packs = load_dir(dir).0;
+    packs.extend(
+        load_dir(&dir.join(CATALOG))
+            .0
+            .into_iter()
+            .filter(|p| installed.contains(&p.id)),
+    );
+    packs
+}
+
+/// The whole catalog: defaults first, then add-ons.
+pub fn addons(dir: &Path, installed: &[String]) -> Vec<Addon> {
+    let defaults = load_dir(dir).0.into_iter().map(|pack| Addon {
+        pack,
+        installed: true,
+        default: true,
+    });
+    let catalog = load_dir(&dir.join(CATALOG))
+        .0
+        .into_iter()
+        .map(|pack| Addon {
+            installed: installed.contains(&pack.id),
+            pack,
+            default: false,
+        });
+    defaults.chain(catalog).collect()
+}
+
+/// Uninstall: the user's edits of the pack's commands go too, otherwise they would
+/// resurface as the user's own commands.
+pub fn drop_overrides(user: &mut Pack, pack: &Pack) -> bool {
+    let before = user.commands.len();
+    user.commands
+        .retain(|c| !pack.commands.iter().any(|p| p.id == c.id));
+    user.commands.len() != before
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -125,11 +190,8 @@ mod tests {
         Pack {
             id: "p".into(),
             name: "P".into(),
-            description: String::new(),
-            category: String::new(),
-            version: String::new(),
             commands: cmds,
-            folders: Vec::new(),
+            ..Pack::default()
         }
     }
 
@@ -168,5 +230,58 @@ mod tests {
         write_user(&path, &p).expect("write");
         let back = read_user(&path).expect("read");
         assert_eq!(back, p);
+    }
+
+    #[test]
+    fn catalog_install_and_uninstall() {
+        let dir = tempfile::tempdir().expect("tmp");
+        let write = |path: std::path::PathBuf, id: &str, cmd_id: &str| {
+            let mut p = pack(vec![cmd(cmd_id, cmd_id)]);
+            p.id = id.into();
+            std::fs::write(path, serde_json::to_string(&p).expect("json")).expect("w");
+            p
+        };
+        std::fs::create_dir(dir.path().join(CATALOG)).expect("mkdir");
+        write(dir.path().join("basic.json"), "basic", "b.one");
+        let spotify = write(
+            dir.path().join(CATALOG).join("spotify.json"),
+            "spotify",
+            "s.play",
+        );
+        write(
+            dir.path().join(CATALOG).join("steam.json"),
+            "steam",
+            "st.open",
+        );
+
+        let ids = |packs: Vec<Pack>| packs.into_iter().map(|p| p.id).collect::<Vec<_>>();
+        assert_eq!(ids(builtin_packs(dir.path(), &[])), ["basic"]);
+        let on = vec!["spotify".to_string()];
+        assert_eq!(ids(builtin_packs(dir.path(), &on)), ["basic", "spotify"]);
+        let list = addons(dir.path(), &on);
+        let flags: Vec<_> = list
+            .iter()
+            .map(|a| (a.pack.id.as_str(), a.installed, a.default))
+            .collect();
+        assert_eq!(
+            flags,
+            [
+                ("basic", true, true),
+                ("spotify", true, false),
+                ("steam", false, false)
+            ]
+        );
+
+        let file = dir.path().join("addons.json");
+        assert!(read_installed(&file).is_empty());
+        write_installed(&file, &on).expect("write");
+        assert_eq!(read_installed(&file), on);
+
+        let mut off = cmd("s.play", "пауза");
+        off.enabled = false;
+        let mut user = pack(vec![off, cmd("mine", "моя")]);
+        assert!(drop_overrides(&mut user, &spotify));
+        assert_eq!(user.commands.len(), 1);
+        assert!(!drop_overrides(&mut user, &spotify));
     }
 }

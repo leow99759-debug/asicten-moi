@@ -3,16 +3,25 @@
   import Icon, { type IconName } from "../components/Icon.svelte";
   import HistoryList from "../components/HistoryList.svelte";
   import { app, type Page } from "../lib/app.svelte";
+  import { ad } from "../lib/addons.svelte";
   import { t } from "../lib/i18n";
 
-  const tiles: { icon: IconName; label: () => string; sub: () => string; page: Page; tint: string }[] = [
+  const tiles: { icon: IconName; label: () => string; sub: () => string; page: Page; tint: string; cat?: string }[] = [
     { icon: "wave", label: () => t("nav.main"), sub: () => t("tile.voice"), page: "main", tint: "var(--accent)" },
     { icon: "list", label: () => `${app.commandCount} ${t("tile.commands")}`, sub: () => t("tile.all"), page: "editor", tint: "#8b7cf6" },
     { icon: "terminal", label: () => t("nav.editor"), sub: () => t("tile.create"), page: "editor", tint: "#22c1a4" },
-    { icon: "gamepad", label: () => t("tile.games"), sub: () => t("tile.packs"), page: "addons", tint: "#f97362" },
-    { icon: "globe", label: () => t("tile.browser"), sub: () => t("tile.packs"), page: "addons", tint: "#3fb3f5" },
+    { icon: "gamepad", label: () => t("tile.games"), sub: () => t("tile.packs"), page: "addons", tint: "#f97362", cat: "Игровые сервисы" },
+    { icon: "globe", label: () => t("tile.browser"), sub: () => t("tile.packs"), page: "addons", tint: "#3fb3f5", cat: "Браузеры" },
     { icon: "sparkles", label: () => t("tile.ai"), sub: () => t("tile.off"), page: "ai", tint: "#e0a33a" },
   ];
+
+  function open(tile: (typeof tiles)[number]) {
+    if (tile.cat) {
+      ad.tab = "packs";
+      ad.cat = tile.cat;
+    }
+    app.page = tile.page;
+  }
 
   const hour = new Date().getHours();
   const greet = hour < 5 ? "greet.night" : hour < 12 ? "greet.morning" : hour < 18 ? "greet.day" : "greet.evening";
@@ -29,7 +38,7 @@
 
   <div class="tiles">
     {#each tiles as tile, i (i)}
-      <button type="button" class="tile card" style="--i: {i}; --tint: {tile.tint}" onclick={() => (app.page = tile.page)}>
+      <button type="button" class="tile card" style="--i: {i}; --tint: {tile.tint}" onclick={() => open(tile)}>
         <span class="ic"><Icon name={tile.icon} size={18} /></span>
         <span class="tx">
           <span class="lb">{tile.label()}</span>

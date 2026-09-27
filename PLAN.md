@@ -58,7 +58,7 @@ Rule: take the FIRST `[ ]` in order. M13 is optional and runs only after v1.0.0.
 - [x] T064 Import/export .jarvispack §5.6
 
 ## M6 Packs
-- [ ] T070 Addons screen (Паки/Команды/Озвучка, filters, categories, install/uninstall, counters) §9
+- [x] T070 Addons screen (Паки/Команды/Озвучка, filters, categories, install/uninstall, counters) §9
 - [ ] T071 Packs batch 1: Windows, Explorer, Media, browsers (5), YouTube §9
 - [ ] T072 Packs batch 2: music (Spotify, Яндекс Музыка, VK), messengers (Telegram, Discord, WhatsApp), Zoom §9
 - [ ] T073 Packs batch 3: games (Steam, Epic, CS2, Dota2, Minecraft, Fortnite, Valorant) §9

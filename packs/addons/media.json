@@ -1,0 +1,308 @@
+{
+ "id": "media",
+ "name": "Медиа",
+ "description": "Музыка и видео в любом плеере: пауза, треки, громкость, звук вкл/выкл — через медиа-клавиши Windows.",
+ "category": "Система",
+ "version": "1.0.0",
+ "icon": "media",
+ "popular": true,
+ "commands": [
+  {
+   "id": "media.prev",
+   "folder": [
+    "Медиа"
+   ],
+   "name": "Предыдущий трек",
+   "phrases": [
+    "предыдущий трек",
+    "прошлый трек",
+    "предыдущая песня",
+    "верни трек"
+   ],
+   "actions": [
+    {
+     "type": "Media.Prev"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "media.restart",
+   "folder": [
+    "Медиа"
+   ],
+   "name": "Трек сначала",
+   "phrases": [
+    "трек сначала",
+    "сначала трек",
+    "заново трек"
+   ],
+   "actions": [
+    {
+     "type": "Media.Prev"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "media.skip",
+   "folder": [
+    "Медиа"
+   ],
+   "name": "Пропустить трек",
+   "phrases": [
+    "пропусти",
+    "пропусти трек",
+    "пропусти песню",
+    "следующая"
+   ],
+   "actions": [
+    {
+     "type": "Media.Next"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "media.stop",
+   "folder": [
+    "Медиа"
+   ],
+   "name": "Остановить воспроизведение",
+   "phrases": [
+    "останови музыку",
+    "стоп музыка",
+    "выключи музыку",
+    "останови воспроизведение"
+   ],
+   "actions": [
+    {
+     "type": "Media.Stop"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "media.resume",
+   "folder": [
+    "Медиа"
+   ],
+   "name": "Продолжить",
+   "phrases": [
+    "продолжи",
+    "продолжи воспроизведение",
+    "сними с паузы",
+    "играй дальше"
+   ],
+   "actions": [
+    {
+     "type": "Media.PlayPause"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "media.unmute",
+   "folder": [
+    "Медиа"
+   ],
+   "name": "Включить звук",
+   "phrases": [
+    "включи звук",
+    "верни звук",
+    "со звуком"
+   ],
+   "actions": [
+    {
+     "type": "System.Unmute"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "media.vol_max",
+   "folder": [
+    "Медиа"
+   ],
+   "name": "Громкость на максимум",
+   "phrases": [
+    "громкость на максимум",
+    "максимальная громкость",
+    "на полную громкость"
+   ],
+   "actions": [
+    {
+     "type": "System.VolumeSet",
+     "level": 100
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "media.vol_half",
+   "folder": [
+    "Медиа"
+   ],
+   "name": "Громкость наполовину",
+   "phrases": [
+    "громкость наполовину",
+    "половина громкости",
+    "громкость на половину"
+   ],
+   "actions": [
+    {
+     "type": "System.VolumeSet",
+     "level": 50
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "media.vol_low",
+   "folder": [
+    "Медиа"
+   ],
+   "name": "Тихо",
+   "phrases": [
+    "очень тихо",
+    "громкость на минимум",
+    "минимальная громкость"
+   ],
+   "actions": [
+    {
+     "type": "System.VolumeSet",
+     "level": 10
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "media.louder_much",
+   "folder": [
+    "Медиа"
+   ],
+   "name": "Намного громче",
+   "phrases": [
+    "намного громче",
+    "гораздо громче",
+    "сильно громче"
+   ],
+   "actions": [
+    {
+     "type": "System.VolumeUp",
+     "step": 30
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "media.quieter_much",
+   "folder": [
+    "Медиа"
+   ],
+   "name": "Намного тише",
+   "phrases": [
+    "намного тише",
+    "гораздо тише",
+    "сильно тише"
+   ],
+   "actions": [
+    {
+     "type": "System.VolumeDown",
+     "step": 30
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "media.louder_bit",
+   "folder": [
+    "Медиа"
+   ],
+   "name": "Чуть громче",
+   "phrases": [
+    "чуть громче",
+    "немного громче",
+    "капельку громче"
+   ],
+   "actions": [
+    {
+     "type": "System.VolumeUp",
+     "step": 5
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "media.quieter_bit",
+   "folder": [
+    "Медиа"
+   ],
+   "name": "Чуть тише",
+   "phrases": [
+    "чуть тише",
+    "немного тише",
+    "капельку тише"
+   ],
+   "actions": [
+    {
+     "type": "System.VolumeDown",
+     "step": 5
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  }
+ ]
+}

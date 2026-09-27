@@ -344,7 +344,10 @@ mod tests {
         let p = VoicePack::load(&root, "ru").expect("load");
         let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../packs");
         let mut missing = Vec::new();
-        for pack in crate::commands::load_dir(&dir).0 {
+        for pack in crate::commands::addons(&dir, &[])
+            .into_iter()
+            .map(|a| a.pack)
+        {
             for c in pack.commands {
                 let r = &c.reply;
                 if r.clips.iter().any(|k| p.has(k)) {

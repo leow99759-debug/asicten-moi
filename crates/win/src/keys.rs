@@ -242,9 +242,9 @@ mod tests {
 
     #[test]
     fn repo_pack_hotkeys_parse() {
-        use jarvis_core::commands::{load_dir, Action};
+        use jarvis_core::commands::{addons, Action};
         let dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../packs");
-        for pack in load_dir(&dir).0 {
+        for pack in addons(&dir, &[]).into_iter().map(|a| a.pack) {
             for c in &pack.commands {
                 for a in &c.actions {
                     if let Action::KeysPress { keys } | Action::KeysHold { key: keys, .. } = a {

@@ -1,5 +1,6 @@
 //! Tauri shell: wires the core to the UI windows.
 
+mod addons;
 pub mod brain_worker;
 mod editor;
 pub mod engine;
@@ -264,7 +265,9 @@ pub fn run() -> anyhow::Result<()> {
             editor::recorder_start,
             editor::recorder_stop,
             editor::pack_write,
-            editor::pack_read
+            editor::pack_read,
+            addons::addons_list,
+            addons::addon_set
         ])
         .setup(move |app| {
             let handle = app.handle().clone();
@@ -318,8 +321,11 @@ pub fn run() -> anyhow::Result<()> {
                     speaker: speaker.clone(),
                 },
             );
-            let commands =
-                brain_worker::load_commands(packs.as_deref(), &state.paths.user_commands());
+            let commands = brain_worker::load_commands(
+                packs.as_deref(),
+                &jarvis_core::commands::read_installed(&state.paths.addons()),
+                &state.paths.user_commands(),
+            );
             state
                 .commands
                 .store(commands.len(), std::sync::atomic::Ordering::Relaxed);
