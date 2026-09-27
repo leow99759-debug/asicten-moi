@@ -55,7 +55,7 @@ Rule: take the FIRST `[ ]` in order. M13 is optional and runs only after v1.0.0.
 - [x] T061 Tabs + command card (name, Связывать, Подтверждать, actions list w/ drag, param pickers, app icons) §5.2 §5.3
 - [x] T062 Phrases + optional phrases chips + live match preview + reply picker + ▶ Test §5.3
 - [x] T063 Action recorder (LL hooks, pauses, ignore own window) §5.4
-- [ ] T064 Import/export .jarvispack §5.6
+- [x] T064 Import/export .jarvispack §5.6
 
 ## M6 Packs
 - [ ] T070 Addons screen (Паки/Команды/Озвучка, filters, categories, install/uninstall, counters) §9

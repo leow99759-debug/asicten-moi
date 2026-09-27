@@ -1,5 +1,6 @@
 //! Command editor IPC (SPEC §5.1, §5.3): read the merged library, save the user pack,
-//! live match preview, «▶ Тест» and reply preview for an unsaved command, action recorder.
+//! live match preview, «▶ Тест» and reply preview for an unsaved command, action recorder,
+//! `.jarvispack` export/import (§5.6).
 
 use jarvis_core::brain::{self, Line, Probe};
 use jarvis_core::commands::{self, Action, Command, Library, Pack, Reply};
@@ -92,4 +93,17 @@ pub fn recorder_stop(state: tauri::State<'_, AppState>) -> Vec<Action> {
         .unwrap_or_else(|e| e.into_inner())
         .take();
     rec.map(recorder::Recording::stop).unwrap_or_default()
+}
+
+/// Export (§5.6): a pack JSON built by the editor, written atomically.
+#[tauri::command]
+pub fn pack_write(path: String, pack: Pack) -> Result<(), String> {
+    commands::write_user(std::path::Path::new(&path), &pack).map_err(|e| e.to_string())
+}
+
+/// Import (§5.6): parse + schema check; invalid commands are dropped and listed.
+#[tauri::command]
+pub fn pack_read(path: String) -> Result<(Pack, Vec<String>), String> {
+    let text = std::fs::read_to_string(&path).map_err(|e| e.to_string())?;
+    commands::parse_pack(&text).map_err(|e| format!("не пак Джарвиса: {e}"))
 }

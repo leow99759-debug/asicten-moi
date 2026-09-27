@@ -262,7 +262,9 @@ pub fn run() -> anyhow::Result<()> {
             editor::editor_test,
             editor::say_reply,
             editor::recorder_start,
-            editor::recorder_stop
+            editor::recorder_stop,
+            editor::pack_write,
+            editor::pack_read
         ])
         .setup(move |app| {
             let handle = app.handle().clone();

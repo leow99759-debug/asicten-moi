@@ -100,6 +100,14 @@
     <p class="error"><Icon name="alert" size={16} /> {t("editor.save_error").replace("{e}", ed.error)}</p>
   {/if}
 
+  {#if ed.notice}
+    <p class="notice" role="status">
+      <Icon name="info" size={16} />
+      {ed.notice}
+      <button type="button" class="clear" aria-label="×" onclick={() => (ed.notice = "")}><Icon name="x" size={12} stroke={2} /></button>
+    </p>
+  {/if}
+
   <div class="toolbar">
     <div class="tools">
       <button type="button" class="btn subtle" onclick={E.addFolder} title="Ctrl+Shift+N">
@@ -115,9 +123,9 @@
         {t("editor.add_phrase")}
       </button>
       <span class="sep"></span>
-      <button type="button" class="btn subtle" disabled={!E.canDuplicate(ed.selected)} onclick={E.duplicate} title="Ctrl+D">
+      <button type="button" class="btn subtle" disabled={!E.canDuplicate(ed.selected)} onclick={E.duplicate} title="Ctrl+D" aria-label={t("editor.duplicate")}>
         <Icon name="copy" size={16} />
-        {t("editor.duplicate")}
+        <span class="lbl">{t("editor.duplicate")}</span>
       </button>
       <button
         type="button"
@@ -128,6 +136,15 @@
         onclick={() => arm()}>
         <Icon name="trash" size={16} />
         {armed === ed.selected ? t("editor.delete_confirm") : t("editor.delete")}
+      </button>
+      <span class="sep"></span>
+      <button type="button" class="btn subtle" onclick={E.importPack} title={t("editor.import_hint")} aria-label={t("editor.import")}>
+        <Icon name="download" size={16} />
+        <span class="lbl">{t("editor.import")}</span>
+      </button>
+      <button type="button" class="btn subtle" onclick={E.exportPack} title={t("editor.export_hint")} aria-label={t("editor.export")}>
+        <Icon name="upload" size={16} />
+        <span class="lbl">{t("editor.export")}</span>
       </button>
     </div>
     <label class="search">
@@ -190,7 +207,16 @@
     color: var(--err);
     font-size: 13px;
   }
+  .notice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: -8px 0 16px;
+    color: var(--text-2);
+    font-size: 13px;
+  }
   .toolbar {
+    container-type: inline-size;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -218,6 +244,12 @@
   .tools .btn.danger :global(svg) {
     color: var(--err);
   }
+  /* narrow window: secondary tools become icon buttons (label stays in the tooltip) */
+  @container (max-width: 1000px) {
+    .lbl {
+      display: none;
+    }
+  }
   .sep {
     width: 1px;
     height: 20px;
@@ -229,7 +261,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    width: 260px;
+    flex: 0 1 260px;
+    min-width: 170px;
     height: 32px;
     box-sizing: border-box;
     padding: 0 8px 0 10px;

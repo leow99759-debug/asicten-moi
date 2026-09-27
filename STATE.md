@@ -1,5 +1,5 @@
-last: T063 recorder: crates/win/src/recorder.rs pure Recorder (Keys.Type from ToUnicodeEx chars incl. Cyrillic + backspace edit, chords → Keys.Press Ctrl+S, double click, wheel bursts, pauses ≥200ms rounded 50, trailing pause dropped) + WH_MOUSE_LL/WH_KEYBOARD_LL thread (skips injected input and Jarvis's own windows); IPC recorder_start/stop; card «● Запись 00:02 ■ Стоп». T062 CI green
-next: T064 import/export .jarvispack §5.6 (then M6 T070). Untested on real Windows: recorder hooks, ▶ Тест, probe, say_reply
+last: T064 .jarvispack: lib/jarvispack.ts packOf (folder subtree relative to itself / one command) + adopt (under selected folder, fresh user.* ids); IPC pack_write (write_user) / pack_read (parse_pack = schema check, bad commands skipped+counted); toolbar Импорт/Экспорт (icon-only <1000px container), notice line. M5 done
+next: M6 T070 Addons screen §9. Untested on real Windows: recorder hooks, ▶ Тест, probe, say_reply, dialogs, import/export
 blocked: wake sensitivity 50 needs real-voice tuning
 decisions: dev agent on Linux (no mic/GUI) → windows-latest CI is truth; Windows-only code behind cfg(windows); local win check: clippy --target x86_64-pc-windows-msvc with llvm-rc/lib.exe stubs
 decisions: STT = sherpa-onnx streaming zipformer small-ru int8 (Vosk team) instead of Vosk: +90 MB RAM loaded vs +190 MB, 3x faster decode, no libvosk DLLs, better free speech. No grammar mode → no-prefix mode relies on strict NLU match

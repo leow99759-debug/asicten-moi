@@ -30,3 +30,9 @@ export async function pickFile(filters?: { name: string; extensions: string[] }[
   const r = await open({ multiple: false, directory: false, filters });
   return typeof r === "string" ? r : null;
 }
+
+export async function saveFile(defaultPath: string, filters?: { name: string; extensions: string[] }[]): Promise<string | null> {
+  if (!inTauri()) return null;
+  const { save } = await import("@tauri-apps/plugin-dialog");
+  return save({ defaultPath, filters });
+}

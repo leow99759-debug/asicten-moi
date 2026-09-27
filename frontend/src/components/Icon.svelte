@@ -50,6 +50,8 @@
     folderPlus: '<path d="M20 20a2 2 0 0 0 2-2V8.5a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9l-.8-1.2A2 2 0 0 0 7.9 3.5H4a2 2 0 0 0-2 2V18a2 2 0 0 0 2 2Z"/><path d="M12 10.5v6M9 13.5h6"/>',
     plus: '<path d="M12 5v14M5 12h14"/>',
     quote: '<path d="M21 15a2 2 0 0 1-2 2H7.5L3 21V5.5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/><path d="M8 8.5h8M8 12.5h5"/>',
+    download: '<path d="M12 4v11"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M4.5 19.5h15"/>',
+    upload: '<path d="M12 15V4"/><path d="m7.5 8.5 4.5-4.5 4.5 4.5"/><path d="M4.5 19.5h15"/>',
     copy: '<rect x="8.5" y="8.5" width="13" height="13" rx="2"/><path d="M4.5 15.5a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2"/>',
     trash: '<path d="M3.5 6h17"/><path d="M18.5 6v13.5a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2V6"/><path d="M8.5 6V4.5a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2V6"/><path d="M10 11v6M14 11v6"/>',
     search: '<circle cx="11" cy="11" r="7"/><path d="m20.5 20.5-4.5-4.5"/>',

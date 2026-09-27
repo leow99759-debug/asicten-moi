@@ -5,6 +5,7 @@ import type { Command } from "./bindings/Command";
 import type { HistoryEntry } from "./bindings/HistoryEntry";
 import type { Library } from "./bindings/Library";
 import type { ModeCommand } from "./bindings/ModeCommand";
+import type { Pack } from "./bindings/Pack";
 import type { Probe } from "./bindings/Probe";
 import type { Reply } from "./bindings/Reply";
 import type { UiSnapshot } from "./bindings/UiSnapshot";
@@ -37,3 +38,5 @@ export const editorTest = (command: Command, sample: string) => call("editor_tes
 export const sayReply = (reply: Reply) => call("say_reply", { reply });
 export const recorderStart = () => call("recorder_start");
 export const recorderStop = () => call<Action[]>("recorder_stop");
+export const packWrite = (path: string, pack: Pack) => call("pack_write", { path, pack });
+export const packRead = (path: string) => call<[Pack, string[]]>("pack_read", { path });

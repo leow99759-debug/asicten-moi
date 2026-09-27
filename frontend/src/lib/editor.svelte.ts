@@ -3,12 +3,13 @@
 import type { Command } from "./bindings/Command";
 import type { CommandOutcome } from "./bindings/CommandOutcome";
 import type { Library } from "./bindings/Library";
-import { editorLibrary, editorSave, editorTest } from "./commands";
+import { editorLibrary, editorSave, editorTest, packRead, packWrite } from "./commands";
+import { adopt, EXT, packOf } from "./jarvispack";
 import { on } from "./ipc";
 import { samples } from "./phrases";
 import { t } from "./i18n";
 import { allFolders, ckey, fkey, pkey, rebase, ROOT, startsWith, uniqueName } from "./tree";
-import { inTauri } from "./window";
+import { inTauri, pickFile, saveFile } from "./window";
 
 type Meta = { builtin: boolean; modified: boolean };
 
@@ -25,6 +26,8 @@ export const ed = $state({
   dirty: false,
   saving: false,
   error: "",
+  /** Import/export outcome line under the header. */
+  notice: "",
 });
 
 export type Sel =
@@ -296,5 +299,49 @@ export async function runTest(c: Command): Promise<CommandOutcome | null> {
   } finally {
     clearTimeout(timer);
     off();
+  }
+}
+
+const PACK_FILTER = [{ name: "Jarvis pack", extensions: [EXT] }];
+
+/** Export the selected command or folder (root = everything) to a `.jarvispack` (SPEC §5.6). */
+export async function exportPack() {
+  const s = resolve(ed.selected);
+  const cmdSel = s.kind === "command" || s.kind === "phrase";
+  const name = cmdSel ? s.cmd.name : (s.path.at(-1) ?? t("editor.root"));
+  const pack = packOf($state.snapshot(ed.cmds), $state.snapshot(ed.folders), cmdSel ? { id: s.cmd.id } : { path: s.path }, name);
+  const path = await saveFile(`${name}.${EXT}`, PACK_FILTER);
+  if (!path) return;
+  try {
+    await packWrite(path, pack);
+    ed.notice = t("editor.exported").replace("{n}", String(pack.commands.length));
+  } catch (e) {
+    ed.notice = String(e);
+  }
+}
+
+/** Import a `.jarvispack` into the selected folder; broken commands are skipped and counted. */
+export async function importPack() {
+  const path = await pickFile(PACK_FILTER);
+  if (!path) return;
+  try {
+    const got = await packRead(path);
+    if (!got) return;
+    const [pack, skipped] = got;
+    const target = [...resolve(ed.selected).path];
+    const { commands, folders } = adopt(pack, target);
+    for (const c of commands) {
+      ed.cmds.push(c);
+      ed.meta[c.id] = { builtin: false, modified: false };
+    }
+    for (const f of folders) if (!ed.folders.some((x) => x.join("/") === f.join("/"))) ed.folders.push(f);
+    const top = commands[0]?.folder ?? target;
+    expandTo(top);
+    if (commands.length) touch();
+    ed.notice =
+      t("editor.imported").replace("{n}", String(commands.length)) +
+      (skipped.length ? " " + t("editor.import_skipped").replace("{n}", String(skipped.length)) : "");
+  } catch (e) {
+    ed.notice = String(e);
   }
 }
