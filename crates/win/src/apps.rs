@@ -39,6 +39,49 @@ fn app_paths(_exe: &str) -> Option<PathBuf> {
     None
 }
 
+/// Start Menu shortcut by human name («Telegram», «спотифай» → best fuzzy match on the .lnk name).
+pub fn find_app(name: &str) -> Option<PathBuf> {
+    let want = name.to_lowercase();
+    let mut all = Vec::new();
+    for d in start_menu_dirs() {
+        collect_lnk(&d, 4, &mut all);
+    }
+    best_by_name(&all, &want)
+}
+
+pub fn best_by_name(lnks: &[PathBuf], want: &str) -> Option<PathBuf> {
+    lnks.iter()
+        .filter_map(|p| {
+            let stem = p.file_stem()?.to_string_lossy().to_lowercase();
+            let score = if stem == want {
+                2.0
+            } else if stem.contains(want) {
+                1.5
+            } else {
+                strsim::jaro_winkler(&stem, want)
+            };
+            (score >= 0.85).then(|| (score, p.clone()))
+        })
+        .max_by(|a, b| a.0.total_cmp(&b.0))
+        .map(|(_, p)| p)
+}
+
+fn collect_lnk(dir: &Path, depth: u8, out: &mut Vec<PathBuf>) {
+    let Ok(entries) = std::fs::read_dir(dir) else {
+        return;
+    };
+    for e in entries.flatten() {
+        let p = e.path();
+        if p.is_dir() {
+            if depth > 0 {
+                collect_lnk(&p, depth - 1, out);
+            }
+        } else if p.extension().is_some_and(|x| x.eq_ignore_ascii_case("lnk")) {
+            out.push(p);
+        }
+    }
+}
+
 fn start_menu_dirs() -> Vec<PathBuf> {
     ["APPDATA", "PROGRAMDATA"]
         .iter()
@@ -91,6 +134,20 @@ mod tests {
             Some(sub.join("Telegram.lnk"))
         );
         assert_eq!(find_shortcut(&dirs, "spotify.exe"), None);
+    }
+
+    #[test]
+    fn fuzzy_name_prefers_exact_then_contains() {
+        let l = |s: &str| PathBuf::from(format!("{s}.lnk"));
+        let all = vec![
+            l("Telegram"),
+            l("Telegram Desktop Uninstall"),
+            l("Spotify"),
+            l("Steam"),
+        ];
+        assert_eq!(best_by_name(&all, "telegram"), Some(l("Telegram")));
+        assert_eq!(best_by_name(&all, "spotif"), Some(l("Spotify")));
+        assert_eq!(best_by_name(&all, "blender"), None);
     }
 
     #[cfg(windows)]

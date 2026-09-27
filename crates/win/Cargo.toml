@@ -9,9 +9,11 @@ publish.workspace = true
 [dependencies]
 jarvis-core.workspace = true
 tracing.workspace = true
+strsim.workspace = true
 
 [target.'cfg(windows)'.dependencies]
 winreg.workspace = true
+windows.workspace = true
 
 [dev-dependencies]
 tempfile.workspace = true
