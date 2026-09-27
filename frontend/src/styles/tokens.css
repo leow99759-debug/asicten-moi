@@ -137,3 +137,9 @@ button {
 .pressable:active {
   transform: scale(0.97);
 }
+
+/* avatar / HUD windows: the desktop shows through */
+:root[data-view="overlay"],
+:root[data-view="overlay"] body {
+  background: transparent;
+}

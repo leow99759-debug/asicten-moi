@@ -9,7 +9,7 @@
   import Icon, { type IconName } from "../components/Icon.svelte";
   import { cfg, saved } from "../lib/settings.svelte";
   import { app, SWATCHES } from "../lib/app.svelte";
-  import { micDevices, previewVoice } from "../lib/commands";
+  import { avatarEdit, hudPreview, micDevices, previewVoice } from "../lib/commands";
   import type { VoiceEngine } from "../lib/bindings/VoiceEngine";
   import { t } from "../lib/i18n";
   import { onMount } from "svelte";
@@ -120,11 +120,23 @@
           <SettingRow label={t("set.animations")}>
             <Toggle label={t("set.animations")} checked={c.ui.animations} onchange={(v) => set(() => (c.ui.animations = v))} />
           </SettingRow>
-          <SettingRow label={t("panel.avatar")}>
+          <SettingRow label={t("panel.avatar")} desc={t("set.avatar.sub")}>
             <Toggle label={t("panel.avatar")} checked={c.ui.avatar} onchange={(v) => set(() => (c.ui.avatar = v))} />
           </SettingRow>
+          {#if c.ui.avatar}
+            <SettingRow label={t("set.avatar.pos")} desc={t("set.avatar.pos.sub")}>
+              <button type="button" class="btn small pressable" onclick={() => avatarEdit(true)}>
+                <Icon name="move" size={14} /> {t("avatar.move")}
+              </button>
+            </SettingRow>
+          {/if}
           <SettingRow label={t("set.hud")} desc={t("set.hud.sub")}>
-            <Toggle label={t("set.hud")} checked={c.ui.hud} onchange={(v) => set(() => (c.ui.hud = v))} />
+            <div class="inline">
+              {#if c.ui.hud}
+                <button type="button" class="btn small pressable" onclick={() => hudPreview()}>{t("hud.preview")}</button>
+              {/if}
+              <Toggle label={t("set.hud")} checked={c.ui.hud} onchange={(v) => set(() => (c.ui.hud = v))} />
+            </div>
           </SettingRow>
           <SettingRow label={t("panel.onTop")}>
             <Toggle label={t("panel.onTop")} checked={c.ui.on_top} onchange={(v) => set(() => (c.ui.on_top = v))} />
@@ -414,6 +426,20 @@
     font-weight: 600;
     font-size: 13px;
     cursor: pointer;
+  }
+  .btn.small {
+    height: 30px;
+    padding: 0 12px;
+    font-size: 12.5px;
+    gap: 6px;
+  }
+  .btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .inline {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
   .btn.primary {
     background: var(--accent);

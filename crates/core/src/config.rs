@@ -131,6 +131,8 @@ pub struct UiPrefs {
     pub avatar: bool,
     pub hud: bool,
     pub on_top: bool,
+    /// Desktop avatar top-left corner, physical px; `None` = bottom-right corner (§3.6).
+    pub avatar_pos: Option<[i32; 2]>,
 }
 
 impl Default for UiPrefs {
@@ -143,6 +145,7 @@ impl Default for UiPrefs {
             avatar: true,
             hud: false,
             on_top: false,
+            avatar_pos: None,
         }
     }
 }

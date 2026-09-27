@@ -102,5 +102,18 @@
   "hk.toggle_window": "Показать / скрыть окно",
   "hk.toggle_mic": "Микрофон вкл/выкл",
   "about.version": "Версия",
-  "about.credits": "Голос: русский дубляж «Железного человека» (FitoDomik/Jarvis-Sound, Priler/jarvis) и Fish Audio.\nРаспознавание речи: sherpa-onnx, Vosk team zipformer. Wake word: rustpotter.\nСинтез: Piper. Иконки: Lucide."
+  "about.credits": "Голос: русский дубляж «Железного человека» (FitoDomik/Jarvis-Sound, Priler/jarvis) и Fish Audio.\nРаспознавание речи: sherpa-onnx, Vosk team zipformer. Wake word: rustpotter.\nСинтез: Piper. Иконки: Lucide.",
+  "avatar.drag": "Перетащите",
+  "avatar.done": "Готово",
+  "avatar.move": "Переместить",
+  "set.avatar.pos": "Положение аватара",
+  "set.avatar.pos.sub": "Перетащите аватар в удобное место экрана",
+  "hud.listen": "СЛУШАЮ",
+  "hud.busy": "ВЫПОЛНЯЮ",
+  "hud.speak": "ОТВЕЧАЮ",
+  "hud.power": "ЭНЕРГИЯ",
+  "hud.systems": "СИСТЕМЫ",
+  "hud.ok": "ОК",
+  "hud.preview": "Показать",
+  "set.avatar.sub": "Орб в углу экрана, прячется в полноэкранных играх"
 }

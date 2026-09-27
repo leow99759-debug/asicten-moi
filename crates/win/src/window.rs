@@ -157,3 +157,17 @@ pub fn move_to_monitor(n: usize) -> Result<(), String> {
     }
     .map_err(|e| e.to_string())
 }
+
+/// A fullscreen app (game, F11 video, presentation) owns the screen: overlays hide (§3.6).
+/// Uses the shell's own notification state, the same signal Windows uses for Focus Assist.
+pub fn fullscreen_app() -> bool {
+    use windows::Win32::UI::Shell::{
+        SHQueryUserNotificationState, QUNS_BUSY, QUNS_PRESENTATION_MODE,
+        QUNS_RUNNING_D3D_FULL_SCREEN,
+    };
+    // SAFETY: plain query, no arguments besides the out value handled by the wrapper.
+    match unsafe { SHQueryUserNotificationState() } {
+        Ok(s) => s == QUNS_BUSY || s == QUNS_RUNNING_D3D_FULL_SCREEN || s == QUNS_PRESENTATION_MODE,
+        Err(_) => false,
+    }
+}

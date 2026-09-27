@@ -21,3 +21,5 @@ export const getConfig = () => call<Config>("get_config");
 export const setConfig = (config: Config) => call("set_config", { config });
 export const micDevices = () => call<string[]>("mic_devices");
 export const previewVoice = () => call("preview_voice");
+export const avatarEdit = (on: boolean) => call("avatar_edit", { on });
+export const hudPreview = () => call("hud_preview");

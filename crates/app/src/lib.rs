@@ -4,6 +4,7 @@ pub mod brain_worker;
 pub mod engine;
 mod hotkeys;
 pub mod ipc;
+mod overlay;
 mod shell;
 pub mod speaker;
 
@@ -32,6 +33,8 @@ pub struct AppState {
     pub mica: std::sync::atomic::AtomicBool,
     /// Voice output, for «▶ Прослушать» on the voice page.
     pub speaker: std::sync::OnceLock<Arc<speaker::Speaker>>,
+    /// Desktop avatar + HUD windows (§3.6, §3.7).
+    pub overlay: std::sync::OnceLock<overlay::Overlay>,
 }
 
 impl AppState {
@@ -98,7 +101,11 @@ fn get_config(state: tauri::State<'_, AppState>) -> Config {
 /// Settings page save. Mode flags stay as they are (they change by voice/toggles via
 /// `set_mode`), everything else is replaced, saved and applied.
 #[tauri::command]
-fn set_config(state: tauri::State<'_, AppState>, mut config: Config) -> Result<(), String> {
+fn set_config(
+    app: tauri::AppHandle,
+    state: tauri::State<'_, AppState>,
+    mut config: Config,
+) -> Result<(), String> {
     {
         let mut cur = state.config.lock().unwrap_or_else(|e| e.into_inner());
         config.prefix_mode = cur.prefix_mode;
@@ -107,6 +114,8 @@ fn set_config(state: tauri::State<'_, AppState>, mut config: Config) -> Result<(
         config.wake_sensitivity = config.wake_sensitivity.min(100);
         config.voice_volume = config.voice_volume.min(100);
         config.voice_speed = config.voice_speed.clamp(0.5, 2.0);
+        // placement is saved by the avatar itself (overlay edit mode)
+        config.ui.avatar_pos = cur.ui.avatar_pos;
         config
             .save(&state.paths.config())
             .map_err(|e| e.to_string())?;
@@ -119,7 +128,28 @@ fn set_config(state: tauri::State<'_, AppState>, mut config: Config) -> Result<(
     if let Some(e) = state.engine() {
         e.send(Msg::Reconfigure);
     }
+    if let Some(o) = state.overlay.get() {
+        o.send(overlay::Msg::Sync);
+    }
+    // avatar/HUD windows re-read the accent colour
+    let _ = tauri::Emitter::emit(&app, "config", ());
     Ok(())
+}
+
+/// «Переместить аватар»: make the avatar draggable; `false` saves the spot (§3.6).
+#[tauri::command]
+fn avatar_edit(state: tauri::State<'_, AppState>, on: bool) {
+    if let Some(o) = state.overlay.get() {
+        o.send(overlay::Msg::Edit(on));
+    }
+}
+
+/// «Показать HUD» in settings (§3.7).
+#[tauri::command]
+fn hud_preview(state: tauri::State<'_, AppState>) {
+    if let Some(o) = state.overlay.get() {
+        o.send(overlay::Msg::HudPreview);
+    }
 }
 
 /// Microphone picker (§10.4 «Модель микрофона»).
@@ -201,6 +231,7 @@ pub fn run() -> anyhow::Result<()> {
             commands: Default::default(),
             mica: Default::default(),
             speaker: Default::default(),
+            overlay: Default::default(),
         })
         .invoke_handler(tauri::generate_handler![
             set_mode,
@@ -214,7 +245,9 @@ pub fn run() -> anyhow::Result<()> {
             get_config,
             set_config,
             mic_devices,
-            preview_voice
+            preview_voice,
+            avatar_edit,
+            hud_preview
         ])
         .setup(move |app| {
             let handle = app.handle().clone();
@@ -229,6 +262,7 @@ pub fn run() -> anyhow::Result<()> {
             if let Err(e) = shell::setup_tray(&handle) {
                 tracing::warn!("tray: {e}");
             }
+            let _ = state.overlay.set(overlay::spawn(handle.clone()));
             #[cfg(windows)]
             if let Ok(exe) = std::env::current_exe() {
                 if let Err(e) = jarvis_win::autostart::set(state.config_snapshot().autostart, &exe)
@@ -292,6 +326,17 @@ pub fn run() -> anyhow::Result<()> {
         .build(tauri::generate_context!())
         .context("tauri init failed")?
         .run(|app, event| {
+            // overlay windows keep the app alive, so closing the main window exits by hand
+            if let tauri::RunEvent::WindowEvent {
+                label,
+                event: tauri::WindowEvent::Destroyed,
+                ..
+            } = &event
+            {
+                if label == "main" && !app.state::<AppState>().config_snapshot().close_to_tray {
+                    app.exit(0);
+                }
+            }
             // last window closed (not «Выход»): keep the core running in the tray (§3.5)
             if let tauri::RunEvent::ExitRequested {
                 api, code: None, ..

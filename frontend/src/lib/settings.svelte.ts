@@ -21,7 +21,7 @@ export const DEFAULTS: Config = {
   voice_speed: 1.0,
   voice_fx: true,
   hotkeys: { push_to_talk: "Ctrl+Alt+J", toggle_window: "Ctrl+Alt+H", toggle_mic: "Ctrl+Alt+M" },
-  ui: { accent: "#3b82f6", transparency: 30, blur: 90, animations: true, avatar: true, hud: false, on_top: false },
+  ui: { accent: "#3b82f6", transparency: 30, blur: 90, animations: true, avatar: true, hud: false, on_top: false, avatar_pos: null },
   mode_phrases: {
     prefix_on: "перейди в режим префикса",
     prefix_off: "выключи режим префикса",
