@@ -50,6 +50,61 @@ impl Outcome {
     }
 }
 
+/// One thing to say: a clip from the first available category, else `text` via TTS.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub struct Line {
+    pub clips: Vec<String>,
+    pub text: Option<String>,
+}
+
+impl Line {
+    fn new(clips: &[&str], text: impl Into<String>) -> Self {
+        Self {
+            clips: clips.iter().map(|c| (*c).to_owned()).collect(),
+            text: Some(text.into()),
+        }
+    }
+}
+
+impl Outcome {
+    /// What Jarvis says afterwards: step outputs (time, battery…), then one closing line
+    /// for the last command — its reply when done, else the status phrase (§4.4, §6.1).
+    pub fn voice_lines(&self) -> Vec<Line> {
+        let Some(last) = self.commands.last() else {
+            return vec![Line::new(&["not_found"], "Простите, сэр, не понял команду")];
+        };
+        let mut out: Vec<Line> = self
+            .commands
+            .iter()
+            .flat_map(|c| c.steps.iter().filter_map(|s| s.output.clone()))
+            .map(|t| Line {
+                clips: vec![],
+                text: Some(t),
+            })
+            .collect();
+        let error = last
+            .steps
+            .iter()
+            .find_map(|s| s.error.clone())
+            .unwrap_or_default();
+        let closing = match last.status {
+            Status::Done if last.reply.clips.is_empty() && last.reply.text.is_none() => None,
+            Status::Done => Some(Line {
+                clips: last.reply.clips.clone(),
+                text: last.reply.text.clone(),
+            }),
+            Status::Cancelled => Some(Line::new(&["cancel"], "Отменено, сэр")),
+            Status::NoInternet => Some(Line::new(&["no_internet"], crate::NO_INTERNET)),
+            Status::Error => Some(Line::new(
+                &["error"],
+                format!("Сэр, не удалось выполнить: {error}"),
+            )),
+        };
+        out.extend(closing);
+        out
+    }
+}
+
 pub struct Brain {
     commands: Vec<Command>,
     matcher: Matcher,
@@ -189,6 +244,19 @@ mod tests {
         assert!(o.commands[0].steps.is_empty());
 
         assert!(b.handle("спой песню").commands.is_empty());
+    }
+
+    #[test]
+    fn voice_lines_per_status() {
+        let dry = Arc::new(DryRun::default());
+        let b = brain(dry);
+        let lines = |u: &str| b.handle(u).voice_lines();
+        assert_eq!(lines("спой песню")[0].clips, vec!["not_found"]);
+        assert_eq!(lines("открой браузер")[0].clips, vec!["done"]);
+        assert!(lines("включи музыку").is_empty());
+        let chain = lines("открой браузер и как дела");
+        assert_eq!(chain.len(), 1);
+        assert_eq!(chain[0].clips, vec!["status"]);
     }
 
     #[test]

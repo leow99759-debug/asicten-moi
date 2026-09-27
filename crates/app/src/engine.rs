@@ -7,6 +7,7 @@ use std::time::{Duration, Instant};
 
 use anyhow::Context;
 use jarvis_core::audio;
+use jarvis_core::brain::Line;
 use jarvis_core::ipc::{AssistantState, CoreEvent, EventSink, Level, Transcript};
 use jarvis_core::listener::{ListenCfg, Listener, Output};
 use jarvis_core::modes::{self, ModeCommand};
@@ -58,6 +59,7 @@ pub fn apply_mode(config: &Mutex<Config>, path: &Path, cmd: ModeCommand) -> Conf
 pub struct Route {
     pub work: Sender<Work>,
     pub confirm: Arc<Confirm>,
+    pub speaker: Arc<crate::speaker::Speaker>,
 }
 
 pub fn spawn(
@@ -185,9 +187,17 @@ fn run(
             match out {
                 Output::Wake(score) => {
                     tracing::info!(score, "wake word");
+                    route.speaker.stop();
+                    route.speaker.say(&Line {
+                        clips: vec!["reply".into()],
+                        text: None,
+                    });
                     set_state(AssistantState::Listening, &mut state);
                 }
-                Output::BargeIn => set_state(AssistantState::Listening, &mut state),
+                Output::BargeIn => {
+                    route.speaker.stop();
+                    set_state(AssistantState::Listening, &mut state);
+                }
                 Output::Partial(text) => sink.emit(CoreEvent::Transcript(Transcript {
                     text,
                     is_final: false,
@@ -211,6 +221,10 @@ fn run(
                     } else if let Some(cmd) = modes::from_phrase(&text, &phrases) {
                         let cfg = apply_mode(config, config_path, cmd);
                         apply_to_runtime(&cfg, &mut listener, &mut mic);
+                        route.speaker.say(&Line {
+                            clips: vec!["ok".into()],
+                            text: None,
+                        });
                     } else if route.work.send(Work::Utterance(text)).is_err() {
                         tracing::warn!("command worker is gone");
                     }

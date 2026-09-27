@@ -17,6 +17,7 @@ use jarvis_win::apps::SystemApps;
 use jarvis_win::backend::WinBackend;
 
 use crate::engine::{self, Engine};
+use crate::speaker::Speaker;
 
 /// Auto-cancel for confirmations (§4.6).
 const CONFIRM_TIMEOUT: Duration = Duration::from_secs(30);
@@ -44,7 +45,7 @@ impl Confirm {
         tx.is_some_and(|tx| tx.send(yes).is_ok())
     }
 
-    fn ask(&self, sink: &dyn EventSink, question: &str) -> bool {
+    fn ask(&self, sink: &dyn EventSink, speaker: &Speaker, question: &str) -> bool {
         let (tx, rx) = mpsc::channel();
         if let Ok(mut p) = self.pending.lock() {
             *p = Some(tx);
@@ -53,7 +54,7 @@ impl Confirm {
             question: question.to_owned(),
             timeout_sec: CONFIRM_TIMEOUT.as_secs() as u32,
         }));
-        sink.emit(CoreEvent::Say(question.to_owned()));
+        speaker.say_text(&["confirm"], question);
         let yes = rx.recv_timeout(CONFIRM_TIMEOUT).unwrap_or(false);
         if let Ok(mut p) = self.pending.lock() {
             *p = None;
@@ -65,6 +66,7 @@ impl Confirm {
 
 struct AppAssistant {
     sink: Arc<dyn EventSink>,
+    speaker: Arc<Speaker>,
     confirm: Arc<Confirm>,
     engine: Engine,
     work: Sender<Work>,
@@ -73,14 +75,15 @@ struct AppAssistant {
 
 impl Assistant for AppAssistant {
     fn speak(&self, text: Option<&str>, clip: Option<&str>) -> Result<(), String> {
-        // voice output arrives in M3; until then the UI shows the line
-        let line = text.or(clip).unwrap_or_default();
-        self.sink.emit(CoreEvent::Say(line.to_owned()));
+        self.speaker.say(&jarvis_core::brain::Line {
+            clips: clip.map(|c| vec![c.to_owned()]).unwrap_or_default(),
+            text: text.map(Into::into),
+        });
         Ok(())
     }
 
     fn ask(&self, question: &str) -> Result<bool, String> {
-        Ok(self.confirm.ask(&*self.sink, question))
+        Ok(self.confirm.ask(&*self.sink, &self.speaker, question))
     }
 
     fn set_mode(&self, mode: AssistantMode, on: bool) -> Result<(), String> {
@@ -113,6 +116,7 @@ impl Assistant for AppAssistant {
     }
 
     fn cancel(&self) -> Result<(), String> {
+        self.speaker.stop();
         self.confirm.answer(false);
         if let Ok(s) = self.scheduler.lock() {
             s.cancel_all();
@@ -151,15 +155,28 @@ pub fn load_commands(packs_dir: Option<&Path>, user_file: &Path) -> Vec<commands
     cmds
 }
 
+/// Everything the worker talks to.
+pub struct Deps {
+    pub sink: Arc<dyn EventSink>,
+    pub speaker: Arc<Speaker>,
+    pub db: Arc<Mutex<Db>>,
+    pub confirm: Arc<Confirm>,
+    pub engine: Engine,
+}
+
 pub fn spawn(
     commands: Vec<commands::Command>,
-    sink: Arc<dyn EventSink>,
-    db: Arc<Mutex<Db>>,
-    confirm: Arc<Confirm>,
-    engine: Engine,
+    deps: Deps,
     work_tx: Sender<Work>,
     work_rx: Receiver<Work>,
 ) {
+    let Deps {
+        sink,
+        speaker,
+        db,
+        confirm,
+        engine,
+    } = deps;
     let (scheduler, fired) = Scheduler::start();
     let fwd = work_tx.clone();
     std::thread::spawn(move || {
@@ -171,6 +188,7 @@ pub fn spawn(
     });
     let assistant = Arc::new(AppAssistant {
         sink: sink.clone(),
+        speaker: speaker.clone(),
         confirm,
         engine,
         work: work_tx,
@@ -195,15 +213,16 @@ pub fn spawn(
                     Ok(e) => sink.emit(CoreEvent::History(e)),
                     Err(e) => tracing::warn!("history: {e:#}"),
                 }
+                for line in outcome.voice_lines() {
+                    speaker.say(&line);
+                }
                 sink.emit(CoreEvent::Outcome(outcome));
             };
             for work in work_rx {
                 match work {
                     Work::Utterance(text) => {
                         let outcome = brain.handle(&text);
-                        if outcome.commands.is_empty() {
-                            sink.emit(CoreEvent::Say("Простите, сэр, не понял команду".into()));
-                        } else {
+                        if !outcome.commands.is_empty() {
                             last = Some(text);
                         }
                         publish(outcome);
@@ -221,7 +240,7 @@ pub fn spawn(
                         None => tracing::warn!(%id, "timer: unknown command"),
                     },
                     Work::Job(Job::Remind(text)) => {
-                        sink.emit(CoreEvent::Say(format!("Сэр, напоминаю: {text}")));
+                        speaker.say_text(&["remind"], &format!("Сэр, напоминаю: {text}"));
                     }
                 }
             }

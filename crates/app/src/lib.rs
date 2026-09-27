@@ -4,6 +4,7 @@ pub mod brain_worker;
 pub mod engine;
 mod hotkeys;
 pub mod ipc;
+pub mod speaker;
 
 use std::sync::mpsc::{self, Sender};
 use std::sync::{Arc, Mutex};
@@ -119,23 +120,37 @@ pub fn run() -> anyhow::Result<()> {
                 tracing::error!("assets not found; run tools/fetch-assets.ps1");
                 return Ok(());
             };
+            let speaker = Arc::new(speaker::Speaker::new(
+                &assets,
+                sink.clone(),
+                state.config.clone(),
+            ));
+            // Priler's pack calls the startup line `run`
+            speaker.say(&jarvis_core::brain::Line {
+                clips: vec!["greet".into(), "run".into()],
+                text: None,
+            });
             let engine = engine::spawn(
-                assets,
+                assets.clone(),
                 state.config.clone(),
                 state.paths.config(),
                 sink.clone(),
                 engine::Route {
                     work: state.work.clone(),
                     confirm: state.confirm.clone(),
+                    speaker: speaker.clone(),
                 },
             );
             let packs = jarvis_core::paths::find_packs(resources.as_deref());
             brain_worker::spawn(
                 brain_worker::load_commands(packs.as_deref(), &state.paths.user_commands()),
-                sink,
-                state.db.clone(),
-                state.confirm.clone(),
-                engine.clone(),
+                brain_worker::Deps {
+                    sink,
+                    speaker,
+                    db: state.db.clone(),
+                    confirm: state.confirm.clone(),
+                    engine: engine.clone(),
+                },
                 state.work.clone(),
                 work_rx,
             );

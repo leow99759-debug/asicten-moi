@@ -22,6 +22,7 @@ pub mod stt;
 mod test_util;
 pub mod text;
 pub mod vad;
+pub mod voice;
 pub mod wake;
 
 pub use config::Config;

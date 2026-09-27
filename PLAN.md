@@ -31,7 +31,7 @@ Rule: take the FIRST `[ ]` in order. M13 is optional and runs only after v1.0.0.
 - [x] T030 History persistence + statuses §3.4
 
 ## M3 Voice output
-- [ ] T040 Voice pack format + player (rodio), categories, no-repeat random, volume §6.1
+- [x] T040 Voice pack format + player (cpal, not rodio), categories, no-repeat random, volume §6.1
 - [ ] T041 Piper/VITS TTS via sherpa-onnx, lazy load/unload, sentence streaming, speed, FX (EQ+reverb) §6.2
 - [ ] T042 SAPI fallback + engine selector backend §6.3
 - [ ] T043 Built-in dialog replies without LLM, ≥40 intents (как дела, ты тут, спасибо, время, дата, шутка, приветствие) §7.5
