@@ -1,5 +1,5 @@
-last: T044 voice-jarvis.zip in Release (125 clips, voice.json texts), Speaker: category clip → exact-text clip → TTS; NO_INTERNET_PHRASE fix; scheduler fires late jobs in due order (CI flake fix)
-next: M3 done → tag m3 after CI; then M4 UI 1:1 with docs/design/video26 (apple-design + emil-design-eng skills)
+last: T050–T053 UI: styles/tokens.css (glass, accent vars, easing, reduced-motion/transparency, data-motion=off), Sidebar (tooltips), ListeningBar (wake word highlight, level bars), Orb (canvas discs, breathe, level, pauses when hidden), Dashboard tiles, MainWindow (history w/ repeat, control panel toggles, volume→set_voice_volume, on-top), lib/app.svelte.ts store + demo mode (browser preview ?page=…&still); tauri cmds ui_snapshot, set_voice_volume; Level.tts = speaker level
+next: T054 tray + close-to-tray + autostart + Mica; T057 settings; T058 voice page. Screenshots: vite preview + playwright (/tmp/shot.py)
 blocked: T002 needs-user (workflow edits: user pastes tools/ci/ci.yml into .github/workflows) | wake sensitivity 50 needs real-voice tuning (synthetic «Джарвис, включи музыку» passes only at 70)
 decisions: dev agent on Linux (no mic/GUI) → windows-latest CI is truth; Windows-only code behind cfg(windows); local win check: clippy --target x86_64-pc-windows-msvc with llvm-rc/lib.exe stubs
 decisions: STT = sherpa-onnx streaming zipformer small-ru int8 (Vosk team) instead of Vosk: +90 MB RAM loaded vs +190 MB, 3x faster decode, no libvosk DLLs, better free speech. No grammar mode → no-prefix mode relies on strict NLU match

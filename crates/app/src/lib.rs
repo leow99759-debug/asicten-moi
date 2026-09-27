@@ -25,6 +25,8 @@ pub struct AppState {
     pub engine: Mutex<Option<Engine>>,
     pub confirm: Arc<Confirm>,
     pub work: Sender<Work>,
+    /// Loaded commands (dashboard counter).
+    pub commands: std::sync::atomic::AtomicUsize,
 }
 
 impl AppState {
@@ -76,6 +78,29 @@ fn history(
     db.history(limit.min(500)).map_err(|e| e.to_string())
 }
 
+/// Main window start-up state.
+#[tauri::command]
+fn ui_snapshot(state: tauri::State<'_, AppState>) -> jarvis_core::ipc::UiSnapshot {
+    let c = state.config_snapshot();
+    jarvis_core::ipc::UiSnapshot {
+        prefix_mode: c.prefix_mode,
+        silent_mode: c.silent_mode,
+        mic_enabled: c.mic_enabled,
+        voice_volume: c.voice_volume,
+        commands: state.commands.load(std::sync::atomic::Ordering::Relaxed),
+    }
+}
+
+/// Control panel «Громкость» (§3.4): Jarvis voice volume, 0–100.
+#[tauri::command]
+fn set_voice_volume(state: tauri::State<'_, AppState>, volume: u8) {
+    let mut c = state.config.lock().unwrap_or_else(|e| e.into_inner());
+    c.voice_volume = volume.min(100);
+    if let Err(e) = c.save(&state.paths.config()) {
+        tracing::warn!("config save: {e}");
+    }
+}
+
 /// Mic button: listen now without the wake word.
 #[tauri::command]
 fn activate(state: tauri::State<'_, AppState>) {
@@ -102,13 +127,16 @@ pub fn run() -> anyhow::Result<()> {
             engine: Mutex::new(None),
             confirm: Arc::new(Confirm::default()),
             work: work_tx,
+            commands: Default::default(),
         })
         .invoke_handler(tauri::generate_handler![
             set_mode,
             activate,
             confirm_answer,
             run_text,
-            history
+            history,
+            ui_snapshot,
+            set_voice_volume
         ])
         .setup(move |app| {
             let handle = app.handle().clone();
@@ -142,8 +170,13 @@ pub fn run() -> anyhow::Result<()> {
                 },
             );
             let packs = jarvis_core::paths::find_packs(resources.as_deref());
+            let commands =
+                brain_worker::load_commands(packs.as_deref(), &state.paths.user_commands());
+            state
+                .commands
+                .store(commands.len(), std::sync::atomic::Ordering::Relaxed);
             brain_worker::spawn(
-                brain_worker::load_commands(packs.as_deref(), &state.paths.user_commands()),
+                commands,
                 brain_worker::Deps {
                     sink,
                     speaker,

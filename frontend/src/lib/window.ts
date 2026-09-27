@@ -10,3 +10,7 @@ export async function minimize(): Promise<void> {
 export async function close(): Promise<void> {
   if (inTauri()) await getCurrentWindow().close();
 }
+
+export async function setOnTop(on: boolean): Promise<void> {
+  if (inTauri()) await getCurrentWindow().setAlwaysOnTop(on);
+}

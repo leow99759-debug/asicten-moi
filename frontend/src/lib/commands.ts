@@ -1,6 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import type { HistoryEntry } from "./bindings/HistoryEntry";
 import type { ModeCommand } from "./bindings/ModeCommand";
+import type { UiSnapshot } from "./bindings/UiSnapshot";
 import { inTauri } from "./window";
 
 /** Typed wrappers over Rust #[tauri::command]s (crates/app/src/lib.rs). No-ops outside Tauri. */
@@ -12,3 +13,5 @@ export const activate = () => call("activate");
 export const confirmAnswer = (yes: boolean) => call("confirm_answer", { yes });
 export const runText = (text: string) => call("run_text", { text });
 export const history = (limit = 500) => call<HistoryEntry[]>("history", { limit });
+export const uiSnapshot = () => call<UiSnapshot>("ui_snapshot");
+export const setVoiceVolume = (volume: number) => call("set_voice_volume", { volume });

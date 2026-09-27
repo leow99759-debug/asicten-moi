@@ -62,46 +62,79 @@
     inset: 0;
     display: grid;
     place-items: center;
-    background: rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(6px);
+    background: rgba(5, 6, 9, 0.5);
+    backdrop-filter: blur(8px);
     z-index: 100;
+    transition: opacity 200ms var(--ease-out);
+    @starting-style {
+      opacity: 0;
+    }
   }
   .dialog {
     width: min(420px, 90vw);
-    padding: 24px;
-    border-radius: 16px;
-    background: rgba(30, 33, 40, 0.92);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 28px 28px 22px;
+    border-radius: var(--r-xl);
+    background: rgba(28, 31, 38, 0.92);
+    backdrop-filter: blur(var(--blur)) saturate(140%);
+    border: 1px solid var(--line-2);
+    box-shadow: var(--shadow-lg), inset 0 1px 0 var(--highlight);
     text-align: center;
+    transition: transform 240ms var(--ease-out), opacity 240ms var(--ease-out);
+    @starting-style {
+      transform: scale(0.96);
+      opacity: 0;
+    }
   }
   .icon {
-    color: var(--accent, #3b82f6);
+    width: 56px;
+    height: 56px;
+    margin: 0 auto;
+    display: grid;
+    place-items: center;
+    border-radius: 18px;
+    background: var(--accent-soft);
+    color: var(--accent);
   }
   h2 {
-    margin: 8px 0;
-    font-size: 16px;
+    margin: 14px 0 6px;
+    font: 600 17px/1.3 var(--font-display);
+  }
+  #confirm-q {
+    margin: 0;
+    color: var(--text-2);
   }
   .buttons {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    margin: 16px 0 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 22px 0 14px;
   }
   button {
-    padding: 8px 18px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: transparent;
-    color: inherit;
+    height: 40px;
+    border-radius: var(--r-md);
+    border: 1px solid var(--line-2);
+    background: rgba(255, 255, 255, 0.05);
+    font-weight: 600;
     cursor: pointer;
+    transition: transform var(--t-press) var(--ease-out), background-color var(--t-fast) ease;
+  }
+  button:hover {
+    background: rgba(255, 255, 255, 0.09);
+  }
+  button:active {
+    transform: scale(0.97);
   }
   button.primary {
-    background: var(--accent, #3b82f6);
+    background: var(--accent);
     border-color: transparent;
+    color: var(--on-accent);
+  }
+  button.primary:hover {
+    background: color-mix(in srgb, var(--accent) 88%, white);
   }
   .hint {
     margin: 4px 0 0;
     font-size: 12px;
-    opacity: 0.6;
+    color: var(--text-3);
   }
 </style>

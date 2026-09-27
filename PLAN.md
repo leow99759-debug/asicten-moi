@@ -38,10 +38,10 @@ Rule: take the FIRST `[ ]` in order. M13 is optional and runs only after v1.0.0.
 - [x] T044 Voice pack `voice-jarvis.zip` (tools/voice/build_pack.py): 54 RU-dub originals (Jarvis-Sound + Priler og, STT + speaker-embedding verified, film cuts duplicated them) + 71 Fish Audio phrases (categories originals lack as category clips, others only as exact-text `phrases`); VoicePack::by_text; coverage test §6.1
 
 ## M4 UI
-- [ ] T050 Design tokens (dark glass, accent palette, radius, fonts), frameless shell, sidebar, listening bar §3.1 §3.2
-- [ ] T051 Orb (canvas/WebGL, idle breathe, reacts to mic+TTS level, pauses when hidden) §3.1
-- [ ] T052 Home dashboard tiles + live counters §3.3
-- [ ] T053 Main window: history + control panel toggles + volume + mic button §3.4
+- [x] T050 Design tokens (dark glass, accent palette, radius, fonts), frameless shell, sidebar, listening bar §3.1 §3.2
+- [x] T051 Orb (canvas/WebGL, idle breathe, reacts to mic+TTS level, pauses when hidden) §3.1
+- [x] T052 Home dashboard tiles + live counters §3.3
+- [x] T053 Main window: history + control panel toggles + volume + mic button §3.4
 - [ ] T054 Tray (states, menu), close-to-tray destroys WebView, autostart, always-on-top, Mica/Acrylic §3.2 §3.5
 - [ ] T055 Desktop avatar overlay (transparent click-through, fullscreen-aware) §3.6
 - [ ] T056 HUD skin on activation §3.7

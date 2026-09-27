@@ -45,6 +45,18 @@ pub struct ConfirmRequest {
     pub timeout_sec: u32,
 }
 
+/// Initial state for the main window (control panel, dashboard counter).
+#[derive(Debug, Clone, PartialEq, Serialize, TS)]
+#[ts(export)]
+pub struct UiSnapshot {
+    pub prefix_mode: bool,
+    pub silent_mode: bool,
+    pub mic_enabled: bool,
+    pub voice_volume: u8,
+    #[ts(type = "number")]
+    pub commands: usize,
+}
+
 /// Assistant actions that drive the UI.
 #[derive(Debug, Clone, PartialEq, Serialize, TS)]
 #[serde(tag = "kind", content = "value", rename_all = "snake_case")]

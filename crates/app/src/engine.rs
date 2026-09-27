@@ -156,7 +156,7 @@ fn run(
                     last_level = now;
                     sink.emit(CoreEvent::Level(Level {
                         mic: audio::level(&chunk),
-                        tts: 0.0,
+                        tts: route.speaker.level(),
                     }));
                 }
                 listener.push(&chunk, now)?

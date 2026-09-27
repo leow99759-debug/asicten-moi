@@ -1,68 +1,108 @@
 <script lang="ts">
-  import { t } from "./lib/i18n";
-  import { minimize, close } from "./lib/window";
+  import "./styles/tokens.css";
+  import { onMount } from "svelte";
+  import Sidebar from "./components/Sidebar.svelte";
+  import WindowControls from "./components/WindowControls.svelte";
+  import ListeningBar from "./components/ListeningBar.svelte";
   import ConfirmDialog from "./components/ConfirmDialog.svelte";
+  import MainWindow from "./pages/MainWindow.svelte";
+  import Dashboard from "./pages/Dashboard.svelte";
+  import Placeholder from "./pages/Placeholder.svelte";
+  import { app, connect } from "./lib/app.svelte";
+  import { t } from "./lib/i18n";
+
+  onMount(() => {
+    const p = new URLSearchParams(location.search).get("page");
+    if (p) app.page = p as typeof app.page;
+    connect();
+  });
 </script>
 
-<div class="shell">
-  <header class="titlebar" data-tauri-drag-region>
-    <span class="title" data-tauri-drag-region>{t("app.title")}</span>
-    <div class="controls">
-      <button type="button" aria-label={t("window.minimize")} title={t("window.minimize")} onclick={minimize}>&#x2013;</button>
-      <button type="button" class="close" aria-label={t("window.close")} title={t("window.close")} onclick={close}>&#x2715;</button>
-    </div>
-  </header>
-  <main></main>
+<div class="window">
+  <div class="backdrop" aria-hidden="true"></div>
+  <Sidebar />
+  <div class="content">
+    <header class="top" data-tauri-drag-region>
+      <h1 class="section-title" data-tauri-drag-region>{t(`title.${app.page}`)}</h1>
+      <div class="listen"><ListeningBar /></div>
+      <WindowControls />
+    </header>
+    <main>
+      {#key app.page}
+        <div class="page">
+          {#if app.page === "main"}
+            <MainWindow />
+          {:else if app.page === "dashboard"}
+            <Dashboard />
+          {:else if app.page === "editor"}
+            <Placeholder icon="terminal" milestone="M5" />
+          {:else if app.page === "addons"}
+            <Placeholder icon="puzzle" milestone="M6" />
+          {:else if app.page === "ai"}
+            <Placeholder icon="sparkles" milestone="M13" />
+          {:else if app.page === "settings"}
+            <Placeholder icon="settings" milestone="M4" />
+          {:else}
+            <Placeholder icon="user" milestone="M4" />
+          {/if}
+        </div>
+      {/key}
+    </main>
+  </div>
   <ConfirmDialog />
 </div>
 
 <style>
-  :global(html, body) {
-    margin: 0;
-    height: 100%;
-    background: #15171c;
-    color: #e5e7eb;
-    font-family: "Segoe UI Variable", Inter, "Segoe UI", sans-serif;
-    user-select: none;
-  }
-  :global(#app) {
-    height: 100%;
-  }
-  .shell {
+  .window {
+    position: relative;
     height: 100%;
     display: flex;
-    flex-direction: column;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
     box-sizing: border-box;
   }
-  .titlebar {
-    height: 36px;
+  /* soft accent light behind the glass (the orb's room glow) */
+  .backdrop {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(900px 600px at 85% 55%, rgba(var(--accent-rgb), 0.1), transparent 60%),
+      radial-gradient(700px 500px at 0% 0%, rgba(255, 255, 255, 0.025), transparent 60%);
+  }
+  .content {
+    position: relative;
+    flex: 1;
+    min-width: 0;
     display: flex;
+    flex-direction: column;
+    padding: 0 20px 20px 24px;
+  }
+  .top {
+    height: 64px;
+    flex: none;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
-    justify-content: space-between;
-    padding-left: 14px;
+    gap: 24px;
   }
-  .title {
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    opacity: 0.7;
-  }
-  .controls button {
-    width: 44px;
-    height: 36px;
-    border: 0;
-    background: transparent;
-    color: inherit;
-    cursor: pointer;
-  }
-  .controls button:hover {
-    background: rgba(255, 255, 255, 0.06);
-  }
-  .controls .close:hover {
-    background: #e81123;
+  .listen {
+    justify-self: center;
+    width: min(520px, 100%);
   }
   main {
     flex: 1;
+    min-height: 0;
+    position: relative;
+  }
+  .page {
+    position: absolute;
+    inset: 0;
+    transition: opacity 200ms var(--ease-out), translate 200ms var(--ease-out);
+    @starting-style {
+      opacity: 0;
+      translate: 0 6px;
+    }
   }
 </style>
