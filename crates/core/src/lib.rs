@@ -1,6 +1,7 @@
 //! Jarvis core: audio, wake word, STT, NLU, executor, TTS, config, DB, IPC.
 //! Platform-independent; Windows side effects live in `jarvis-win` behind traits.
 
+pub mod audio;
 pub mod config;
 pub mod db;
 pub mod ipc;
@@ -25,6 +26,8 @@ pub enum Error {
     Json(#[from] serde_json::Error),
     #[error("sqlite: {0}")]
     Sqlite(#[from] rusqlite::Error),
+    #[error("audio: {0}")]
+    Audio(String),
     #[error("logging: {0}")]
     Logging(String),
     #[error("no config directory (APPDATA)")]

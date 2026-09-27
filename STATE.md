@@ -1,5 +1,5 @@
-last: T005 tools/fetch-assets.ps1 (Release assets-v1 → assets/, sha256 in tools/assets.sha256; -Publish rebuilds from upstream); release uploaded; CI step added to tools/ci/ci.yml
-next: T010
+last: T010 core::audio: cpal capture thread (cfg windows, device by name→default), Converter any rate/ch→16k mono i16 (box filter), level() dBFS→0..1, Ring pre-roll buffer
+next: T011
 blocked: T002 needs-user: GitHub App lacks `workflows` permission; workflow ready at tools/ci/ci.yml → move to .github/workflows/ci.yml
 decisions: dev agent runs on Linux (no mic/GUI) → windows-latest CI is the source of truth for build/tests; Windows-only code behind cfg(windows) + traits so Linux `cargo check` works for pure crates
 decisions: .rpw wake models also gitignored (Release assets only)

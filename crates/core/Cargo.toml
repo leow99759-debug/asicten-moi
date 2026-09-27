@@ -17,6 +17,9 @@ tracing-appender.workspace = true
 dirs.workspace = true
 ts-rs.workspace = true
 
+[target.'cfg(windows)'.dependencies]
+cpal.workspace = true
+
 [dev-dependencies]
 tempfile.workspace = true
 

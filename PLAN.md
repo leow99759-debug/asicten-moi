@@ -9,7 +9,7 @@ Rule: take the FIRST `[ ]` in order. M13 is optional and runs only after v1.0.0.
 - [x] T005 `tools/fetch-assets.ps1`: download Vosk small-ru, Priler rustpotter .rpw + voice packs, FitoDomik/Jarvis-Sound, Piper ru voice, sha256; upload to GitHub Release `assets-v1`; CI pulls from that release §6 §13
 
 ## M1 Audio + wake + STT
-- [ ] T010 cpal WASAPI capture 16k mono, ring buffer, device select, level meter §2.1
+- [x] T010 cpal WASAPI capture 16k mono, ring buffer, device select, level meter §2.1
 - [ ] T011 Silero VAD (sherpa-onnx) segmenting §1
 - [ ] T012 Wake word Rustpotter "Джарвис" + sensitivity; fallback Vosk grammar §1 §2.2
 - [ ] T013 Vosk STT lazy: load on wake with audio buffering, keep-warm timer, unload; grammar mode for no-prefix; partials → listening bar §1 §2.1
