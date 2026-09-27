@@ -1,6 +1,6 @@
-last: T011 core::vad Silero via official sherpa-onnx crate (static prebuilt libs, auto-download), min_silence 0.4s; tests use assets/ (skip if not fetched)
-next: T012
-blocked: T002 needs-user: GitHub App lacks `workflows` permission; workflow ready at tools/ci/ci.yml → move to .github/workflows/ci.yml
+last: T012 core::wake Rustpotter (Priler fork, candle locked 0.9.1) + jarvis-default.rpw, Priler detector cfg, sensitivity 0–100→thr 0.75..0.25; fixtures tests/fixtures/wake/*.wav (Piper denis)
+next: T013 (also add Vosk grammar wake fallback there)
+blocked: T002 needs-user (workflow file edits go through user) | wake sensitivity default 50 needs real-voice tuning (synthetic «Джарвис, включи музыку» only passes at 70)
 decisions: dev agent runs on Linux (no mic/GUI) → windows-latest CI is the source of truth for build/tests; Windows-only code behind cfg(windows) + traits so Linux `cargo check` works for pure crates
 decisions: .rpw wake models also gitignored (Release assets only)
 decisions: run tauri CLI from repo root (tauri dir = crates/app, app dir = frontend); CI builds frontend before cargo (generate_context embeds dist)

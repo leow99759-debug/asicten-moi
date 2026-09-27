@@ -12,6 +12,13 @@ pub fn asset(rel: &str) -> Option<PathBuf> {
     p.exists().then_some(p)
 }
 
+/// `tests/fixtures/<rel>` (committed, small 16 kHz WAVs).
+pub fn fixture(rel: &str) -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../tests/fixtures")
+        .join(rel)
+}
+
 pub fn read_wav_16k(path: &Path) -> Vec<i16> {
     let mut reader = hound::WavReader::open(path).expect("open wav");
     let spec = reader.spec();

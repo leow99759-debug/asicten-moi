@@ -28,6 +28,8 @@ ts-rs = { version = "12", features = ["no-serde-warnings"] }
 cpal = "0.18"
 sherpa-onnx = "1.13"
 hound = "3.5"
+# Priler fork: slice API + candle 0.9 (crates.io 3.0.2 no longer builds). Lock candle-* at 0.9.1.
+rustpotter = { git = "https://github.com/Priler/rustpotter", rev = "f0d5c4d6b63aa1ebb6e0e81089993e4ae7aef3d8", default-features = false }
 tauri = { version = "2", features = [] }
 tauri-build = { version = "2", features = [] }
 

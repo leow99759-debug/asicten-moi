@@ -10,6 +10,7 @@ pub mod paths;
 #[cfg(test)]
 mod test_util;
 pub mod vad;
+pub mod wake;
 
 pub use config::Config;
 pub use db::Db;

@@ -17,6 +17,7 @@ tracing-appender.workspace = true
 dirs.workspace = true
 ts-rs.workspace = true
 sherpa-onnx.workspace = true
+rustpotter.workspace = true
 
 [target.'cfg(windows)'.dependencies]
 cpal.workspace = true
