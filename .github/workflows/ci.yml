@@ -57,13 +57,28 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
-      # rust-cache empties target/sherpa-onnx-prebuilt (keeps the dir) but keeps the
-      # build-script result, so linking fails. If the .lib is gone, rerun the build script.
+      # sherpa-onnx-sys extracts its prebuilt libs into target/, which rust-cache prunes
+      # (the build-script result survives, so linking fails). Give it a fixed folder instead.
+      - name: Cache sherpa-onnx libs
+        uses: actions/cache@v4
+        with:
+          path: .sherpa
+          key: sherpa-onnx-${{ hashFiles('Cargo.lock') }}
+
       - name: sherpa-onnx prebuilt libs
         shell: pwsh
         run: |
-          $lib = Get-ChildItem target/sherpa-onnx-prebuilt -Recurse -Filter sherpa-onnx-c-api.lib -ErrorAction SilentlyContinue
-          if (-not $lib) { cargo clean -p sherpa-onnx-sys }
+          $ProgressPreference = 'SilentlyContinue'
+          $v = ((Select-String -Path Cargo.lock -Pattern '^name = "sherpa-onnx-sys"$' -Context 0,1).Context.PostContext[0] -replace '.*"(.+)"', '$1')
+          $name = "sherpa-onnx-v$v-win-x64-static-MT-Release-lib"
+          if (-not (Test-Path ".sherpa/$name/lib/sherpa-onnx-c-api.lib")) {
+            New-Item -ItemType Directory -Force .sherpa | Out-Null
+            Invoke-WebRequest "https://github.com/k2-fsa/sherpa-onnx/releases/download/v$v/$name.tar.bz2" -OutFile .sherpa/libs.tar.bz2
+            tar -xjf .sherpa/libs.tar.bz2 -C .sherpa
+            Remove-Item .sherpa/libs.tar.bz2
+          }
+          if (-not (Test-Path ".sherpa/$name/lib/sherpa-onnx-c-api.lib")) { throw "sherpa-onnx libs missing" }
+          "SHERPA_ONNX_LIB_DIR=$PWD\.sherpa\$name\lib" >> $env:GITHUB_ENV
 
       - name: cargo fmt
         run: cargo fmt --all -- --check
