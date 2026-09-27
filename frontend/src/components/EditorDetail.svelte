@@ -1,20 +1,13 @@
 <script lang="ts">
   // Right pane of the editor: what the selected tree node is. Command card editing grows
-  // here in T061/T062; T060 covers overview, enable switch and phrase text.
+  // in CommandCard (T061/T062); here: overview, folder list and phrase text.
   import Icon from "./Icon.svelte";
-  import Toggle from "./Toggle.svelte";
-  import type { Action } from "../lib/bindings/Action";
+  import CommandCard from "./CommandCard.svelte";
   import { allFolders, ckey, fkey, startsWith } from "../lib/tree";
-  import { ed, issues, rename, resolve, setEnabled } from "../lib/editor.svelte";
+  import { ed, rename, resolve } from "../lib/editor.svelte";
   import { t } from "../lib/i18n";
 
   const sel = $derived(resolve(ed.selected));
-
-  const param = (a: Action) =>
-    Object.entries(a)
-      .filter(([k, v]) => k !== "type" && v !== null && v !== "" && v !== false)
-      .map(([, v]) => (v === true ? "" : String(v)))
-      .join("  ");
 
   const stats = $derived.by(() => {
     const own = ed.cmds.filter((c) => !ed.meta[c.id]?.builtin).length;
@@ -90,58 +83,7 @@
         <p class="t-caption">{t("editor.folder_empty")}</p>
       {/if}
     {:else if sel.kind === "command"}
-      {@const c = sel.cmd}
-      {@const meta = ed.meta[c.id]}
-      {@const bad = issues(c)}
-      <header>
-        <span class="badge-ic"><Icon name="terminal" size={20} /></span>
-        <div class="grow">
-          <h2 class="t-title">{c.name}</h2>
-          <p class="t-caption">{[t("editor.root"), ...c.folder].join(" › ")}</p>
-        </div>
-      </header>
-      <div class="badges">
-        {#if meta?.builtin}<span class="chip">{t("editor.badge.builtin")}</span>{/if}
-        {#if meta?.modified}<span class="chip accent">{t("editor.badge.modified")}</span>{/if}
-        {#if !c.enabled}<span class="chip">{t("editor.badge.off")}</span>{/if}
-        {#each bad as b (b)}<span class="chip warn"><Icon name="alert" size={12} /> {b}</span>{/each}
-      </div>
-      <div class="card list">
-        <div class="kb row">
-          <div>
-            <div class="t-subtitle">{t("editor.enabled")}</div>
-            <div class="t-caption">{t("editor.enabled_sub")}</div>
-          </div>
-          <Toggle checked={c.enabled} label={t("editor.enabled")} onchange={(v) => setEnabled(c.id, v)} />
-        </div>
-      </div>
-      <h3 class="t-group">{t("editor.sec.phrases")}</h3>
-      <div class="chips">
-        {#each c.phrases as p, i (i)}<span class="chip big">{p}</span>{:else}<span class="t-caption">{t("editor.none")}</span>{/each}
-      </div>
-      <h3 class="t-group">{t("editor.sec.optional")}</h3>
-      <div class="chips">
-        {#each c.optional as p, i (i)}<span class="chip">{p}</span>{:else}<span class="t-caption">{t("editor.none")}</span>{/each}
-      </div>
-      <h3 class="t-group">{t("editor.sec.actions")}</h3>
-      {#if c.actions.length}
-        <div class="card list">
-          {#each c.actions as a, i (i)}
-            <div class="act">
-              <span class="n num">{i + 1}</span>
-              <span class="type">{a.type}</span>
-              <span class="grow p">{param(a)}</span>
-            </div>
-          {/each}
-        </div>
-      {:else}
-        <p class="t-caption">{t("editor.none")}</p>
-      {/if}
-      <h3 class="t-group">{t("editor.sec.reply")}</h3>
-      <div class="chips">
-        {#each c.reply.clips as clip (clip)}<span class="chip"><Icon name="wave" size={12} /> {clip}</span>{/each}
-        {#if c.reply.text}<span class="quote">«{c.reply.text}»</span>{/if}
-      </div>
+      <CommandCard cmd={sel.cmd} />
     {:else}
       {@const c = sel.cmd}
       {@const i = sel.index}
@@ -238,9 +180,6 @@
     min-height: 40px;
     padding: 0 14px;
   }
-  .kb.row {
-    min-height: 56px;
-  }
   .kb.hint {
     justify-content: flex-start;
     gap: 8px;
@@ -299,77 +238,6 @@
   }
   .item.off .grow {
     opacity: 0.45;
-  }
-  .badges,
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 6px;
-  }
-  .badges {
-    margin: -4px 0 16px;
-  }
-  .badges:empty {
-    display: none;
-  }
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    height: 22px;
-    padding: 0 8px;
-    border-radius: var(--r-xs);
-    background: var(--fill);
-    border: 1px solid var(--stroke);
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-2);
-  }
-  .chip.big {
-    height: 28px;
-    padding: 0 10px;
-    font-size: 13px;
-    color: var(--text);
-  }
-  .chip.accent {
-    background: var(--accent-soft);
-    border-color: transparent;
-    color: var(--accent-text);
-  }
-  .chip.warn {
-    background: rgba(245, 184, 61, 0.12);
-    border-color: transparent;
-    color: var(--warn);
-  }
-  .act {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    height: 40px;
-    padding: 0 14px;
-    font-size: 13px;
-  }
-  .act .n {
-    width: 16px;
-    color: var(--text-3);
-    font-size: 12px;
-  }
-  .act .type {
-    width: 150px;
-    flex: none;
-    font-weight: 600;
-    color: var(--accent-text);
-  }
-  .act .p {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    color: var(--text-2);
-  }
-  .quote {
-    color: var(--text-2);
-    font-style: italic;
   }
   .field {
     display: flex;

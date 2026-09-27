@@ -39,6 +39,15 @@
   $effect(() => {
     if (armed && armed !== ed.selected) armed = null;
   });
+  $effect(() => {
+    if (sel.kind === "command" || sel.kind === "phrase") E.openTab(sel.cmd.id);
+  });
+  const activeTab = $derived(sel.kind === "command" || sel.kind === "phrase" ? sel.cmd.id : null);
+  let tabsEl: HTMLDivElement;
+  $effect(() => {
+    void activeTab;
+    requestAnimationFrame(() => tabsEl?.querySelector(".tab.on")?.scrollIntoView({ inline: "nearest", block: "nearest" }));
+  });
 
   function onkey(e: KeyboardEvent) {
     const mod = e.ctrlKey || e.metaKey;
@@ -138,7 +147,24 @@
       <EditorTree {rows} onarm={arm} />
     </div>
     <div class="pane detail-pane">
-      <EditorDetail />
+      <div class="tabs" role="tablist" bind:this={tabsEl}>
+        <button type="button" role="tab" class="tab" aria-selected={!activeTab} class:on={!activeTab} onclick={() => (ed.selected = sel.path.length ? fkey(sel.path) : "r")}>
+          <Icon name="list" size={14} />
+          <span>{t("editor.tab_all")}</span>
+        </button>
+        {#each ed.tabs as id (id)}
+          {@const c = E.cmdById(id)}
+          {#if c}
+            <div class="tab" role="tab" tabindex="0" aria-selected={activeTab === id} class:on={activeTab === id}
+              onclick={() => (ed.selected = ckey(id))} onkeydown={(e) => e.key === "Enter" && (ed.selected = ckey(id))}>
+              <Icon name="terminal" size={14} />
+              <span>{c.name}</span>
+              <button type="button" class="tx" aria-label={t("editor.tab_close")} onclick={(e) => (e.stopPropagation(), E.closeTab(id))}><Icon name="x" size={11} stroke={2} /></button>
+            </div>
+          {/if}
+        {/each}
+      </div>
+      <div class="detail-body"><EditorDetail /></div>
     </div>
     <nav class="crumbs" aria-label={t("editor.crumbs")}>
       {#each crumbs as c, i (c.key + i)}
@@ -259,7 +285,7 @@
     flex: 1;
     min-height: 0;
     display: grid;
-    grid-template-columns: minmax(260px, 320px) 1fr;
+    grid-template-columns: clamp(248px, 26vw, 320px) 1fr;
     grid-template-rows: 1fr auto;
     overflow: hidden;
   }
@@ -271,8 +297,88 @@
     border-right: 1px solid var(--divider);
     background: rgba(0, 0, 0, 0.08);
   }
-  .detail-pane {
-    padding: 20px 24px 24px;
+  .detail-body {
+    padding: 16px 24px 24px;
+    container-type: inline-size;
+  }
+  .tabs {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    gap: 2px;
+    height: 40px;
+    align-items: flex-end;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--divider);
+    background: var(--bg-card);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 1 auto;
+    min-width: 72px;
+    max-width: 190px;
+    height: 32px;
+    padding: 0 8px 0 10px;
+    border: 0;
+    border-radius: var(--r-sm) var(--r-sm) 0 0;
+    background: none;
+    color: var(--text-2);
+    font-size: 12.5px;
+    font-weight: 550;
+    cursor: pointer;
+    transition:
+      background-color var(--t-fast) ease,
+      color var(--t-fast) ease;
+  }
+  .tab span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .tab:hover {
+    background: var(--fill);
+    color: var(--text);
+  }
+  .tab.on {
+    color: var(--text);
+    background: var(--fill);
+  }
+  .tab.on::after {
+    content: "";
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: 0;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent);
+  }
+  .tx {
+    width: 18px;
+    height: 18px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: var(--r-xs);
+    background: none;
+    color: var(--text-3);
+    opacity: 0;
+    cursor: pointer;
+  }
+  .tab:hover .tx,
+  .tab.on .tx {
+    opacity: 1;
+  }
+  .tx:hover {
+    background: var(--fill-hover);
+    color: var(--text);
   }
   .crumbs {
     grid-column: 1 / -1;

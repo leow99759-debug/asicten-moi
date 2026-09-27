@@ -22,3 +22,11 @@ export async function toggleMaximize(): Promise<boolean> {
   await w.toggleMaximize();
   return w.isMaximized();
 }
+
+/** Native «Open file» dialog (action 📁 buttons); null when cancelled or outside Tauri. */
+export async function pickFile(filters?: { name: string; extensions: string[] }[]): Promise<string | null> {
+  if (!inTauri()) return null;
+  const { open } = await import("@tauri-apps/plugin-dialog");
+  const r = await open({ multiple: false, directory: false, filters });
+  return typeof r === "string" ? r : null;
+}

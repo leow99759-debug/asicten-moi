@@ -37,6 +37,7 @@ tauri = { version = "2", features = ["tray-icon", "image-png"] }
 window-vibrancy = "0.8"
 tauri-build = { version = "2", features = [] }
 tauri-plugin-global-shortcut = "2"
+tauri-plugin-dialog = "2"
 
 [workspace.lints.rust]
 unsafe_op_in_unsafe_fn = "deny"

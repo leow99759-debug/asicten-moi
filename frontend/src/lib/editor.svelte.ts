@@ -15,6 +15,8 @@ export const ed = $state({
   folders: [] as string[][],
   open: {} as Record<string, boolean>,
   selected: ROOT,
+  /** Open command tabs (SPEC §5.2), ids. */
+  tabs: [] as string[],
   editing: null as string | null,
   query: "",
   dirty: false,
@@ -58,6 +60,7 @@ export function issues(c: Command): string[] {
 
 function apply(lib: Library) {
   ed.cmds = lib.entries.map((e) => e.command);
+  ed.tabs = ed.tabs.filter((id) => ed.cmds.some((c) => c.id === id));
   ed.meta = Object.fromEntries(lib.entries.map((e) => [e.command.id, { builtin: e.builtin, modified: e.modified }]));
   ed.folders = lib.folders;
   ed.dirty = false;
@@ -94,7 +97,7 @@ export async function save() {
   }
 }
 
-const touch = () => (ed.dirty = true);
+export const touch = () => (ed.dirty = true);
 const expand = (...keys: string[]) => keys.forEach((k) => (ed.open[k] = true));
 const expandTo = (path: string[]) => expand(ROOT, ...path.map((_, i) => fkey(path.slice(0, i + 1))));
 
@@ -164,9 +167,11 @@ export function remove(key = ed.selected) {
     select(ckey(s.cmd.id));
   } else if (s.kind === "command") {
     ed.cmds = ed.cmds.filter((c) => c.id !== s.cmd.id);
+    ed.tabs = ed.tabs.filter((id) => id !== s.cmd.id);
     select(fkey(s.path));
   } else if (s.kind === "folder") {
     ed.cmds = ed.cmds.filter((c) => !startsWith(c.folder, s.path));
+    ed.tabs = ed.tabs.filter((id) => ed.cmds.some((c) => c.id === id));
     ed.folders = ed.folders.filter((f) => !startsWith(f, s.path));
     select(fkey(s.path.slice(0, -1)));
   }
@@ -256,4 +261,17 @@ export function setEnabled(id: string, on: boolean) {
     c.enabled = on;
     touch();
   }
+}
+
+/** Keep a tab for the command being looked at (max 6, oldest inactive one drops). */
+export function openTab(id: string) {
+  if (ed.tabs.includes(id)) return;
+  ed.tabs.push(id);
+  if (ed.tabs.length > 6) ed.tabs.splice(0, 1);
+}
+
+export function closeTab(id: string) {
+  ed.tabs = ed.tabs.filter((t) => t !== id);
+  const s = resolve(ed.selected);
+  if ((s.kind === "command" || s.kind === "phrase") && s.cmd.id === id) ed.selected = ed.tabs.length ? ckey(ed.tabs.at(-1)!) : ROOT;
 }

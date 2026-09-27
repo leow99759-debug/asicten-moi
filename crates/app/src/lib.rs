@@ -224,6 +224,7 @@ pub fn run() -> anyhow::Result<()> {
 
     tauri::Builder::default()
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
+        .plugin(tauri_plugin_dialog::init())
         .manage(AppState {
             paths,
             config: Arc::new(Mutex::new(config)),

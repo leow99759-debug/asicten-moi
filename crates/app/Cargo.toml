@@ -20,6 +20,7 @@ jarvis-core.workspace = true
 jarvis-win.workspace = true
 tauri.workspace = true
 tauri-plugin-global-shortcut.workspace = true
+tauri-plugin-dialog.workspace = true
 window-vibrancy.workspace = true
 anyhow.workspace = true
 tracing.workspace = true
