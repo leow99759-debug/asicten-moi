@@ -1,8 +1,9 @@
 //! Command editor IPC (SPEC §5.1, §5.3): read the merged library, save the user pack,
-//! live match preview, «▶ Тест» and reply preview for an unsaved command.
+//! live match preview, «▶ Тест» and reply preview for an unsaved command, action recorder.
 
 use jarvis_core::brain::{self, Line, Probe};
-use jarvis_core::commands::{self, Command, Library, Pack, Reply};
+use jarvis_core::commands::{self, Action, Command, Library, Pack, Reply};
+use jarvis_win::recorder;
 
 use crate::brain_worker::Work;
 use crate::AppState;
@@ -69,4 +70,26 @@ pub fn say_reply(state: tauri::State<'_, AppState>, reply: Reply) {
             });
         });
     }
+}
+
+/// «● Запись действий» (§5.4): global hooks until [`recorder_stop`].
+#[tauri::command]
+pub fn recorder_start(state: tauri::State<'_, AppState>) -> Result<(), String> {
+    let mut slot = state.recording.lock().unwrap_or_else(|e| e.into_inner());
+    if let Some(old) = slot.take() {
+        old.stop();
+    }
+    *slot = Some(recorder::start()?);
+    Ok(())
+}
+
+/// «■ Стоп»: the recorded steps, appended to the card by the UI.
+#[tauri::command]
+pub fn recorder_stop(state: tauri::State<'_, AppState>) -> Vec<Action> {
+    let rec = state
+        .recording
+        .lock()
+        .unwrap_or_else(|e| e.into_inner())
+        .take();
+    rec.map(recorder::Recording::stop).unwrap_or_default()
 }

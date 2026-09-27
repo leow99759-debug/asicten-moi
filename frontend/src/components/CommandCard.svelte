@@ -12,6 +12,7 @@
   import type { Command } from "../lib/bindings/Command";
   import type { CommandOutcome } from "../lib/bindings/CommandOutcome";
   import { DEFAULTS, GROUPS, QUICK, type ActionType } from "../lib/actions";
+  import { recorderStart, recorderStop } from "../lib/commands";
   import { ed, issues, runTest, setEnabled, touch } from "../lib/editor.svelte";
   import { t } from "../lib/i18n";
   import { SLOTS } from "../lib/phrases";
@@ -53,9 +54,53 @@
       result = { ok: false, text: String(e) };
     } finally {
       testing = false;
-      hide = setTimeout(() => (result = null), 6000);
+      if (result) say(result.ok, result.text);
     }
   }
+  // «● Запись действий 00:02 ■ Стоп» (§5.4): hooks record clicks/keys outside Jarvis
+  let rec = $state<{ since: number; now: number } | null>(null);
+  let tick: ReturnType<typeof setInterval> | undefined;
+  const clock = $derived.by(() => {
+    const s = rec ? Math.floor((rec.now - rec.since) / 1000) : 0;
+    return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+  });
+  /** Browser preview has no hooks: a sample recording shows the result. */
+  const DEMO_REC: Action[] = [
+    { type: "Mouse.ClickLeft", x: 642, y: 518 },
+    { type: "Lux.PauseMS", ms: 850 },
+    { type: "Keys.Type", text: "обзор недели" },
+    { type: "Keys.Press", keys: "Enter" },
+  ];
+
+  function say(ok: boolean, text: string) {
+    clearTimeout(hide);
+    result = { ok, text };
+    hide = setTimeout(() => (result = null), 6000);
+  }
+  async function record() {
+    try {
+      await recorderStart();
+    } catch (e) {
+      return say(false, String(e));
+    }
+    result = null;
+    rec = { since: Date.now(), now: Date.now() };
+    tick = setInterval(() => rec && (rec.now = Date.now()), 250);
+  }
+  async function stopRecord() {
+    clearInterval(tick);
+    rec = null;
+    const steps = inTauri() ? ((await recorderStop()) ?? []) : DEMO_REC;
+    if (!steps.length) return say(false, t("card.rec_empty"));
+    edit(() => cmd.actions.push(...structuredClone(steps)));
+    say(true, t("card.rec_added").replace("{n}", String(steps.length)));
+  }
+  $effect(() => () => {
+    // closing the card mid-recording must not leave global hooks running
+    if (rec) void recorderStop();
+    clearInterval(tick);
+  });
+
   // a stale result must not stick to the next opened command
   $effect(() => {
     void cmd.id;
@@ -134,7 +179,15 @@
       </div>
     {/if}
   </div>
-  <button type="button" class="btn" disabled title={t("card.soon_record")}><Icon name="record" size={16} /> {t("card.record")}</button>
+  {#if rec}
+    <div class="rec" role="status">
+      <span class="dot"></span>
+      {t("card.record")} <span class="clock">{clock}</span>
+      <button type="button" class="btn stop" onclick={stopRecord}><span class="sq"></span> {t("card.stop")}</button>
+    </div>
+  {:else}
+    <button type="button" class="btn" title={t("card.rec_hint")} onclick={record}><Icon name="record" size={16} /> {t("card.record")}</button>
+  {/if}
   <button type="button" class="btn" disabled title={t("card.soon_ai")}><Icon name="sparkles" size={16} /> {t("card.ai")}</button>
 </div>
 
@@ -414,6 +467,51 @@
   }
   h3.t-group {
     margin-top: 20px;
+  }
+  .rec {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 32px;
+    padding: 0 4px 0 12px;
+    border-radius: var(--r-sm);
+    background: rgba(244, 63, 94, 0.12);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 550;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--err);
+    animation: pulse 1.2s var(--ease-in-out) infinite;
+  }
+  @keyframes pulse {
+    50% {
+      opacity: 0.35;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dot {
+      animation: none;
+    }
+  }
+  .clock {
+    min-width: 40px;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-2);
+  }
+  .btn.stop {
+    height: 26px;
+    padding: 0 10px;
+    gap: 6px;
+  }
+  .sq {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    background: currentColor;
   }
   .test :global(svg) {
     color: currentColor;

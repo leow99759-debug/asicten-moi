@@ -1,4 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
+import type { Action } from "./bindings/Action";
 import type { Config } from "./bindings/Config";
 import type { Command } from "./bindings/Command";
 import type { HistoryEntry } from "./bindings/HistoryEntry";
@@ -34,3 +35,5 @@ export const editorProbe = (commands: Command[], target: Command, texts: string[
   call<Probe[]>("editor_probe", { commands, target, texts });
 export const editorTest = (command: Command, sample: string) => call("editor_test", { command, sample });
 export const sayReply = (reply: Reply) => call("say_reply", { reply });
+export const recorderStart = () => call("recorder_start");
+export const recorderStop = () => call<Action[]>("recorder_stop");

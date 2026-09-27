@@ -49,6 +49,58 @@ pub fn vk(name: &str) -> Option<u16> {
     Some(code)
 }
 
+/// Key name for a VK code, as packs write it (`Ctrl`, `S`, `F5`, `Enter`); inverse of [`vk`].
+pub fn name(code: u16) -> Option<String> {
+    const NAMED: [&str; 28] = [
+        "ctrl",
+        "shift",
+        "alt",
+        "win",
+        "enter",
+        "esc",
+        "tab",
+        "space",
+        "backspace",
+        "delete",
+        "insert",
+        "home",
+        "end",
+        "pageup",
+        "pagedown",
+        "left",
+        "up",
+        "right",
+        "down",
+        "printscreen",
+        "capslock",
+        "volume_mute",
+        "volume_down",
+        "volume_up",
+        "media_next",
+        "media_prev",
+        "media_stop",
+        "media_play_pause",
+    ];
+    let code = match code {
+        0xA0 | 0xA1 => 0x10,
+        0xA2 | 0xA3 => 0x11,
+        0xA4 | 0xA5 => 0x12,
+        0x5C => 0x5B,
+        c => c,
+    };
+    let n = match code {
+        0x41..=0x5A | 0x30..=0x39 => (code as u8 as char).to_string(),
+        0x70..=0x87 => format!("F{}", code - 0x6F),
+        _ => {
+            let n = NAMED.iter().find(|n| vk(n) == Some(code))?;
+            let mut c = n.chars();
+            c.next()
+                .map(|f| f.to_ascii_uppercase().to_string() + c.as_str())?
+        }
+    };
+    Some(n)
+}
+
 /// `"ctrl+shift+s"` → VK codes in press order.
 pub fn parse_combo(combo: &str) -> Result<Vec<u16>, String> {
     combo
@@ -214,5 +266,15 @@ mod tests {
         assert!(parse_combo("ctrl+щ").is_err());
         assert!(parse_combo("f25").is_err());
         assert!(is_extended(0x25) && !is_extended(0x41));
+        for (code, n) in [
+            (0xA2, "Ctrl"),
+            (0x53, "S"),
+            (0x74, "F5"),
+            (0x0D, "Enter"),
+            (0x5C, "Win"),
+        ] {
+            assert_eq!(name(code).as_deref(), Some(n));
+        }
+        assert_eq!(name(0xBA), None);
     }
 }

@@ -38,6 +38,8 @@ pub struct AppState {
     pub overlay: std::sync::OnceLock<overlay::Overlay>,
     /// Built-in packs folder, for the command editor.
     pub packs: std::sync::OnceLock<Option<std::path::PathBuf>>,
+    /// Running «Запись действий» (§5.4).
+    pub recording: Mutex<Option<jarvis_win::recorder::Recording>>,
 }
 
 impl AppState {
@@ -237,6 +239,7 @@ pub fn run() -> anyhow::Result<()> {
             speaker: Default::default(),
             overlay: Default::default(),
             packs: Default::default(),
+            recording: Default::default(),
         })
         .invoke_handler(tauri::generate_handler![
             set_mode,
@@ -257,7 +260,9 @@ pub fn run() -> anyhow::Result<()> {
             editor::editor_save,
             editor::editor_probe,
             editor::editor_test,
-            editor::say_reply
+            editor::say_reply,
+            editor::recorder_start,
+            editor::recorder_stop
         ])
         .setup(move |app| {
             let handle = app.handle().clone();
