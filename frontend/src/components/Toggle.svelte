@@ -2,8 +2,9 @@
   let {
     checked = false,
     label,
+    disabled = false,
     onchange,
-  }: { checked?: boolean; label: string; onchange?: (v: boolean) => void } = $props();
+  }: { checked?: boolean; label: string; disabled?: boolean; onchange?: (v: boolean) => void } = $props();
 </script>
 
 <button
@@ -11,6 +12,7 @@
   role="switch"
   aria-checked={checked}
   aria-label={label}
+  {disabled}
   class="toggle"
   class:on={checked}
   onclick={() => onchange?.(!checked)}>
@@ -29,6 +31,10 @@
     cursor: pointer;
     flex: none;
     transition: background-color var(--t-fast) ease, border-color var(--t-fast) ease;
+  }
+  .toggle:disabled {
+    opacity: 0.45;
+    cursor: default;
   }
   .toggle.on {
     background: var(--accent);

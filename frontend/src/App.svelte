@@ -8,12 +8,16 @@
   import MainWindow from "./pages/MainWindow.svelte";
   import Dashboard from "./pages/Dashboard.svelte";
   import Placeholder from "./pages/Placeholder.svelte";
+  import Settings from "./pages/Settings.svelte";
   import { app, connect } from "./lib/app.svelte";
   import { windowMaterial } from "./lib/commands";
   import { t } from "./lib/i18n";
 
+  let settingsTab = $state("general");
   onMount(() => {
-    const p = new URLSearchParams(location.search).get("page");
+    const q = new URLSearchParams(location.search);
+    settingsTab = q.get("tab") ?? "general";
+    const p = q.get("page");
     if (p) app.page = p as typeof app.page;
     connect();
     // Windows 11 Mica behind the webview → let it show through (§3.2)
@@ -46,9 +50,9 @@
           {:else if app.page === "ai"}
             <Placeholder icon="sparkles" milestone="M13" />
           {:else if app.page === "settings"}
-            <Placeholder icon="settings" milestone="M4" />
+            <Settings bind:tab={settingsTab} />
           {:else}
-            <Placeholder icon="user" milestone="M4" />
+            <Settings tab="about" />
           {/if}
         </div>
       {/key}

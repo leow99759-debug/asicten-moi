@@ -1,4 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
+import type { Config } from "./bindings/Config";
 import type { HistoryEntry } from "./bindings/HistoryEntry";
 import type { ModeCommand } from "./bindings/ModeCommand";
 import type { UiSnapshot } from "./bindings/UiSnapshot";
@@ -16,3 +17,7 @@ export const history = (limit = 500) => call<HistoryEntry[]>("history", { limit 
 export const uiSnapshot = () => call<UiSnapshot>("ui_snapshot");
 export const setVoiceVolume = (volume: number) => call("set_voice_volume", { volume });
 export const windowMaterial = () => call<boolean>("window_material");
+export const getConfig = () => call<Config>("get_config");
+export const setConfig = (config: Config) => call("set_config", { config });
+export const micDevices = () => call<string[]>("mic_devices");
+export const previewVoice = () => call("preview_voice");

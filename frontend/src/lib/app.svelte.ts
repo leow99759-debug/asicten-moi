@@ -3,8 +3,9 @@
 import type { AssistantState } from "./bindings/AssistantState";
 import type { HistoryEntry } from "./bindings/HistoryEntry";
 import { on } from "./ipc";
-import { history as loadHistory, setMode, setVoiceVolume, uiSnapshot } from "./commands";
-import { inTauri, setOnTop } from "./window";
+import { history as loadHistory, setMode, uiSnapshot } from "./commands";
+import { inTauri } from "./window";
+import { applyUi, cfg, loadConfig, saved } from "./settings.svelte";
 
 export type Page = "dashboard" | "main" | "editor" | "addons" | "ai" | "settings" | "profile";
 
@@ -19,9 +20,6 @@ export const app = $state({
   lastSay: "",
   prefixMode: true,
   silentMode: false,
-  avatar: true,
-  onTop: false,
-  volume: 80,
   commandCount: 0,
 });
 
@@ -37,15 +35,13 @@ export const SWATCHES: Record<string, string> = {
   белый: "#f1f5f9",
 };
 
+/** «Джарвис, сделай тему фиолетовой» (UiCommand set_theme): Russian name or #hex. */
 export function setAccent(color: string): void {
   const key = color.toLowerCase().replace("ё", "е").replace(/(ая|ое|ую|ой)$/, "ый");
   const hex = SWATCHES[key] ?? (/^#[0-9a-f]{6}$/i.test(color) ? color : null);
   if (!hex) return;
-  const n = parseInt(hex.slice(1), 16);
-  const root = document.documentElement.style;
-  root.setProperty("--accent", hex);
-  root.setProperty("--accent-rgb", `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`);
-  root.setProperty("--on-accent", key === "белый" ? "#111" : "#fff");
+  cfg.value.ui.accent = hex;
+  saved();
 }
 
 export function togglePrefix(on: boolean): void {
@@ -58,26 +54,16 @@ export function toggleSilent(on: boolean): void {
   setMode(on ? "silent_on" : "silent_off");
 }
 
-export function toggleOnTop(on: boolean): void {
-  app.onTop = on;
-  setOnTop(on);
-}
-
-let volTimer: ReturnType<typeof setTimeout> | undefined;
-export function changeVolume(v: number): void {
-  app.volume = v;
-  clearTimeout(volTimer); // save once the thumb rests
-  volTimer = setTimeout(() => setVoiceVolume(v), 250);
-}
-
 export async function connect(): Promise<void> {
-  if (!inTauri()) return demo();
-  const [snap, hist] = await Promise.all([uiSnapshot(), loadHistory(500)]);
+  if (!inTauri()) {
+    applyUi();
+    return demo();
+  }
+  const [snap, hist] = await Promise.all([uiSnapshot(), loadHistory(500), loadConfig()]);
   app.history = hist ?? [];
   if (snap) {
     app.prefixMode = snap.prefix_mode;
     app.silentMode = snap.silent_mode;
-    app.volume = snap.voice_volume;
     app.commandCount = snap.commands;
     if (!snap.mic_enabled) app.state = "mic_off";
   }

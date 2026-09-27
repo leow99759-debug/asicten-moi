@@ -5,7 +5,8 @@
   import Toggle from "../components/Toggle.svelte";
   import Slider from "../components/Slider.svelte";
   import Icon from "../components/Icon.svelte";
-  import { app, changeVolume, toggleOnTop, togglePrefix, toggleSilent } from "../lib/app.svelte";
+  import { app, togglePrefix, toggleSilent } from "../lib/app.svelte";
+  import { cfg, saved } from "../lib/settings.svelte";
   import { t } from "../lib/i18n";
 
   const level = $derived(Math.max(app.micLevel, app.ttsLevel));
@@ -37,15 +38,15 @@
         </div>
         <div class="row">
           <span>{t("panel.avatar")}</span>
-          <Toggle label={t("panel.avatar")} checked={app.avatar} onchange={(v) => (app.avatar = v)} />
+          <Toggle label={t("panel.avatar")} checked={cfg.value.ui.avatar} onchange={(v) => { cfg.value.ui.avatar = v; saved(); }} />
         </div>
         <div class="row">
           <span>{t("panel.onTop")}</span>
-          <Toggle label={t("panel.onTop")} checked={app.onTop} onchange={toggleOnTop} />
+          <Toggle label={t("panel.onTop")} checked={cfg.value.ui.on_top} onchange={(v) => { cfg.value.ui.on_top = v; saved(); }} />
         </div>
         <div class="row vol">
           <span><Icon name="volume" size={16} /> {t("panel.volume")}</span>
-          <Slider label={t("panel.volume")} value={app.volume} oninput={changeVolume} />
+          <Slider label={t("panel.volume")} value={cfg.value.voice_volume} oninput={(v) => { cfg.value.voice_volume = v; saved(); }} />
         </div>
       </div>
     </div>

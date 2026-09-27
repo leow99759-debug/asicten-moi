@@ -29,6 +29,8 @@ pub enum Msg {
     Mode(ModeCommand),
     /// TTS started/stopped (from the voice output, M3).
     Speaking(bool),
+    /// Settings saved: re-read wake sensitivity, mic device, prefix/memory options.
+    Reconfigure,
 }
 
 /// Handle to the engine thread.
@@ -175,6 +177,12 @@ fn run(
                     },
                     &mut state,
                 );
+                vec![]
+            }
+            Msg::Reconfigure => {
+                let cfg = config.lock().unwrap_or_else(|e| e.into_inner()).clone();
+                listener.wake_mut().set_sensitivity(cfg.wake_sensitivity);
+                apply_to_runtime(&cfg, &mut listener, &mut mic);
                 vec![]
             }
             Msg::Mode(cmd) => {

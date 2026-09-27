@@ -4,11 +4,13 @@
 use std::path::Path;
 
 use serde::{Deserialize, Serialize};
+use ts_rs::TS;
 
 use crate::Result;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
 #[serde(default)]
+#[ts(export)]
 pub struct Config {
     /// Commands only after "Джарвис" (§2.2).
     pub prefix_mode: bool,
@@ -41,12 +43,15 @@ pub struct Config {
     /// «Как в фильме» EQ + reverb on the neural voice (§6.2).
     pub voice_fx: bool,
     pub hotkeys: Hotkeys,
+    /// Look & feel (§3.1, §10.4 «Интерфейс»), applied by the UI.
+    pub ui: UiPrefs,
     /// Voice phrases that switch modes (§2.2), editable in settings.
     pub mode_phrases: ModePhrases,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize, TS)]
 #[serde(rename_all = "snake_case")]
+#[ts(export)]
 pub enum VoiceEngine {
     /// Phrase pack + neural voice, offline (§6.1–6.2).
     #[default]
@@ -55,8 +60,9 @@ pub enum VoiceEngine {
     Windows,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
 #[serde(default)]
+#[ts(export)]
 pub struct Hotkeys {
     pub push_to_talk: String,
     pub toggle_window: String,
@@ -82,13 +88,15 @@ impl Default for Config {
             voice_speed: 1.0,
             voice_fx: true,
             hotkeys: Hotkeys::default(),
+            ui: UiPrefs::default(),
             mode_phrases: ModePhrases::default(),
         }
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
 #[serde(default)]
+#[ts(export)]
 pub struct ModePhrases {
     pub prefix_on: String,
     pub prefix_off: String,
@@ -105,6 +113,36 @@ impl Default for ModePhrases {
             silent_on: "перейди в тихий режим".into(),
             silent_off: "выключи тихий режим".into(),
             mic_off: "хватит слушать".into(),
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
+#[serde(default)]
+#[ts(export)]
+pub struct UiPrefs {
+    /// Accent `#rrggbb` (theme swatches or custom).
+    pub accent: String,
+    /// Window transparency, 0–100 % (Mica/CSS).
+    pub transparency: u8,
+    /// Glass blur, 0–100 %.
+    pub blur: u8,
+    pub animations: bool,
+    pub avatar: bool,
+    pub hud: bool,
+    pub on_top: bool,
+}
+
+impl Default for UiPrefs {
+    fn default() -> Self {
+        Self {
+            accent: "#3b82f6".into(),
+            transparency: 30,
+            blur: 90,
+            animations: true,
+            avatar: true,
+            hud: false,
+            on_top: false,
         }
     }
 }

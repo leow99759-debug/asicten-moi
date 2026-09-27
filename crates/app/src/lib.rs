@@ -30,6 +30,8 @@ pub struct AppState {
     pub commands: std::sync::atomic::AtomicUsize,
     /// Mica applied to the main window (UI then drops its opaque background).
     pub mica: std::sync::atomic::AtomicBool,
+    /// Voice output, for «▶ Прослушать» on the voice page.
+    pub speaker: std::sync::OnceLock<Arc<speaker::Speaker>>,
 }
 
 impl AppState {
@@ -87,6 +89,66 @@ fn window_material(state: tauri::State<'_, AppState>) -> bool {
     state.mica.load(std::sync::atomic::Ordering::Relaxed)
 }
 
+/// Settings page: the whole config (§10.4).
+#[tauri::command]
+fn get_config(state: tauri::State<'_, AppState>) -> Config {
+    state.config_snapshot()
+}
+
+/// Settings page save. Mode flags stay as they are (they change by voice/toggles via
+/// `set_mode`), everything else is replaced, saved and applied.
+#[tauri::command]
+fn set_config(state: tauri::State<'_, AppState>, mut config: Config) -> Result<(), String> {
+    {
+        let mut cur = state.config.lock().unwrap_or_else(|e| e.into_inner());
+        config.prefix_mode = cur.prefix_mode;
+        config.silent_mode = cur.silent_mode;
+        config.mic_enabled = cur.mic_enabled;
+        config.wake_sensitivity = config.wake_sensitivity.min(100);
+        config.voice_volume = config.voice_volume.min(100);
+        config.voice_speed = config.voice_speed.clamp(0.5, 2.0);
+        config
+            .save(&state.paths.config())
+            .map_err(|e| e.to_string())?;
+        *cur = config.clone();
+    }
+    #[cfg(windows)]
+    if let Ok(exe) = std::env::current_exe() {
+        jarvis_win::autostart::set(config.autostart, &exe)?;
+    }
+    if let Some(e) = state.engine() {
+        e.send(Msg::Reconfigure);
+    }
+    Ok(())
+}
+
+/// Microphone picker (§10.4 «Модель микрофона»).
+#[tauri::command]
+fn mic_devices() -> Vec<String> {
+    #[cfg(windows)]
+    {
+        jarvis_core::audio::input_devices().unwrap_or_default()
+    }
+    #[cfg(not(windows))]
+    {
+        Vec::new()
+    }
+}
+
+/// «▶» on the voice page: say a sample with the current voice settings (§6.4).
+#[tauri::command]
+fn preview_voice(state: tauri::State<'_, AppState>) {
+    if let Some(s) = state.speaker.get().cloned() {
+        std::thread::spawn(move || {
+            s.stop();
+            s.say_text(
+                &[],
+                "Добрый день, сэр. Все системы работают в штатном режиме.",
+            );
+        });
+    }
+}
+
 /// Main window start-up state.
 #[tauri::command]
 fn ui_snapshot(state: tauri::State<'_, AppState>) -> jarvis_core::ipc::UiSnapshot {
@@ -138,6 +200,7 @@ pub fn run() -> anyhow::Result<()> {
             work: work_tx,
             commands: Default::default(),
             mica: Default::default(),
+            speaker: Default::default(),
         })
         .invoke_handler(tauri::generate_handler![
             set_mode,
@@ -147,7 +210,11 @@ pub fn run() -> anyhow::Result<()> {
             history,
             ui_snapshot,
             set_voice_volume,
-            window_material
+            window_material,
+            get_config,
+            set_config,
+            mic_devices,
+            preview_voice
         ])
         .setup(move |app| {
             let handle = app.handle().clone();
@@ -181,6 +248,7 @@ pub fn run() -> anyhow::Result<()> {
                 sink.clone(),
                 state.config.clone(),
             ));
+            let _ = state.speaker.set(speaker.clone());
             // Priler's pack calls the startup line `run`
             speaker.say(&jarvis_core::brain::Line {
                 clips: vec!["greet".into(), "run".into()],
