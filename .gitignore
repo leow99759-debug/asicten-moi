@@ -11,3 +11,4 @@ voices/**/*.wav
 .worktrees/
 *.log
 crates/app/gen/
+.sherpa/
