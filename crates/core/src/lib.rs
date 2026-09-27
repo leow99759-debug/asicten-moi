@@ -5,6 +5,7 @@ pub mod audio;
 pub mod config;
 pub mod db;
 pub mod ipc;
+pub mod listener;
 pub mod logging;
 pub mod paths;
 pub mod stt;

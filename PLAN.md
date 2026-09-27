@@ -13,7 +13,7 @@ Rule: take the FIRST `[ ]` in order. M13 is optional and runs only after v1.0.0.
 - [x] T011 Silero VAD (sherpa-onnx) segmenting §1
 - [x] T012 Wake word Rustpotter "Джарвис" + sensitivity; fallback Vosk grammar §1 §2.2
 - [x] T013 Vosk STT lazy: load on wake with audio buffering, keep-warm timer, unload; grammar mode for no-prefix; partials → listening bar §1 §2.1
-- [ ] T014 Single-utterance "Джарвис, включи музыку", follow-up window, barge-in §2.1
+- [x] T014 Single-utterance "Джарвис, включи музыку", follow-up window, barge-in §2.1
 - [ ] T015 Modes: prefix / silent / mic_off + voice switch phrases + hotkeys (PTT, show, mute) §2.2 §2.3
 - [ ] T016 Test fixtures: generate WAVs via Piper for all §11 phrases; pipeline test wav→intent §11
 

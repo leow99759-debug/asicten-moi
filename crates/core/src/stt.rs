@@ -74,9 +74,15 @@ impl Stt {
         // pad so the last word leaves the model's right context
         self.accept(&[0; SAMPLE_RATE as usize / 2]);
         let text = self.text();
-        self.rec.reset(&self.stream);
-        self.partial.clear();
+        self.reset();
         text
+    }
+
+    /// Drop the current utterance without a result.
+    /// Fresh stream: `OnlineRecognizer::reset` keeps encoder context, which garbles the next start.
+    pub fn reset(&mut self) {
+        self.stream = self.rec.create_stream();
+        self.partial.clear();
     }
 
     fn text(&self) -> String {
@@ -144,6 +150,14 @@ impl LazyStt {
                 self.buffer.extend_from_slice(samples);
                 Ok(None)
             }
+        }
+    }
+
+    /// Discard buffered/decoded audio (new utterance starts now).
+    pub fn reset(&mut self) {
+        self.buffer.clear();
+        if let Some(stt) = self.loaded.as_mut() {
+            stt.reset();
         }
     }
 
