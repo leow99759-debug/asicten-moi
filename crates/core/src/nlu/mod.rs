@@ -1,5 +1,6 @@
 //! NLU (SPEC §4.2): normalization, numerals, matching.
 
+pub mod matcher;
 pub mod numerals;
 
 use crate::text::{normalize, strip_wake};
