@@ -57,11 +57,13 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
-      # rust-cache prunes target/sherpa-onnx-prebuilt but keeps the build-script result,
-      # so linking fails on a partial cache hit. Force the build script to fetch it again.
+      # rust-cache empties target/sherpa-onnx-prebuilt (keeps the dir) but keeps the
+      # build-script result, so linking fails. If the .lib is gone, rerun the build script.
       - name: sherpa-onnx prebuilt libs
         shell: pwsh
-        run: if (-not (Test-Path target/sherpa-onnx-prebuilt)) { cargo clean -p sherpa-onnx-sys }
+        run: |
+          $lib = Get-ChildItem target/sherpa-onnx-prebuilt -Recurse -Filter sherpa-onnx-c-api.lib -ErrorAction SilentlyContinue
+          if (-not $lib) { cargo clean -p sherpa-onnx-sys }
 
       - name: cargo fmt
         run: cargo fmt --all -- --check
