@@ -1,0 +1,12 @@
+target/
+node_modules/
+dist/
+frontend/build/
+assets/models/
+voices/**/*.wav
+*.gguf
+*.onnx
+*.rpw
+.env
+.worktrees/
+*.log
