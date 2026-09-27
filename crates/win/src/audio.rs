@@ -19,6 +19,7 @@ fn err(e: windows::core::Error) -> String {
 }
 
 fn enumerator() -> Result<IMMDeviceEnumerator, String> {
+    crate::keep_mta();
     // SAFETY: COM init per thread (idempotent; S_FALSE if already initialised).
     unsafe {
         let _ = CoInitializeEx(None, COINIT_MULTITHREADED);

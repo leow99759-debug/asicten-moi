@@ -166,6 +166,7 @@ mod win {
 
     /// Wi-Fi (`wifi = true`) or Bluetooth radio on/off via WinRT (no admin needed).
     pub fn radio(wifi: bool, on: bool) -> Result<(), String> {
+        crate::keep_mta();
         let kind = if wifi {
             RadioKind::WiFi
         } else {

@@ -11,6 +11,7 @@ fn e(x: windows::core::Error) -> String {
 
 /// Synthesize `text` with a Russian voice if one is installed. `speed` 1.0 = normal.
 pub fn synth_wav(text: &str, speed: f32) -> Result<Vec<u8>, String> {
+    crate::keep_mta();
     let s = SpeechSynthesizer::new().map_err(e)?;
     if let Ok(voices) = SpeechSynthesizer::AllVoices() {
         let ru = (0..voices.Size().unwrap_or(0))
