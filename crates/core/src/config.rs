@@ -30,6 +30,10 @@ pub struct Config {
     pub memory_saver: bool,
     /// Jarvis voice volume, 0–100 (§3.4).
     pub voice_volume: u8,
+    /// Neural voice speed, 0.5–2.0 (§6.4).
+    pub voice_speed: f32,
+    /// «Как в фильме» EQ + reverb on the neural voice (§6.2).
+    pub voice_fx: bool,
     pub hotkeys: Hotkeys,
     /// Voice phrases that switch modes (§2.2), editable in settings.
     pub mode_phrases: ModePhrases,
@@ -56,6 +60,8 @@ impl Default for Config {
             stt_keep_warm_sec: 120,
             memory_saver: true,
             voice_volume: 80,
+            voice_speed: 1.0,
+            voice_fx: true,
             hotkeys: Hotkeys::default(),
             mode_phrases: ModePhrases::default(),
         }

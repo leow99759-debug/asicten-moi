@@ -21,6 +21,7 @@ pub mod stt;
 #[cfg(test)]
 mod test_util;
 pub mod text;
+pub mod tts;
 pub mod vad;
 pub mod voice;
 pub mod wake;

@@ -1,18 +1,21 @@
 //! Voice output front: phrase pack clips (§6.1) with a text fallback. The UI always gets
 //! the line as a `Say` event; silent mode (§2.3) keeps it text-only.
-//! TTS for arbitrary text arrives in T041; until then text lines are UI-only.
+//! Text without a clip goes to the neural voice (Piper via sherpa-onnx, §6.2), sentence by sentence.
 
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
+use std::time::Duration;
 
 use jarvis_core::brain::Line;
 use jarvis_core::ipc::{CoreEvent, EventSink};
+use jarvis_core::tts::{self, Tts};
 use jarvis_core::voice::{Player, VoicePack};
 use jarvis_core::Config;
 
 pub struct Speaker {
     pack: Option<VoicePack>,
     player: Option<Player>,
+    tts: Option<Arc<Tts>>,
     sink: Arc<dyn EventSink>,
     config: Arc<Mutex<Config>>,
 }
@@ -40,9 +43,21 @@ impl Speaker {
         let player = Player::new()
             .map_err(|e| tracing::warn!("speaker: {e}"))
             .ok();
+        let tts_dir = assets.join(tts::DEFAULT_MODEL_DIR);
+        let tts = tts_dir.exists().then(|| Arc::new(Tts::new(tts_dir)));
+        if let Some(t) = tts.clone() {
+            // unload the neural voice after a minute of silence
+            let _ = std::thread::Builder::new()
+                .name("jarvis-tts-idle".into())
+                .spawn(move || loop {
+                    std::thread::sleep(Duration::from_secs(15));
+                    t.unload_if_idle(Duration::from_secs(60));
+                });
+        }
         Self {
             pack,
             player,
+            tts,
             sink,
             config,
         }
@@ -57,16 +72,32 @@ impl Speaker {
         if let Some(t) = shown {
             self.sink.emit(CoreEvent::Say(t));
         }
-        let (silent, volume) = {
+        let (silent, volume, speed, fx) = {
             let c = self.config.lock().unwrap_or_else(|e| e.into_inner());
-            (c.silent_mode, c.voice_volume)
+            (c.silent_mode, c.voice_volume, c.voice_speed, c.voice_fx)
         };
-        let (Some(player), Some(clip), false) = (&self.player, clip, silent) else {
+        let Some(player) = self.player.as_ref().filter(|_| !silent) else {
             return;
         };
         player.set_volume(f32::from(volume) / 100.0);
-        if let Err(e) = player.play_wav(clip) {
-            tracing::warn!("play {}: {e}", clip.display());
+        if let Some(clip) = clip {
+            if let Err(e) = player.play_wav(clip) {
+                tracing::warn!("play {}: {e}", clip.display());
+            }
+            return;
+        }
+        let (Some(tts), Some(text)) = (&self.tts, &line.text) else {
+            return;
+        };
+        for sentence in tts::sentences(text) {
+            match tts.synth(&sentence, speed) {
+                Ok((s, rate)) if fx => player.play_samples(&tts::movie_fx(&s, rate), rate),
+                Ok((s, rate)) => player.play_samples(&s, rate),
+                Err(e) => {
+                    tracing::warn!("tts: {e}");
+                    return;
+                }
+            }
         }
     }
 
