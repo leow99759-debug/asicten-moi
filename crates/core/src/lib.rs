@@ -2,6 +2,7 @@
 //! Platform-independent; Windows side effects live in `jarvis-win` behind traits.
 
 pub mod audio;
+pub mod brain;
 pub mod commands;
 pub mod config;
 pub mod db;
@@ -29,6 +30,9 @@ pub use paths::Paths;
 
 /// Product name shown in UI, tray and logs.
 pub const APP_NAME: &str = "Jarvis";
+
+/// Error text an online action returns without network (→ status «Нет сети», no_internet clip).
+pub const NO_INTERNET: &str = "NO_INTERNET";
 
 /// Crate version, shared by every workspace crate.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");

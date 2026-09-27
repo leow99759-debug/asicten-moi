@@ -26,7 +26,7 @@ Rule: take the FIRST `[ ]` in order. M13 is optional and runs only after v1.0.0.
 - [x] T025 Audio/Media (Core Audio volume/mute/device, media keys) §4.4
 - [x] T026 System.* (power w/ delay, cancel, power plan, brightness, screenshot, ms-settings, recycle bin, wifi/bt, DND, clipboard, info) §4.4
 - [x] T027 Lux.Pause*, Sound.PlayWav, Speak, Ask, Run.Command, Timer, Reminder, Assistant.* §4.4 §10.3
-- [ ] T028 Chain splitting ("и/потом/затем") + confirm flow (UI dialog + voice да/нет + 30s autocancel) §4.3 §4.6
+- [x] T028 Chain splitting ("и/потом/затем") + confirm flow (UI dialog + voice да/нет + 30s autocancel) §4.3 §4.6
 - [ ] T029 Context rules (`when.foreground`) + PC modes (game/work/movie/night) §4.5 §4.7
 - [ ] T030 History persistence + statuses §3.4
 
@@ -35,7 +35,7 @@ Rule: take the FIRST `[ ]` in order. M13 is optional and runs only after v1.0.0.
 - [ ] T041 Piper/VITS TTS via sherpa-onnx, lazy load/unload, sentence streaming, speed, FX (EQ+reverb) §6.2
 - [ ] T042 SAPI fallback + engine selector backend §6.3
 - [ ] T043 Built-in dialog replies without LLM, ≥40 intents (как дела, ты тут, спасибо, время, дата, шутка, приветствие) §7.5
-- [ ] T044 Voice asset hunt: find more RU-dub Jarvis clips online, verify text via STT, normalize, trim, categorize into pack; map every reply category §6.1
+- [ ] T044 Voice asset hunt: find more RU-dub Jarvis clips online, verify text via STT, normalize, trim, categorize into pack; map every reply category; generate missing phrases at build time via Fish Audio (`s2.1-pro-free`, voice 4c3eaacc1a0545cdb0295bfddf3e3785, key in env FISH_API_KEY, never in git) §6.1
 
 ## M4 UI
 - [ ] T050 Design tokens (dark glass, accent palette, radius, fonts), frameless shell, sidebar, listening bar §3.1 §3.2
@@ -82,7 +82,7 @@ Rule: take the FIRST `[ ]` in order. M13 is optional and runs only after v1.0.0.
 - [ ] T111 Double-clap trigger (own implementation) §2.4
 
 ## M11 Jarvis voice
-- [ ] T120 tools/voice-train: dataset (Jarvis-Sound + Priler + user clips + synth Piper ru → RVC Jarvis), cleaning, Piper fine-tune on local RTX 3060 6GB, ONNX export, README ≤30 lines §6.2
+- [ ] T120 tools/voice-train: dataset (Jarvis-Sound + Priler + user clips + Fish Audio Jarvis synth), cleaning, Piper fine-tune on local RTX 3060 6GB, ONNX export, README ≤30 lines §6.2
 - [ ] T121 make_clips.py: generate missing pack phrases; integrate trained model as default; upload model to Release assets §6.1 §6.2
 
 ## M12 Release

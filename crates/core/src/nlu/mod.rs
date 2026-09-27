@@ -1,5 +1,6 @@
 //! NLU (SPEC §4.2): normalization, numerals, matching.
 
+pub mod chain;
 pub mod matcher;
 pub mod numerals;
 

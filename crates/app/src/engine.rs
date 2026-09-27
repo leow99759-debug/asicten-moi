@@ -10,10 +10,13 @@ use jarvis_core::audio;
 use jarvis_core::ipc::{AssistantState, CoreEvent, EventSink, Level, Transcript};
 use jarvis_core::listener::{ListenCfg, Listener, Output};
 use jarvis_core::modes::{self, ModeCommand};
+use jarvis_core::nlu::chain::yes_no;
 use jarvis_core::stt::{LazyStt, MODEL_DIR};
 use jarvis_core::vad::Vad;
 use jarvis_core::wake::WakeWord;
 use jarvis_core::Config;
+
+use crate::brain_worker::{Confirm, Work};
 
 /// Level events at most this often (orb/listening bar).
 const LEVEL_EVERY: Duration = Duration::from_millis(66);
@@ -51,18 +54,25 @@ pub fn apply_mode(config: &Mutex<Config>, path: &Path, cmd: ModeCommand) -> Conf
     cfg.clone()
 }
 
+/// Where final utterances go.
+pub struct Route {
+    pub work: Sender<Work>,
+    pub confirm: Arc<Confirm>,
+}
+
 pub fn spawn(
     assets: PathBuf,
     config: Arc<Mutex<Config>>,
     config_path: PathBuf,
     sink: Arc<dyn EventSink>,
+    route: Route,
 ) -> Engine {
     let (tx, rx) = mpsc::channel();
     let engine = Engine { tx: tx.clone() };
     let result = std::thread::Builder::new()
         .name("jarvis-engine".into())
         .spawn(move || {
-            if let Err(err) = run(&assets, &config, &config_path, &*sink, tx, rx) {
+            if let Err(err) = run(&assets, &config, &config_path, &*sink, &route, tx, rx) {
                 tracing::error!("engine stopped: {err:#}");
                 sink.emit(CoreEvent::State(AssistantState::MicOff));
             }
@@ -78,6 +88,7 @@ fn run(
     config: &Mutex<Config>,
     config_path: &Path,
     sink: &dyn EventSink,
+    route: &Route,
     tx: Sender<Msg>,
     rx: Receiver<Msg>,
 ) -> anyhow::Result<()> {
@@ -184,19 +195,25 @@ fn run(
                 Output::Timeout => {}
                 Output::Final(text) => {
                     tracing::info!(%text, "utterance");
+                    sink.emit(CoreEvent::Transcript(Transcript {
+                        text: text.clone(),
+                        is_final: true,
+                    }));
                     let phrases = config
                         .lock()
                         .unwrap_or_else(|e| e.into_inner())
                         .mode_phrases
                         .clone();
-                    if let Some(cmd) = modes::from_phrase(&text, &phrases) {
+                    if route.confirm.is_pending() {
+                        if let Some(yes) = yes_no(&text) {
+                            route.confirm.answer(yes);
+                        }
+                    } else if let Some(cmd) = modes::from_phrase(&text, &phrases) {
                         let cfg = apply_mode(config, config_path, cmd);
                         apply_to_runtime(&cfg, &mut listener, &mut mic);
+                    } else if route.work.send(Work::Utterance(text)).is_err() {
+                        tracing::warn!("command worker is gone");
                     }
-                    sink.emit(CoreEvent::Transcript(Transcript {
-                        text,
-                        is_final: true,
-                    }));
                 }
             }
         }

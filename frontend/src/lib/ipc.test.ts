@@ -14,4 +14,10 @@ describe("ipc.only", () => {
     events.forEach(h);
     expect(got).toEqual(["джарвис"]);
   });
+
+  it("fires payload-less events", () => {
+    let closed = 0;
+    only("confirm_closed", () => closed++)({ event: "confirm_closed" });
+    expect(closed).toBe(1);
+  });
 });

@@ -4,6 +4,7 @@
 use serde::Serialize;
 use ts_rs::TS;
 
+use crate::brain::Outcome;
 use crate::db::HistoryEntry;
 
 /// Tauri event name all core events are emitted on.
@@ -36,6 +37,23 @@ pub struct Level {
     pub tts: f32,
 }
 
+/// Confirmation dialog (SPEC §4.6).
+#[derive(Debug, Clone, PartialEq, Serialize, TS)]
+#[ts(export)]
+pub struct ConfirmRequest {
+    pub question: String,
+    pub timeout_sec: u32,
+}
+
+/// Assistant actions that drive the UI.
+#[derive(Debug, Clone, PartialEq, Serialize, TS)]
+#[serde(tag = "kind", content = "value", rename_all = "snake_case")]
+#[ts(export)]
+pub enum UiCommand {
+    OpenPage(String),
+    SetTheme(String),
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, TS)]
 #[serde(tag = "event", content = "payload", rename_all = "snake_case")]
 #[ts(export)]
@@ -44,6 +62,13 @@ pub enum CoreEvent {
     Transcript(Transcript),
     History(HistoryEntry),
     Level(Level),
+    Confirm(ConfirmRequest),
+    ConfirmClosed,
+    /// Result cards for the last utterance (§4.3).
+    Outcome(Outcome),
+    /// What Jarvis says (also spoken once voice output exists).
+    Say(String),
+    Ui(UiCommand),
 }
 
 /// Where the core publishes events; the app implements it over Tauri, tests collect.

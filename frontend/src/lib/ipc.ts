@@ -5,12 +5,14 @@ import type { CoreEvent } from "./bindings/CoreEvent";
 export const CHANNEL = "core";
 
 export type EventKind = CoreEvent["event"];
-export type PayloadOf<K extends EventKind> = Extract<CoreEvent, { event: K }>["payload"];
+/** Payload type of an event kind; `undefined` for payload-less events like `confirm_closed`. */
+export type PayloadOf<K extends EventKind> =
+  Extract<CoreEvent, { event: K }> extends { payload: infer P } ? P : undefined;
 
 /** Wrap a typed handler so it only fires for one event kind. */
 export function only<K extends EventKind>(kind: K, cb: (payload: PayloadOf<K>) => void) {
   return (ev: CoreEvent): void => {
-    if (ev.event === kind) cb(ev.payload as PayloadOf<K>);
+    if (ev.event === kind) cb(("payload" in ev ? ev.payload : undefined) as PayloadOf<K>);
   };
 }
 

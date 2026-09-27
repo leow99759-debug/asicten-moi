@@ -17,6 +17,7 @@ path = "src/lib.rs"
 
 [dependencies]
 jarvis-core.workspace = true
+jarvis-win.workspace = true
 tauri.workspace = true
 tauri-plugin-global-shortcut.workspace = true
 anyhow.workspace = true

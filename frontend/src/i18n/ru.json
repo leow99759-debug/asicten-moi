@@ -1,5 +1,10 @@
 {
   "app.title": "Jarvis",
   "window.minimize": "Свернуть",
-  "window.close": "Закрыть"
+  "window.close": "Закрыть",
+  "confirm.title": "Подтверждение",
+  "confirm.yes": "Подтвердить",
+  "confirm.no": "Отменить",
+  "confirm.autocancel": "Автоотмена через {n} сек.",
+  "confirm.voice": "🎙 или голосом: «да» / «нет»"
 }

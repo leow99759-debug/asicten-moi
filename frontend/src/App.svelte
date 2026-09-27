@@ -1,6 +1,7 @@
 <script lang="ts">
   import { t } from "./lib/i18n";
   import { minimize, close } from "./lib/window";
+  import ConfirmDialog from "./components/ConfirmDialog.svelte";
 </script>
 
 <div class="shell">
@@ -12,6 +13,7 @@
     </div>
   </header>
   <main></main>
+  <ConfirmDialog />
 </div>
 
 <style>

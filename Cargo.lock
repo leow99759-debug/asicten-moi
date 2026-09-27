@@ -2188,6 +2188,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "jarvis-core",
+ "jarvis-win",
  "tauri",
  "tauri-build",
  "tauri-plugin-global-shortcut",

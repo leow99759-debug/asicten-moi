@@ -34,23 +34,37 @@ impl Paths {
     pub fn logs(&self) -> PathBuf {
         self.root.join("logs")
     }
+
+    /// User commands made in the editor (a pack with id `user`).
+    pub fn user_commands(&self) -> PathBuf {
+        self.root.join("commands.json")
+    }
 }
 
 /// Where models/voices live: `JARVIS_ASSETS`, then `assets/` next to the exe or in the
 /// installer resources, then the repo's `assets/` (dev builds).
 pub fn find_assets(resource_dir: Option<&Path>) -> Option<PathBuf> {
+    find_dir("JARVIS_ASSETS", "assets", resource_dir)
+}
+
+/// Built-in command packs (`packs/`), same lookup order as assets.
+pub fn find_packs(resource_dir: Option<&Path>) -> Option<PathBuf> {
+    find_dir("JARVIS_PACKS", "packs", resource_dir)
+}
+
+fn find_dir(env: &str, name: &str, resource_dir: Option<&Path>) -> Option<PathBuf> {
     let exe_dir = std::env::current_exe()
         .ok()
         .and_then(|p| p.parent().map(Path::to_path_buf));
     let dev = cfg!(debug_assertions).then(|| Path::new(env!("CARGO_MANIFEST_DIR")).join("../.."));
-    std::env::var_os("JARVIS_ASSETS")
+    std::env::var_os(env)
         .map(PathBuf::from)
         .into_iter()
         .chain(
             [exe_dir, resource_dir.map(Path::to_path_buf), dev]
                 .into_iter()
                 .flatten()
-                .map(|d| d.join("assets")),
+                .map(|d| d.join(name)),
         )
         .find(|p| p.is_dir())
 }

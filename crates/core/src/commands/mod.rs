@@ -264,6 +264,14 @@ mod tests {
     }
 
     #[test]
+    fn repo_packs_are_valid() {
+        let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../packs");
+        let (packs, report) = load_dir(&dir);
+        assert!(!packs.is_empty());
+        assert!(report.is_empty(), "{report:#?}");
+    }
+
+    #[test]
     fn load_dir_reports_broken_files() {
         let dir = tempfile::tempdir().expect("tmp");
         std::fs::write(dir.path().join("a.json"), pack(SPEC_EXAMPLE)).expect("w");

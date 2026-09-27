@@ -1,9 +1,11 @@
 //! Tauri shell: wires the core to the UI windows.
 
+pub mod brain_worker;
 pub mod engine;
 mod hotkeys;
 pub mod ipc;
 
+use std::sync::mpsc::{self, Sender};
 use std::sync::{Arc, Mutex};
 
 use anyhow::Context;
@@ -11,6 +13,7 @@ use jarvis_core::modes::ModeCommand;
 use jarvis_core::{Config, Db, Paths};
 use tauri::Manager;
 
+use brain_worker::{Confirm, Work};
 use engine::{Engine, Msg};
 
 /// Shared app state managed by Tauri.
@@ -19,6 +22,8 @@ pub struct AppState {
     pub config: Arc<Mutex<Config>>,
     pub db: Mutex<Db>,
     pub engine: Mutex<Option<Engine>>,
+    pub confirm: Arc<Confirm>,
+    pub work: Sender<Work>,
 }
 
 impl AppState {
@@ -48,6 +53,18 @@ fn set_mode(state: tauri::State<'_, AppState>, cmd: ModeCommand) {
     }
 }
 
+/// Confirmation dialog buttons (§4.6).
+#[tauri::command]
+fn confirm_answer(state: tauri::State<'_, AppState>, yes: bool) {
+    state.confirm.answer(yes);
+}
+
+/// Typed command (PWA/remote, editor «▶ Test», history repeat).
+#[tauri::command]
+fn run_text(state: tauri::State<'_, AppState>, text: String) {
+    let _ = state.work.send(Work::Utterance(text));
+}
+
 /// Mic button: listen now without the wake word.
 #[tauri::command]
 fn activate(state: tauri::State<'_, AppState>) {
@@ -63,6 +80,7 @@ pub fn run() -> anyhow::Result<()> {
     let config = Config::load(&paths.config()).context("config")?;
     let db = Db::open(&paths.db()).context("database")?;
     tracing::info!(version = jarvis_core::VERSION, root = %paths.root.display(), "starting");
+    let (work_tx, work_rx) = mpsc::channel();
 
     tauri::Builder::default()
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
@@ -71,27 +89,48 @@ pub fn run() -> anyhow::Result<()> {
             config: Arc::new(Mutex::new(config)),
             db: Mutex::new(db),
             engine: Mutex::new(None),
+            confirm: Arc::new(Confirm::default()),
+            work: work_tx,
         })
-        .invoke_handler(tauri::generate_handler![set_mode, activate])
-        .setup(|app| {
+        .invoke_handler(tauri::generate_handler![
+            set_mode,
+            activate,
+            confirm_answer,
+            run_text
+        ])
+        .setup(move |app| {
             let handle = app.handle().clone();
             let state = app.state::<AppState>();
             let resources = app.path().resource_dir().ok();
-            match jarvis_core::paths::find_assets(resources.as_deref()) {
-                Some(assets) => {
-                    let engine = engine::spawn(
-                        assets,
-                        state.config.clone(),
-                        state.paths.config(),
-                        Arc::new(ipc::TauriSink(handle.clone())),
-                    );
-                    if let Err(err) = hotkeys::register(&handle, engine.clone()) {
-                        tracing::warn!("hotkeys: {err:#}");
-                    }
-                    *state.engine.lock().unwrap_or_else(|e| e.into_inner()) = Some(engine);
-                }
-                None => tracing::error!("assets not found; run tools/fetch-assets.ps1"),
+            let sink: Arc<dyn jarvis_core::ipc::EventSink> =
+                Arc::new(ipc::TauriSink(handle.clone()));
+            let Some(assets) = jarvis_core::paths::find_assets(resources.as_deref()) else {
+                tracing::error!("assets not found; run tools/fetch-assets.ps1");
+                return Ok(());
+            };
+            let engine = engine::spawn(
+                assets,
+                state.config.clone(),
+                state.paths.config(),
+                sink.clone(),
+                engine::Route {
+                    work: state.work.clone(),
+                    confirm: state.confirm.clone(),
+                },
+            );
+            let packs = jarvis_core::paths::find_packs(resources.as_deref());
+            brain_worker::spawn(
+                brain_worker::load_commands(packs.as_deref(), &state.paths.user_commands()),
+                sink,
+                state.confirm.clone(),
+                engine.clone(),
+                state.work.clone(),
+                work_rx,
+            );
+            if let Err(err) = hotkeys::register(&handle, engine.clone()) {
+                tracing::warn!("hotkeys: {err:#}");
             }
+            *state.engine.lock().unwrap_or_else(|e| e.into_inner()) = Some(engine);
             Ok(())
         })
         .run(tauri::generate_context!())
