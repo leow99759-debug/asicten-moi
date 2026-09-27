@@ -117,6 +117,19 @@ impl Db {
         Ok(rows.collect::<rusqlite::Result<_>>()?)
     }
 
+    /// Store one outcome (chain = one row, first failing status wins) and return the row.
+    pub fn record(&self, outcome: &crate::brain::Outcome, ts: i64) -> Result<HistoryEntry> {
+        let (command_id, status) = outcome.summary();
+        let id = self.add_history(ts, &outcome.phrase, command_id.as_deref(), status)?;
+        Ok(HistoryEntry {
+            id,
+            ts,
+            phrase: outcome.phrase.clone(),
+            command_id,
+            status,
+        })
+    }
+
     pub fn setting(&self, key: &str) -> Result<Option<String>> {
         Ok(self
             .conn
@@ -155,6 +168,36 @@ mod tests {
         assert_eq!(all[0].status, Status::NoInternet);
         assert_eq!(all[0].command_id, None);
         assert_eq!(all[1].phrase, "фраза 509");
+    }
+
+    #[test]
+    fn record_summarizes_outcome() {
+        use crate::brain::{CommandOutcome, Outcome};
+        let db = Db::open_in_memory().expect("db");
+        let cmd = |id: &str, status| CommandOutcome {
+            id: id.into(),
+            name: id.into(),
+            status,
+            steps: vec![],
+            reply: Default::default(),
+        };
+        let chain = Outcome {
+            phrase: "открой браузер и включи музыку".into(),
+            commands: vec![
+                cmd("browser", Status::Done),
+                cmd("music", Status::NoInternet),
+            ],
+        };
+        let e = db.record(&chain, 5).expect("record");
+        assert_eq!(e.command_id.as_deref(), Some("browser+music"));
+        assert_eq!(e.status, Status::NoInternet);
+        let unknown = Outcome {
+            phrase: "спой песню".into(),
+            commands: vec![],
+        };
+        let e = db.record(&unknown, 6).expect("record");
+        assert_eq!((e.command_id, e.status), (None, Status::Error));
+        assert_eq!(db.history(10).expect("h")[0].id, e.id);
     }
 
     #[test]

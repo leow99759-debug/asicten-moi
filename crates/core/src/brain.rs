@@ -32,6 +32,24 @@ pub struct Outcome {
     pub commands: Vec<CommandOutcome>,
 }
 
+impl Outcome {
+    /// History view (§3.4): ids joined with `+`, first non-Done status (Done if all ok);
+    /// not understood = `(None, Error)`.
+    pub fn summary(&self) -> (Option<String>, Status) {
+        if self.commands.is_empty() {
+            return (None, Status::Error);
+        }
+        let ids: Vec<&str> = self.commands.iter().map(|c| c.id.as_str()).collect();
+        let status = self
+            .commands
+            .iter()
+            .map(|c| c.status)
+            .find(|s| *s != Status::Done)
+            .unwrap_or(Status::Done);
+        (Some(ids.join("+")), status)
+    }
+}
+
 pub struct Brain {
     commands: Vec<Command>,
     matcher: Matcher,

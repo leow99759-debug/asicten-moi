@@ -20,7 +20,7 @@ use engine::{Engine, Msg};
 pub struct AppState {
     pub paths: Paths,
     pub config: Arc<Mutex<Config>>,
-    pub db: Mutex<Db>,
+    pub db: Arc<Mutex<Db>>,
     pub engine: Mutex<Option<Engine>>,
     pub confirm: Arc<Confirm>,
     pub work: Sender<Work>,
@@ -65,6 +65,16 @@ fn run_text(state: tauri::State<'_, AppState>, text: String) {
     let _ = state.work.send(Work::Utterance(text));
 }
 
+/// Main window history list (§3.4), newest first.
+#[tauri::command]
+fn history(
+    state: tauri::State<'_, AppState>,
+    limit: u32,
+) -> Result<Vec<jarvis_core::db::HistoryEntry>, String> {
+    let db = state.db.lock().unwrap_or_else(|e| e.into_inner());
+    db.history(limit.min(500)).map_err(|e| e.to_string())
+}
+
 /// Mic button: listen now without the wake word.
 #[tauri::command]
 fn activate(state: tauri::State<'_, AppState>) {
@@ -87,7 +97,7 @@ pub fn run() -> anyhow::Result<()> {
         .manage(AppState {
             paths,
             config: Arc::new(Mutex::new(config)),
-            db: Mutex::new(db),
+            db: Arc::new(Mutex::new(db)),
             engine: Mutex::new(None),
             confirm: Arc::new(Confirm::default()),
             work: work_tx,
@@ -96,7 +106,8 @@ pub fn run() -> anyhow::Result<()> {
             set_mode,
             activate,
             confirm_answer,
-            run_text
+            run_text,
+            history
         ])
         .setup(move |app| {
             let handle = app.handle().clone();
@@ -122,6 +133,7 @@ pub fn run() -> anyhow::Result<()> {
             brain_worker::spawn(
                 brain_worker::load_commands(packs.as_deref(), &state.paths.user_commands()),
                 sink,
+                state.db.clone(),
                 state.confirm.clone(),
                 engine.clone(),
                 state.work.clone(),

@@ -6,12 +6,13 @@ use std::sync::mpsc::{self, Receiver, Sender};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
-use jarvis_core::brain::Brain;
+use jarvis_core::brain::{Brain, Outcome};
 use jarvis_core::commands::{self, AssistantMode, Pack};
 use jarvis_core::executor::{Assistant, Executor};
 use jarvis_core::ipc::{ConfirmRequest, CoreEvent, EventSink, UiCommand};
 use jarvis_core::modes::ModeCommand;
 use jarvis_core::scheduler::{Job, Scheduler};
+use jarvis_core::Db;
 use jarvis_win::apps::SystemApps;
 use jarvis_win::backend::WinBackend;
 
@@ -153,6 +154,7 @@ pub fn load_commands(packs_dir: Option<&Path>, user_file: &Path) -> Vec<commands
 pub fn spawn(
     commands: Vec<commands::Command>,
     sink: Arc<dyn EventSink>,
+    db: Arc<Mutex<Db>>,
     confirm: Arc<Confirm>,
     engine: Engine,
     work_tx: Sender<Work>,
@@ -184,6 +186,17 @@ pub fn spawn(
             );
             let brain = Brain::new(commands, executor, assistant);
             let mut last: Option<String> = None;
+            let publish = |outcome: Outcome| {
+                let entry = db
+                    .lock()
+                    .unwrap_or_else(|e| e.into_inner())
+                    .record(&outcome, now_ms());
+                match entry {
+                    Ok(e) => sink.emit(CoreEvent::History(e)),
+                    Err(e) => tracing::warn!("history: {e:#}"),
+                }
+                sink.emit(CoreEvent::Outcome(outcome));
+            };
             for work in work_rx {
                 match work {
                     Work::Utterance(text) => {
@@ -193,18 +206,18 @@ pub fn spawn(
                         } else {
                             last = Some(text);
                         }
-                        sink.emit(CoreEvent::Outcome(outcome));
+                        publish(outcome);
                     }
                     Work::Repeat => {
                         if let Some(t) = last.clone() {
-                            sink.emit(CoreEvent::Outcome(brain.handle(&t)));
+                            publish(brain.handle(&t));
                         }
                     }
                     Work::Job(Job::RunCommand(id)) => match brain.run_by_id(&id) {
-                        Some(o) => sink.emit(CoreEvent::Outcome(jarvis_core::brain::Outcome {
+                        Some(o) => publish(Outcome {
                             phrase: format!("таймер: {}", o.name),
                             commands: vec![o],
-                        })),
+                        }),
                         None => tracing::warn!(%id, "timer: unknown command"),
                     },
                     Work::Job(Job::Remind(text)) => {
@@ -216,4 +229,11 @@ pub fn spawn(
     if let Err(e) = spawned {
         tracing::error!(%e, "brain thread spawn failed");
     }
+}
+
+fn now_ms() -> i64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_millis() as i64)
+        .unwrap_or_default()
 }
