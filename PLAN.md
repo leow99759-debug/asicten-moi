@@ -18,7 +18,7 @@ Rule: take the FIRST `[ ]` in order. M13 is optional and runs only after v1.0.0.
 - [x] T016 Test fixtures: generate WAVs via Piper for all §11 phrases; pipeline test wav→intent §11
 
 ## M2 Command engine
-- [ ] T020 Command JSON schema + loader + validation + path vars (%CHROME% etc. via registry/StartMenu/UWP) §4.1
+- [x] T020 Command JSON schema + loader + validation + path vars (%CHROME% etc. via registry/StartMenu/UWP) §4.1
 - [ ] T021 Russian normalizer + numerals/time parser (unit tests ≥40 cases) §4.2
 - [ ] T022 Matcher cascade exact→fuzzy→synonyms (embeddings optional, lazy), required+optional phrases, slots; bench ≤30ms/1000 cmds §4.2
 - [ ] T023 Executor framework (timeouts, results, dry-run mock for tests) + Launch.*, Process.Kill §4.4

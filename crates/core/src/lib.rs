@@ -2,6 +2,7 @@
 //! Platform-independent; Windows side effects live in `jarvis-win` behind traits.
 
 pub mod audio;
+pub mod commands;
 pub mod config;
 pub mod db;
 pub mod ipc;
