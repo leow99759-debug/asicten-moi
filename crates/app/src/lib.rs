@@ -4,6 +4,7 @@ pub mod brain_worker;
 pub mod engine;
 mod hotkeys;
 pub mod ipc;
+mod shell;
 pub mod speaker;
 
 use std::sync::mpsc::{self, Sender};
@@ -27,6 +28,8 @@ pub struct AppState {
     pub work: Sender<Work>,
     /// Loaded commands (dashboard counter).
     pub commands: std::sync::atomic::AtomicUsize,
+    /// Mica applied to the main window (UI then drops its opaque background).
+    pub mica: std::sync::atomic::AtomicBool,
 }
 
 impl AppState {
@@ -76,6 +79,12 @@ fn history(
 ) -> Result<Vec<jarvis_core::db::HistoryEntry>, String> {
     let db = state.db.lock().unwrap_or_else(|e| e.into_inner());
     db.history(limit.min(500)).map_err(|e| e.to_string())
+}
+
+/// True when Windows 11 Mica is behind the window (CSS goes translucent).
+#[tauri::command]
+fn window_material(state: tauri::State<'_, AppState>) -> bool {
+    state.mica.load(std::sync::atomic::Ordering::Relaxed)
 }
 
 /// Main window start-up state.
@@ -128,6 +137,7 @@ pub fn run() -> anyhow::Result<()> {
             confirm: Arc::new(Confirm::default()),
             work: work_tx,
             commands: Default::default(),
+            mica: Default::default(),
         })
         .invoke_handler(tauri::generate_handler![
             set_mode,
@@ -136,11 +146,29 @@ pub fn run() -> anyhow::Result<()> {
             run_text,
             history,
             ui_snapshot,
-            set_voice_volume
+            set_voice_volume,
+            window_material
         ])
         .setup(move |app| {
             let handle = app.handle().clone();
             let state = app.state::<AppState>();
+            if let Some(w) = app.get_webview_window("main") {
+                shell::apply_material(&w);
+                // autostart passes --minimized: stay in the tray
+                if !std::env::args().any(|a| a == "--minimized") {
+                    let _ = w.show();
+                }
+            }
+            if let Err(e) = shell::setup_tray(&handle) {
+                tracing::warn!("tray: {e}");
+            }
+            #[cfg(windows)]
+            if let Ok(exe) = std::env::current_exe() {
+                if let Err(e) = jarvis_win::autostart::set(state.config_snapshot().autostart, &exe)
+                {
+                    tracing::warn!("autostart: {e}");
+                }
+            }
             let resources = app.path().resource_dir().ok();
             let sink: Arc<dyn jarvis_core::ipc::EventSink> =
                 Arc::new(ipc::TauriSink(handle.clone()));
@@ -193,6 +221,18 @@ pub fn run() -> anyhow::Result<()> {
             *state.engine.lock().unwrap_or_else(|e| e.into_inner()) = Some(engine);
             Ok(())
         })
-        .run(tauri::generate_context!())
-        .context("tauri runtime failed")
+        .build(tauri::generate_context!())
+        .context("tauri init failed")?
+        .run(|app, event| {
+            // last window closed (not «Выход»): keep the core running in the tray (§3.5)
+            if let tauri::RunEvent::ExitRequested {
+                api, code: None, ..
+            } = &event
+            {
+                if app.state::<AppState>().config_snapshot().close_to_tray {
+                    api.prevent_exit();
+                }
+            }
+        });
+    Ok(())
 }

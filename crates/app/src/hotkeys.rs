@@ -20,14 +20,7 @@ pub fn register<R: Runtime>(app: &AppHandle<R>, engine: Engine) -> anyhow::Resul
 
     gs.on_shortcut(hk.toggle_window.as_str(), |app, _, ev| {
         if ev.state() == ShortcutState::Pressed {
-            if let Some(w) = app.get_webview_window("main") {
-                let visible = w.is_visible().unwrap_or(false);
-                let _ = if visible {
-                    w.hide()
-                } else {
-                    w.show().and_then(|_| w.set_focus())
-                };
-            }
+            crate::shell::toggle_main(app);
         }
     })?;
 

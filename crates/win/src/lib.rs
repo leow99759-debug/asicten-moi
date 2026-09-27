@@ -4,6 +4,8 @@
 pub mod apps;
 #[cfg(windows)]
 pub mod audio;
+#[cfg(windows)]
+pub mod autostart;
 pub mod backend;
 pub mod keys;
 #[cfg(windows)]

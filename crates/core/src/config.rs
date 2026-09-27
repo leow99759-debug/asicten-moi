@@ -30,6 +30,10 @@ pub struct Config {
     pub memory_saver: bool,
     /// Jarvis voice volume, 0–100 (§3.4).
     pub voice_volume: u8,
+    /// «Сворачивать в трей при закрытии» (§10.4): close destroys the WebView, core keeps running.
+    pub close_to_tray: bool,
+    /// «Автозапуск программы» (§10.4).
+    pub autostart: bool,
     /// Voice engine card on «Синтез речи» (§6.4).
     pub voice_engine: VoiceEngine,
     /// Neural voice speed, 0.5–2.0 (§6.4).
@@ -72,6 +76,8 @@ impl Default for Config {
             stt_keep_warm_sec: 120,
             memory_saver: true,
             voice_volume: 80,
+            close_to_tray: true,
+            autostart: false,
             voice_engine: VoiceEngine::Jarvis,
             voice_speed: 1.0,
             voice_fx: true,

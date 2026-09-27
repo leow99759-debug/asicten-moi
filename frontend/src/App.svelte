@@ -9,12 +9,17 @@
   import Dashboard from "./pages/Dashboard.svelte";
   import Placeholder from "./pages/Placeholder.svelte";
   import { app, connect } from "./lib/app.svelte";
+  import { windowMaterial } from "./lib/commands";
   import { t } from "./lib/i18n";
 
   onMount(() => {
     const p = new URLSearchParams(location.search).get("page");
     if (p) app.page = p as typeof app.page;
     connect();
+    // Windows 11 Mica behind the webview → let it show through (§3.2)
+    windowMaterial().then((mica) => {
+      if (mica) document.documentElement.dataset.material = "mica";
+    });
   });
 </script>
 
@@ -61,6 +66,12 @@
     background: var(--bg-1);
     border: 1px solid var(--line);
     box-sizing: border-box;
+  }
+  :global(:root[data-material="mica"] body) {
+    background: transparent;
+  }
+  :global(:root[data-material="mica"]) .window {
+    background: rgba(16, 18, 23, 0.6);
   }
   /* soft accent light behind the glass (the orb's room glow) */
   .backdrop {

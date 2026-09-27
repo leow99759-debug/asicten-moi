@@ -42,7 +42,7 @@ Rule: take the FIRST `[ ]` in order. M13 is optional and runs only after v1.0.0.
 - [x] T051 Orb (canvas/WebGL, idle breathe, reacts to mic+TTS level, pauses when hidden) §3.1
 - [x] T052 Home dashboard tiles + live counters §3.3
 - [x] T053 Main window: history + control panel toggles + volume + mic button §3.4
-- [ ] T054 Tray (states, menu), close-to-tray destroys WebView, autostart, always-on-top, Mica/Acrylic §3.2 §3.5
+- [x] T054 Tray (states, menu), close-to-tray destroys WebView, autostart, always-on-top, Mica/Acrylic §3.2 §3.5
 - [ ] T055 Desktop avatar overlay (transparent click-through, fullscreen-aware) §3.6
 - [ ] T056 HUD skin on activation §3.7
 - [ ] T057 Settings pages (all tabs, themes, transparency, blur, mic device+level, mode phrases, import/export) §10.4

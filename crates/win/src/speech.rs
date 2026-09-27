@@ -38,10 +38,11 @@ pub fn synth_wav(text: &str, speed: f32) -> Result<Vec<u8>, String> {
 
 #[cfg(test)]
 mod tests {
-    /// CI runners may lack speech voices; when synthesis works, the WAV must decode.
+    /// CI runners may lack speech voices (and a Russian one: an English voice skips
+    /// Cyrillic), so the phrase has a Latin part; when synthesis works, the WAV must decode.
     #[test]
     fn windows_voice_wav_decodes() {
-        match super::synth_wav("Проверка связи", 1.0) {
+        match super::synth_wav("Jarvis online. Проверка связи.", 1.0) {
             Ok(wav) => {
                 let (s, rate) =
                     jarvis_core::voice::decode_wav(std::io::Cursor::new(wav)).expect("decode");

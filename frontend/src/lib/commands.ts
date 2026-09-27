@@ -15,3 +15,4 @@ export const runText = (text: string) => call("run_text", { text });
 export const history = (limit = 500) => call<HistoryEntry[]>("history", { limit });
 export const uiSnapshot = () => call<UiSnapshot>("ui_snapshot");
 export const setVoiceVolume = (volume: number) => call("set_voice_volume", { volume });
+export const windowMaterial = () => call<boolean>("window_material");
