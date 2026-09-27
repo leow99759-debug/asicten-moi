@@ -9,9 +9,12 @@ pub mod listener;
 pub mod logging;
 pub mod modes;
 pub mod paths;
+#[cfg(test)]
+mod s11_tests;
 pub mod stt;
 #[cfg(test)]
 mod test_util;
+pub mod text;
 pub mod vad;
 pub mod wake;
 

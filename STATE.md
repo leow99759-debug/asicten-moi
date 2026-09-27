@@ -1,5 +1,5 @@
-last: T015 modes (prefix/silent/mic) via UI cmd set_mode, voice phrases (config.mode_phrases), hotkeys PTT/window/mic (global-shortcut); app engine thread: mic→Listener→core events, level throttle 15 Hz, STT idle unload tick; no-prefix mode in Listener
-next: T016
+last: T016 §11 fixtures tests/fixtures/s11 (phrases.tsv + 16k WAV via `cargo run -p jarvis-core --example make_fixtures --release`), s11 test wav→listener→STT≈phrase (avg 0.8, each ≥0.6); core::text normalize + fuzzy strip_wake
+next: T020 (M1 done → tag m1 after CI green)
 blocked: T002 needs-user (workflow edits: user pastes tools/ci/ci.yml into .github/workflows) | wake sensitivity 50 needs real-voice tuning (synthetic «Джарвис, включи музыку» passes only at 70)
 decisions: dev agent on Linux (no mic/GUI) → windows-latest CI is truth; Windows-only code behind cfg(windows); local win check: clippy --target x86_64-pc-windows-msvc with llvm-rc/lib.exe stubs
 decisions: STT = sherpa-onnx streaming zipformer small-ru int8 (Vosk team) instead of Vosk: +90 MB RAM loaded vs +190 MB, 3x faster decode, no libvosk DLLs, better free speech. No grammar mode → no-prefix mode relies on strict NLU match

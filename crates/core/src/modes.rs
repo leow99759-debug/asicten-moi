@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 use crate::config::{Config, ModePhrases};
+use crate::text::normalize as norm;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[serde(rename_all = "snake_case")]
@@ -28,18 +29,6 @@ impl ModeCommand {
             Self::MicOff => cfg.mic_enabled = false,
         }
     }
-}
-
-/// Lowercase, `ё`→`е`, keep only letters/digits/spaces, collapse whitespace.
-fn norm(s: &str) -> String {
-    s.to_lowercase()
-        .replace('ё', "е")
-        .chars()
-        .map(|c| if c.is_alphanumeric() { c } else { ' ' })
-        .collect::<String>()
-        .split_whitespace()
-        .collect::<Vec<_>>()
-        .join(" ")
 }
 
 /// Voice phrase → mode switch. Matches when the utterance contains the configured phrase
