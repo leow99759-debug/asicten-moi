@@ -50,6 +50,16 @@ const WEEKDAYS: [&str; 7] = [
     "суббота",
 ];
 
+/// «Доброе утро/день/вечер» by local hour (greet category, §6.1).
+pub fn greeting_phrase(hour: u32) -> &'static str {
+    match hour {
+        5..=11 => "Доброе утро, сэр",
+        12..=17 => "Добрый день, сэр",
+        18..=22 => "Добрый вечер, сэр",
+        _ => "Доброй ночи, сэр",
+    }
+}
+
 pub fn date_phrase(day: u32, month: u32, weekday: u32) -> String {
     let m = MONTHS
         .get(month.saturating_sub(1) as usize)
@@ -104,6 +114,14 @@ mod tests {
         ] {
             assert_eq!(plural(n, "час", "часа", "часов"), w, "{n}");
         }
+    }
+
+    #[test]
+    fn greetings_by_hour() {
+        assert_eq!(greeting_phrase(7), "Доброе утро, сэр");
+        assert_eq!(greeting_phrase(13), "Добрый день, сэр");
+        assert_eq!(greeting_phrase(20), "Добрый вечер, сэр");
+        assert_eq!(greeting_phrase(2), "Доброй ночи, сэр");
     }
 
     #[test]

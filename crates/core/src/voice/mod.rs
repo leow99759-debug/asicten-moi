@@ -160,6 +160,20 @@ pub fn decode_wav(reader: impl std::io::Read) -> Result<(Vec<f32>, u32)> {
     Ok((mono, spec.sample_rate))
 }
 
+/// Reply texts may hold variants «a|b|c»; pick one at random.
+pub fn pick_variant(text: &str) -> &str {
+    let parts: Vec<&str> = text
+        .split('|')
+        .map(str::trim)
+        .filter(|p| !p.is_empty())
+        .collect();
+    let n = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.subsec_nanos() as usize)
+        .unwrap_or(0);
+    parts.get(n % parts.len().max(1)).copied().unwrap_or(text)
+}
+
 /// Words for a clip category, used when the category has no recording or the
 /// Windows voice is selected (§6.1 categories).
 pub fn category_text(category: &str) -> Option<&'static str> {
@@ -260,6 +274,12 @@ mod tests {
             .ends_with("x.wav"));
         assert!(p.pick(&["missing"]).is_none());
         assert!(VoicePack::load(dir.path(), "en").is_err());
+    }
+
+    #[test]
+    fn variants() {
+        assert_eq!(pick_variant("да сэр"), "да сэр");
+        assert!(["а", "б"].contains(&pick_variant("а | б")));
     }
 
     #[test]

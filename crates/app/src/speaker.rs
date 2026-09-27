@@ -80,12 +80,16 @@ impl Speaker {
             VoiceEngine::Windows => None,
         };
         // no recording (or Windows voice): speak the category's words
-        let text = line.text.clone().or_else(|| {
-            line.clips
-                .iter()
-                .find_map(|c| voice::category_text(c))
-                .map(str::to_owned)
-        });
+        let text = line
+            .text
+            .as_deref()
+            .map(|t| voice::pick_variant(t).to_owned())
+            .or_else(|| {
+                line.clips
+                    .iter()
+                    .find_map(|c| voice::category_text(c))
+                    .map(str::to_owned)
+            });
         if let Some(t) = text.clone().or_else(|| {
             clip.and_then(|c| c.file_stem())
                 .map(|s| s.to_string_lossy().into_owned())

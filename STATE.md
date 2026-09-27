@@ -1,4 +1,4 @@
-last: T042 win::speech::synth_wav (WinRT SpeechSynthesizer, ru voice if installed, WAV bytes → our player), config voice_engine jarvis|windows, Speaker: Windows engine or Piper failure → Windows voice; voice::category_text for clip-less lines; voice::decode_wav
+last: T043 packs/dialog.json (42 intents, reply variants «a|b» via voice::pick_variant), System.Info greeting (info::greeting_phrase), test: every plain phrase of every context-free repo command reaches its own command (no clashes)
 next: T043 ≥40 dialog intents; T044 voice pack build (film cuts v1 rejected by user: Tony audible, echo, quiet → htdemucs_ft retry, else Fish)
 blocked: T002 needs-user (workflow edits: user pastes tools/ci/ci.yml into .github/workflows) | wake sensitivity 50 needs real-voice tuning (synthetic «Джарвис, включи музыку» passes only at 70)
 decisions: dev agent on Linux (no mic/GUI) → windows-latest CI is truth; Windows-only code behind cfg(windows); local win check: clippy --target x86_64-pc-windows-msvc with llvm-rc/lib.exe stubs

@@ -243,7 +243,7 @@ mod tests {
         assert_eq!(o.commands[0].reply.clips, vec!["status"]);
         assert!(o.commands[0].steps.is_empty());
 
-        assert!(b.handle("спой песню").commands.is_empty());
+        assert!(b.handle("квантовая абракадабра").commands.is_empty());
     }
 
     #[test]
@@ -251,7 +251,7 @@ mod tests {
         let dry = Arc::new(DryRun::default());
         let b = brain(dry);
         let lines = |u: &str| b.handle(u).voice_lines();
-        assert_eq!(lines("спой песню")[0].clips, vec!["not_found"]);
+        assert_eq!(lines("квантовая абракадабра")[0].clips, vec!["not_found"]);
         assert_eq!(lines("открой браузер")[0].clips, vec!["done"]);
         assert!(lines("включи музыку").is_empty());
         let chain = lines("открой браузер и как дела");
@@ -315,6 +315,18 @@ mod tests {
         ] {
             assert_eq!(ids(u), vec![id.to_owned()], "{u}");
         }
+        // every plain phrase of every context-free command reaches that command
+        let mut clashes = Vec::new();
+        for c in b.commands().iter().filter(|c| c.when.is_none()) {
+            for p in c.phrases.iter().filter(|p| !p.contains('{')) {
+                let got = ids(p);
+                if got != vec![c.id.clone()] {
+                    clashes.push(format!("«{p}» → {got:?}, want {}", c.id));
+                }
+            }
+        }
+        assert!(clashes.is_empty(), "{clashes:#?}");
+
         *dry.foreground.lock().expect("lock") = Some("POWERPNT.EXE".into());
         assert_eq!(ids("дальше"), vec!["office.ppt_next".to_owned()]);
         assert_eq!(

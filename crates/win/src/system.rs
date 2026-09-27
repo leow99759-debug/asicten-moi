@@ -269,6 +269,7 @@ mod win {
         let t = unsafe { GetLocalTime() };
         Ok(match what {
             "time" => info::time_phrase(u32::from(t.wHour), u32::from(t.wMinute)),
+            "greeting" => info::greeting_phrase(u32::from(t.wHour)).to_owned(),
             "date" => info::date_phrase(
                 u32::from(t.wDay),
                 u32::from(t.wMonth),
