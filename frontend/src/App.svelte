@@ -9,6 +9,7 @@
   import Dashboard from "./pages/Dashboard.svelte";
   import Placeholder from "./pages/Placeholder.svelte";
   import Settings from "./pages/Settings.svelte";
+  import Editor from "./pages/Editor.svelte";
   import { app, connect } from "./lib/app.svelte";
   import { windowMaterial } from "./lib/commands";
 
@@ -41,7 +42,7 @@
           {:else if app.page === "dashboard"}
             <Dashboard />
           {:else if app.page === "editor"}
-            <Placeholder page="editor" icon="terminal" milestone="M5" />
+            <Editor />
           {:else if app.page === "addons"}
             <Placeholder page="addons" icon="puzzle" milestone="M6" />
           {:else if app.page === "ai"}

@@ -4,8 +4,9 @@
     checked = false,
     label,
     disabled = false,
+    small = false,
     onchange,
-  }: { checked?: boolean; label: string; disabled?: boolean; onchange?: (v: boolean) => void } = $props();
+  }: { checked?: boolean; label: string; disabled?: boolean; small?: boolean; onchange?: (v: boolean) => void } = $props();
 </script>
 
 <button
@@ -16,7 +17,11 @@
   {disabled}
   class="toggle"
   class:on={checked}
-  onclick={() => onchange?.(!checked)}>
+  class:small
+  onclick={(e) => {
+    e.stopPropagation();
+    onchange?.(!checked);
+  }}>
   <span class="knob"></span>
 </button>
 
@@ -76,6 +81,27 @@
   }
   .toggle.on:active .knob {
     translate: 17px 0;
+  }
+  /* dense variant for tree rows */
+  .toggle.small {
+    width: 30px;
+    height: 16px;
+  }
+  .small .knob,
+  .small:hover .knob {
+    width: 8px;
+    height: 8px;
+    margin: -4px 0 0;
+    left: 3px;
+  }
+  .small:active .knob {
+    width: 11px;
+  }
+  .toggle.small.on .knob {
+    translate: 15px 0;
+  }
+  .toggle.small.on:active .knob {
+    translate: 12px 0;
   }
   .toggle:disabled {
     opacity: 0.4;

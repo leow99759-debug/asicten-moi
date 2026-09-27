@@ -1,6 +1,7 @@
 //! Tauri shell: wires the core to the UI windows.
 
 pub mod brain_worker;
+mod editor;
 pub mod engine;
 mod hotkeys;
 pub mod ipc;
@@ -35,6 +36,8 @@ pub struct AppState {
     pub speaker: std::sync::OnceLock<Arc<speaker::Speaker>>,
     /// Desktop avatar + HUD windows (§3.6, §3.7).
     pub overlay: std::sync::OnceLock<overlay::Overlay>,
+    /// Built-in packs folder, for the command editor.
+    pub packs: std::sync::OnceLock<Option<std::path::PathBuf>>,
 }
 
 impl AppState {
@@ -232,6 +235,7 @@ pub fn run() -> anyhow::Result<()> {
             mica: Default::default(),
             speaker: Default::default(),
             overlay: Default::default(),
+            packs: Default::default(),
         })
         .invoke_handler(tauri::generate_handler![
             set_mode,
@@ -247,7 +251,9 @@ pub fn run() -> anyhow::Result<()> {
             mic_devices,
             preview_voice,
             avatar_edit,
-            hud_preview
+            hud_preview,
+            editor::editor_library,
+            editor::editor_save
         ])
         .setup(move |app| {
             let handle = app.handle().clone();
@@ -271,6 +277,8 @@ pub fn run() -> anyhow::Result<()> {
                 }
             }
             let resources = app.path().resource_dir().ok();
+            let packs = jarvis_core::paths::find_packs(resources.as_deref());
+            let _ = state.packs.set(packs.clone());
             let sink: Arc<dyn jarvis_core::ipc::EventSink> =
                 Arc::new(ipc::TauriSink(handle.clone()));
             let Some(assets) = jarvis_core::paths::find_assets(resources.as_deref()) else {
@@ -299,7 +307,6 @@ pub fn run() -> anyhow::Result<()> {
                     speaker: speaker.clone(),
                 },
             );
-            let packs = jarvis_core::paths::find_packs(resources.as_deref());
             let commands =
                 brain_worker::load_commands(packs.as_deref(), &state.paths.user_commands());
             state

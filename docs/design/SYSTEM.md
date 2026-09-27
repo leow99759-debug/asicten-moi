@@ -42,7 +42,8 @@ Numbers: `font-variant-numeric: tabular-nums`. Hierarchy = weight + size + colou
 - Spacing: 4 · 8 · 12 · 16 · 20 · 24 · 32 · 40 (4-pt grid).
 - Radius: `--r-xs` 4 (chips) · `--r-sm` 6 (controls) · `--r-md` 8 (cards, groups) ·
   `--r-lg` 12 (layer, dialogs) · pill for toggles/segmented thumbs.
-- Controls 32 px high; list rows 48 px (56 with description); nav items 36 px.
+- Controls 32 px high; list rows 48 px (56 with description); nav items 36 px; tree rows 32 px,
+  16 px indent per level, selected = `--fill-hover` + the same 3×16 accent indicator.
 - Title bar 40 px, caption buttons 46×40 (Windows 11), sidebar 236 px (64 px when window < 1000 px).
 
 ## Components

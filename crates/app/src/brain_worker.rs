@@ -26,6 +26,8 @@ pub enum Work {
     Utterance(String),
     Job(Job),
     Repeat,
+    /// Editor saved: swap the command set.
+    Reload(Vec<commands::Command>),
 }
 
 /// Pending confirmation shared by the worker (asks), the voice loop and the UI (answer).
@@ -134,23 +136,12 @@ impl Assistant for AppAssistant {
     }
 }
 
-/// Built-in packs + the user's commands.json.
+/// Built-in packs + the user's commands.json (overrides by id, switched-off dropped).
 pub fn load_commands(packs_dir: Option<&Path>, user_file: &Path) -> Vec<commands::Command> {
-    let mut packs: Vec<Pack> = packs_dir
+    let packs: Vec<Pack> = packs_dir
         .map(|d| commands::load_dir(d).0)
         .unwrap_or_default();
-    if let Ok(text) = std::fs::read_to_string(user_file) {
-        match commands::parse_pack(&text) {
-            Ok((p, errs)) => {
-                for e in errs {
-                    tracing::warn!("user commands: {e}");
-                }
-                packs.push(p);
-            }
-            Err(e) => tracing::warn!("user commands: {e}"),
-        }
-    }
-    let cmds: Vec<_> = packs.into_iter().flat_map(|p| p.commands).collect();
+    let cmds = commands::Library::merge(packs, commands::read_user(user_file)).active();
     tracing::info!(count = cmds.len(), "commands loaded");
     cmds
 }
@@ -197,12 +188,14 @@ pub fn spawn(
     let spawned = std::thread::Builder::new()
         .name("jarvis-brain".into())
         .spawn(move || {
-            let executor = Executor::new(
-                Arc::new(WinBackend),
-                assistant.clone(),
-                Arc::new(SystemApps),
-            );
-            let brain = Brain::new(commands, executor, assistant);
+            let executor = || {
+                Executor::new(
+                    Arc::new(WinBackend),
+                    assistant.clone(),
+                    Arc::new(SystemApps),
+                )
+            };
+            let mut brain = Brain::new(commands, executor(), assistant.clone());
             let mut last: Option<String> = None;
             let publish = |outcome: Outcome| {
                 let entry = db
@@ -239,6 +232,7 @@ pub fn spawn(
                         }),
                         None => tracing::warn!(%id, "timer: unknown command"),
                     },
+                    Work::Reload(cmds) => brain = Brain::new(cmds, executor(), assistant.clone()),
                     Work::Job(Job::Remind(text)) => {
                         speaker.say_text(&["remind"], &format!("Сэр, напоминаю: {text}"));
                     }

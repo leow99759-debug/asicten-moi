@@ -1,6 +1,7 @@
 //! Command model, packs, loading and validation (SPEC §4.1).
 
 mod action;
+mod library;
 mod pathvars;
 
 use std::collections::{BTreeMap, HashSet};
@@ -10,6 +11,7 @@ use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 pub use action::{Action, AssistantMode, Num, PowerPlan, Side};
+pub use library::{read_user, user_pack, write_user, Entry, Library};
 pub use pathvars::{expand, AppLocator, APP_VARS};
 
 /// Slot placeholders allowed in phrases (§4.1).
@@ -63,6 +65,9 @@ pub struct Command {
     pub slots: BTreeMap<String, String>,
     #[serde(default)]
     pub when: Option<When>,
+    /// Switched off in the editor: kept, but never matched.
+    #[serde(default = "yes")]
+    pub enabled: bool,
 }
 
 /// Bonus for a context-specific command whose `when` matches (beats generic ones).
@@ -97,10 +102,13 @@ pub struct Pack {
     #[serde(default)]
     pub version: String,
     pub commands: Vec<Command>,
+    /// Folders the editor keeps even while empty (user pack only).
+    #[serde(default)]
+    pub folders: Vec<Vec<String>>,
 }
 
 /// Problems in one command; the command is skipped, the rest of the pack loads.
-fn validate(cmd: &Command) -> Vec<String> {
+pub fn validate(cmd: &Command) -> Vec<String> {
     let mut errs = Vec::new();
     if cmd.id.trim().is_empty() {
         errs.push("empty id".into());

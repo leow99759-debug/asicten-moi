@@ -19,4 +19,8 @@ confirm: boolean,
 /**
  * May take part in «… и …» chains (§4.3).
  */
-chainable: boolean, slots: { [key in string]: string }, when: When | null, };
+chainable: boolean, slots: { [key in string]: string }, when: When | null, 
+/**
+ * Switched off in the editor: kept, but never matched.
+ */
+enabled: boolean, };
