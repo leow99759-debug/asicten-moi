@@ -6,12 +6,13 @@
 #   pwsh tools/fetch-assets.ps1                    # download from Release (needs `gh auth`), verify, extract to assets/
 #   pwsh tools/fetch-assets.ps1 -Publish           # rebuild from upstream, rewrite assets.sha256, upload to Release
 #   pwsh tools/fetch-assets.ps1 -Publish -NoUpload # rebuild only
-param([switch]$Publish, [switch]$NoUpload, [string]$Tag = 'assets-v1')
+param([switch]$Publish, [switch]$NoUpload, [string]$Tag = 'assets-v1', [string]$Repo = 'leow99759-debug/asicten-moi')
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 
 $Root = Split-Path $PSScriptRoot -Parent
-$Out = Join-Path $Root 'assets'
+# JARVIS_ASSETS = keep models elsewhere (the app reads the same variable)
+$Out = if ($env:JARVIS_ASSETS) { $env:JARVIS_ASSETS } else { Join-Path $Root 'assets' }
 $Cache = Join-Path $Out '.download'
 $SumsFile = Join-Path $PSScriptRoot 'assets.sha256'
 
@@ -72,9 +73,9 @@ try {
         $lines += foreach ($name in $old.Keys) { if (-not $Upstream.Contains($name)) { "$($old[$name])  $name" } }
         Set-Content $SumsFile $lines
         if (-not $NoUpload) {
-            gh release view $Tag *> $null
-            if ($LASTEXITCODE) { gh release create $Tag --prerelease --title $Tag --notes 'Offline assets. See tools/fetch-assets.ps1' }
-            gh release upload $Tag ($Upstream.Keys | ForEach-Object { Join-Path $Cache $_ }) --clobber
+            gh release view $Tag -R $Repo *> $null
+            if ($LASTEXITCODE) { gh release create $Tag -R $Repo --prerelease --title $Tag --notes 'Offline assets. See tools/fetch-assets.ps1' }
+            gh release upload $Tag -R $Repo ($Upstream.Keys | ForEach-Object { Join-Path $Cache $_ }) --clobber
             if ($LASTEXITCODE) { throw 'gh release upload failed' }
         }
     }
@@ -84,7 +85,7 @@ try {
             $file = Join-Path $Cache $name
             if ((Test-Path $file) -and (Get-Sha $file) -eq $sums[$name]) { Write-Host "cached $name"; continue }
             Write-Host "download $name"
-            gh release download $Tag -p $name -D $Cache --clobber
+            gh release download $Tag -R $Repo -p $name -D $Cache --clobber
             if ($LASTEXITCODE) { throw "gh release download $name failed" }
             if ((Get-Sha $file) -ne $sums[$name]) { throw "sha256 mismatch: $name" }
         }
