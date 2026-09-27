@@ -7,6 +7,9 @@ pub mod db;
 pub mod ipc;
 pub mod logging;
 pub mod paths;
+#[cfg(test)]
+mod test_util;
+pub mod vad;
 
 pub use config::Config;
 pub use db::Db;
@@ -28,6 +31,8 @@ pub enum Error {
     Sqlite(#[from] rusqlite::Error),
     #[error("audio: {0}")]
     Audio(String),
+    #[error("model: {0}")]
+    Model(String),
     #[error("logging: {0}")]
     Logging(String),
     #[error("no config directory (APPDATA)")]

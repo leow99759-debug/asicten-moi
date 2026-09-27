@@ -16,12 +16,14 @@ tracing-subscriber.workspace = true
 tracing-appender.workspace = true
 dirs.workspace = true
 ts-rs.workspace = true
+sherpa-onnx.workspace = true
 
 [target.'cfg(windows)'.dependencies]
 cpal.workspace = true
 
 [dev-dependencies]
 tempfile.workspace = true
+hound.workspace = true
 
 [lints]
 workspace = true

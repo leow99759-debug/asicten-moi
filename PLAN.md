@@ -10,7 +10,7 @@ Rule: take the FIRST `[ ]` in order. M13 is optional and runs only after v1.0.0.
 
 ## M1 Audio + wake + STT
 - [x] T010 cpal WASAPI capture 16k mono, ring buffer, device select, level meter §2.1
-- [ ] T011 Silero VAD (sherpa-onnx) segmenting §1
+- [x] T011 Silero VAD (sherpa-onnx) segmenting §1
 - [ ] T012 Wake word Rustpotter "Джарвис" + sensitivity; fallback Vosk grammar §1 §2.2
 - [ ] T013 Vosk STT lazy: load on wake with audio buffering, keep-warm timer, unload; grammar mode for no-prefix; partials → listening bar §1 §2.1
 - [ ] T014 Single-utterance "Джарвис, включи музыку", follow-up window, barge-in §2.1

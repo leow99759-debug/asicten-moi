@@ -26,6 +26,8 @@ dirs = "7"
 tempfile = "3"
 ts-rs = { version = "12", features = ["no-serde-warnings"] }
 cpal = "0.18"
+sherpa-onnx = "1.13"
+hound = "3.5"
 tauri = { version = "2", features = [] }
 tauri-build = { version = "2", features = [] }
 
