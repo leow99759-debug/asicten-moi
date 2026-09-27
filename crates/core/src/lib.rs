@@ -7,6 +7,7 @@ pub mod db;
 pub mod ipc;
 pub mod logging;
 pub mod paths;
+pub mod stt;
 #[cfg(test)]
 mod test_util;
 pub mod vad;

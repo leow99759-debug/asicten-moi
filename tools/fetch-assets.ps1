@@ -1,4 +1,4 @@
-# Offline assets (SPEC §6, §13): Vosk small-ru, Silero VAD, Piper RU voice,
+# Offline assets (SPEC §6, §13): streaming zipformer small-ru (Vosk team, sherpa-onnx format), Silero VAD, Piper RU voice,
 # Priler rustpotter wake models + voice packs, FitoDomik/Jarvis-Sound.
 # Binaries never go to git: they live in GitHub Release `assets-v1`, sha256 in tools/assets.sha256.
 #
@@ -16,7 +16,7 @@ $SumsFile = Join-Path $PSScriptRoot 'assets.sha256'
 
 # file in release -> upstream source (URL, or git:<owner/repo>:<subdir>, zipped with a top folder = file base name)
 $Upstream = [ordered]@{
-    'vosk-model-small-ru-0.22.zip'          = 'https://alphacephei.com/vosk/models/vosk-model-small-ru-0.22.zip'
+    'sherpa-onnx-streaming-zipformer-small-ru-vosk-int8-2025-08-16.tar.bz2' = 'https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-streaming-zipformer-small-ru-vosk-int8-2025-08-16.tar.bz2'
     'silero_vad.onnx'                       = 'https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/silero_vad.onnx'
     'vits-piper-ru_RU-denis-medium.tar.bz2' = 'https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/vits-piper-ru_RU-denis-medium.tar.bz2'
     'rustpotter-jarvis.zip'                 = 'git:Priler/jarvis:resources/rustpotter'
