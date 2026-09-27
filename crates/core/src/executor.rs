@@ -11,13 +11,27 @@ use serde::Serialize;
 use serde_json::Value;
 use ts_rs::TS;
 
-use crate::commands::{expand, Action, AppLocator, Command, Num};
+use crate::commands::{expand, Action, AppLocator, AssistantMode, Command, Num};
 use crate::nlu::matcher::SlotValue;
+use crate::scheduler::Job;
 
 /// Performs one side effect. `Ok(Some(text))` = something to say (time, clipboard…).
 /// Pauses are handled by the executor itself.
 pub trait Backend: Send + Sync {
     fn perform(&self, action: &Action) -> Result<Option<String>, String>;
+}
+
+/// Assistant-level actions (Speak, Ask, Timer, Reminder, Assistant.*), implemented by the app.
+pub trait Assistant: Send + Sync {
+    fn speak(&self, text: Option<&str>, clip: Option<&str>) -> Result<(), String>;
+    /// Voice/UI yes-no question; `false` stops the command.
+    fn ask(&self, question: &str) -> Result<bool, String>;
+    fn set_mode(&self, mode: AssistantMode, on: bool) -> Result<(), String>;
+    fn set_theme(&self, color: &str) -> Result<(), String>;
+    fn open_page(&self, page: &str) -> Result<(), String>;
+    fn repeat(&self) -> Result<(), String>;
+    fn cancel(&self) -> Result<(), String>;
+    fn schedule(&self, after: Duration, job: Job) -> Result<(), String>;
 }
 
 /// Records actions instead of touching the machine.
@@ -29,6 +43,55 @@ pub struct DryRun {
 impl DryRun {
     pub fn actions(&self) -> Vec<Action> {
         self.log.lock().map(|l| l.clone()).unwrap_or_default()
+    }
+
+    fn record(&self, a: Action) -> Result<(), String> {
+        if let Ok(mut l) = self.log.lock() {
+            l.push(a);
+        }
+        Ok(())
+    }
+}
+
+impl Assistant for DryRun {
+    fn speak(&self, text: Option<&str>, clip: Option<&str>) -> Result<(), String> {
+        self.record(Action::Speak {
+            text: text.map(Into::into),
+            clip: clip.map(Into::into),
+        })
+    }
+    fn ask(&self, question: &str) -> Result<bool, String> {
+        self.record(Action::Ask {
+            question: question.into(),
+        })?;
+        Ok(!question.contains("[нет]"))
+    }
+    fn set_mode(&self, mode: AssistantMode, on: bool) -> Result<(), String> {
+        self.record(Action::AssistantSetMode { mode, on })
+    }
+    fn set_theme(&self, color: &str) -> Result<(), String> {
+        self.record(Action::AssistantSetTheme {
+            color: color.into(),
+        })
+    }
+    fn open_page(&self, page: &str) -> Result<(), String> {
+        self.record(Action::AssistantOpenPage { page: page.into() })
+    }
+    fn repeat(&self) -> Result<(), String> {
+        self.record(Action::AssistantRepeat)
+    }
+    fn cancel(&self) -> Result<(), String> {
+        self.record(Action::AssistantCancel)
+    }
+    fn schedule(&self, after: Duration, job: Job) -> Result<(), String> {
+        let sec = Num::Value(after.as_secs_f64());
+        self.record(match job {
+            Job::RunCommand(id) => Action::Timer {
+                sec,
+                then_command: id,
+            },
+            Job::Remind(text) => Action::Reminder { sec, text },
+        })
     }
 }
 
@@ -54,6 +117,7 @@ pub struct StepResult {
 
 pub struct Executor {
     backend: Arc<dyn Backend>,
+    assistant: Arc<dyn Assistant>,
     apps: Arc<dyn AppLocator + Send + Sync>,
     timeout: Duration,
     /// Real sleeps for `Lux.Pause*` (off in tests).
@@ -75,9 +139,14 @@ fn num(n: &Num) -> Option<f64> {
 }
 
 impl Executor {
-    pub fn new(backend: Arc<dyn Backend>, apps: Arc<dyn AppLocator + Send + Sync>) -> Self {
+    pub fn new(
+        backend: Arc<dyn Backend>,
+        assistant: Arc<dyn Assistant>,
+        apps: Arc<dyn AppLocator + Send + Sync>,
+    ) -> Self {
         Self {
             backend,
+            assistant,
             apps,
             timeout: Duration::from_secs(10),
             pauses: true,
@@ -138,6 +207,35 @@ impl Executor {
                 std::thread::sleep(Duration::from_secs_f64(secs.clamp(0.0, 600.0)));
             }
             return Ok(None);
+        }
+        let a = &self.assistant;
+        let secs = |n: &Num| num(n).map(|s| Duration::from_secs_f64(s.clamp(0.0, 31_536_000.0)));
+        let assistant = match action {
+            Action::Speak { text, clip } => Some(a.speak(text.as_deref(), clip.as_deref())),
+            Action::Ask { question } => Some(match a.ask(question) {
+                Ok(true) => Ok(()),
+                Ok(false) => Err("отменено".to_owned()),
+                Err(e) => Err(e),
+            }),
+            Action::AssistantSetMode { mode, on } => Some(a.set_mode(*mode, *on)),
+            Action::AssistantSetTheme { color } => Some(a.set_theme(color)),
+            Action::AssistantOpenPage { page } => Some(a.open_page(page)),
+            Action::AssistantRepeat => Some(a.repeat()),
+            Action::AssistantCancel => Some(a.cancel()),
+            Action::Timer { sec, then_command } => Some(
+                secs(sec)
+                    .ok_or_else(|| "таймер без времени".to_owned())
+                    .and_then(|d| a.schedule(d, Job::RunCommand(then_command.clone()))),
+            ),
+            Action::Reminder { sec, text } => Some(
+                secs(sec)
+                    .ok_or_else(|| "напоминание без времени".to_owned())
+                    .and_then(|d| a.schedule(d, Job::Remind(text.clone()))),
+            ),
+            _ => None,
+        };
+        if let Some(r) = assistant {
+            return r.map(|()| None);
         }
         let (tx, rx) = mpsc::channel();
         let backend = self.backend.clone();
@@ -204,7 +302,7 @@ mod tests {
     }
 
     fn exec(b: Arc<dyn Backend>) -> Executor {
-        let mut e = Executor::new(b, Arc::new(Apps));
+        let mut e = Executor::new(b, Arc::new(DryRun::default()), Arc::new(Apps));
         e.pauses = false;
         e
     }
@@ -262,6 +360,34 @@ mod tests {
             .error
             .as_deref()
             .is_some_and(|m| m.starts_with("timeout")));
+    }
+
+    #[test]
+    fn assistant_actions_and_ask_cancel() {
+        let dry = Arc::new(DryRun::default());
+        let mut e = Executor::new(dry.clone(), dry.clone(), Arc::new(Apps));
+        e.pauses = false;
+        let c = cmd(
+            r#"{"type":"Speak","clip":"ok"},
+               {"type":"Reminder","sec":"{время}","text":"проверить духовку"},
+               {"type":"Timer","sec":5,"then_command":"music"},
+               {"type":"Assistant.Mode","mode":"silent","on":true},
+               {"type":"Ask","question":"Точно? [нет]"},
+               {"type":"Window.Close"}"#,
+            "напомни через {время}",
+        );
+        let slots = BTreeMap::from([("{время}".to_owned(), SlotValue::Duration(600.0))]);
+        let res = e.run(&c, &slots);
+        assert_eq!(res.len(), 5, "stops after declined Ask: {res:?}");
+        assert_eq!(res[4].error.as_deref(), Some("отменено"));
+        assert_eq!(
+            dry.actions()[1],
+            Action::Reminder {
+                sec: Num::Value(600.0),
+                text: "проверить духовку".into()
+            }
+        );
+        assert!(!dry.actions().contains(&Action::WindowClose));
     }
 
     #[test]

@@ -295,8 +295,9 @@ pub enum Action {
         sec: Num,
         then_command: String,
     },
+    /// «Напомни через {время} {текст}»: seconds from now (§10.3).
     Reminder {
-        time: String,
+        sec: Num,
         text: String,
     },
 

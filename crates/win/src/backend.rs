@@ -31,6 +31,26 @@ impl Backend for WinBackend {
                 shell_open(&lnk.to_string_lossy(), "", None, false)
             }
             Action::ProcessKill { name } => kill(name),
+            Action::PlayWav { path } => play_wav(path),
+            Action::RunCommand {
+                cmd, powershell, ..
+            } => run_visible(cmd, *powershell),
+            Action::RunCommandHidden {
+                cmd, powershell, ..
+            } => {
+                let r = if *powershell {
+                    run_hidden(
+                        "powershell",
+                        &["-NoProfile", "-NonInteractive", "-Command", cmd],
+                    )
+                } else {
+                    run_hidden("cmd", &["/C", cmd])
+                };
+                return r.map(|out| {
+                    tracing::info!(%cmd, %out, "hidden command");
+                    None
+                });
+            }
             other => input_or_window(other),
         }
         .map(|()| None)
@@ -143,6 +163,38 @@ pub(crate) fn shell_open(
     _admin: bool,
 ) -> Result<(), String> {
     Err(format!("launch «{file}»: Windows only"))
+}
+
+/// Open a console window running the command (user sees the output).
+fn run_visible(cmd: &str, powershell: bool) -> Result<(), String> {
+    let args = if powershell {
+        format!("/C start \"Jarvis\" powershell -NoExit -Command {cmd}")
+    } else {
+        format!("/C start \"Jarvis\" cmd /K {cmd}")
+    };
+    shell_open("cmd.exe", &args, None, false)
+}
+
+/// Blocking WAV playback (voice clips have their own player; this is for `Sound.PlayWav`).
+#[cfg(windows)]
+fn play_wav(path: &str) -> Result<(), String> {
+    use windows::core::HSTRING;
+    use windows::Win32::Media::Audio::{PlaySoundW, SND_FILENAME, SND_NODEFAULT, SND_SYNC};
+    if !std::path::Path::new(path).exists() {
+        return Err(format!("файл «{path}» не найден"));
+    }
+    let p = HSTRING::from(path);
+    // SAFETY: NUL-terminated path alive for the call.
+    if unsafe { PlaySoundW(&p, None, SND_FILENAME | SND_SYNC | SND_NODEFAULT) }.as_bool() {
+        Ok(())
+    } else {
+        Err(format!("не удалось воспроизвести «{path}»"))
+    }
+}
+
+#[cfg(not(windows))]
+fn play_wav(path: &str) -> Result<(), String> {
+    Err(format!("play «{path}»: Windows only"))
 }
 
 /// Run a console tool without flashing a window; stdout on success, stderr/stdout on failure.

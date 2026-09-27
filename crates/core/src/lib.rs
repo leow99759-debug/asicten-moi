@@ -15,6 +15,7 @@ pub mod nlu;
 pub mod paths;
 #[cfg(test)]
 mod s11_tests;
+pub mod scheduler;
 pub mod stt;
 #[cfg(test)]
 mod test_util;

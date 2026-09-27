@@ -25,7 +25,7 @@ Rule: take the FIRST `[ ]` in order. M13 is optional and runs only after v1.0.0.
 - [x] T024 Window.* + Keys.* + Mouse.* (SendInput) §4.4
 - [x] T025 Audio/Media (Core Audio volume/mute/device, media keys) §4.4
 - [x] T026 System.* (power w/ delay, cancel, power plan, brightness, screenshot, ms-settings, recycle bin, wifi/bt, DND, clipboard, info) §4.4
-- [ ] T027 Lux.Pause*, Sound.PlayWav, Speak, Ask, Run.Command, Timer, Reminder, Assistant.* §4.4 §10.3
+- [x] T027 Lux.Pause*, Sound.PlayWav, Speak, Ask, Run.Command, Timer, Reminder, Assistant.* §4.4 §10.3
 - [ ] T028 Chain splitting ("и/потом/затем") + confirm flow (UI dialog + voice да/нет + 30s autocancel) §4.3 §4.6
 - [ ] T029 Context rules (`when.foreground`) + PC modes (game/work/movie/night) §4.5 §4.7
 - [ ] T030 History persistence + statuses §3.4
