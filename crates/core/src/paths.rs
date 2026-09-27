@@ -35,3 +35,22 @@ impl Paths {
         self.root.join("logs")
     }
 }
+
+/// Where models/voices live: `JARVIS_ASSETS`, then `assets/` next to the exe or in the
+/// installer resources, then the repo's `assets/` (dev builds).
+pub fn find_assets(resource_dir: Option<&Path>) -> Option<PathBuf> {
+    let exe_dir = std::env::current_exe()
+        .ok()
+        .and_then(|p| p.parent().map(Path::to_path_buf));
+    let dev = cfg!(debug_assertions).then(|| Path::new(env!("CARGO_MANIFEST_DIR")).join("../.."));
+    std::env::var_os("JARVIS_ASSETS")
+        .map(PathBuf::from)
+        .into_iter()
+        .chain(
+            [exe_dir, resource_dir.map(Path::to_path_buf), dev]
+                .into_iter()
+                .flatten()
+                .map(|d| d.join("assets")),
+        )
+        .find(|p| p.is_dir())
+}

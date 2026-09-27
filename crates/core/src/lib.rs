@@ -7,6 +7,7 @@ pub mod db;
 pub mod ipc;
 pub mod listener;
 pub mod logging;
+pub mod modes;
 pub mod paths;
 pub mod stt;
 #[cfg(test)]

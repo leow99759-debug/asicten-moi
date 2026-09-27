@@ -31,6 +31,8 @@ pub struct Config {
     /// Jarvis voice volume, 0–100 (§3.4).
     pub voice_volume: u8,
     pub hotkeys: Hotkeys,
+    /// Voice phrases that switch modes (§2.2), editable in settings.
+    pub mode_phrases: ModePhrases,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -55,6 +57,29 @@ impl Default for Config {
             memory_saver: true,
             voice_volume: 80,
             hotkeys: Hotkeys::default(),
+            mode_phrases: ModePhrases::default(),
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct ModePhrases {
+    pub prefix_on: String,
+    pub prefix_off: String,
+    pub silent_on: String,
+    pub silent_off: String,
+    pub mic_off: String,
+}
+
+impl Default for ModePhrases {
+    fn default() -> Self {
+        Self {
+            prefix_on: "перейди в режим префикса".into(),
+            prefix_off: "выключи режим префикса".into(),
+            silent_on: "перейди в тихий режим".into(),
+            silent_off: "выключи тихий режим".into(),
+            mic_off: "хватит слушать".into(),
         }
     }
 }

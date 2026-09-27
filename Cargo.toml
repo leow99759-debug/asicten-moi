@@ -32,6 +32,7 @@ hound = "3.5"
 rustpotter = { git = "https://github.com/Priler/rustpotter", rev = "f0d5c4d6b63aa1ebb6e0e81089993e4ae7aef3d8", default-features = false }
 tauri = { version = "2", features = [] }
 tauri-build = { version = "2", features = [] }
+tauri-plugin-global-shortcut = "2"
 
 [workspace.lints.rust]
 unsafe_op_in_unsafe_fn = "deny"

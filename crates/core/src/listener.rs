@@ -46,6 +46,7 @@ pub struct Listener {
     cfg: ListenCfg,
     ring: Ring,
     state: State,
+    prefix: bool,
 }
 
 impl Listener {
@@ -57,6 +58,7 @@ impl Listener {
             cfg,
             ring: Ring::with_seconds(PRE_ROLL_SEC),
             state: State::Idle,
+            prefix: true,
         }
     }
 
@@ -70,6 +72,14 @@ impl Listener {
 
     pub fn is_listening(&self) -> bool {
         matches!(self.state, State::Listening { .. })
+    }
+
+    /// Prefix mode off = every phrase is a command (STT stays loaded, SPEC §2.2).
+    pub fn set_prefix(&mut self, on: bool) {
+        self.prefix = on;
+        self.stt.set_always_warm(!on);
+        self.stt.reset();
+        self.vad.flush();
     }
 
     /// Push-to-talk / mic button: listen now without the wake word.
@@ -92,6 +102,14 @@ impl Listener {
     pub fn push(&mut self, samples: &[i16], now: Instant) -> Result<Vec<Output>> {
         let mut out = Vec::new();
         match self.state {
+            State::Idle if !self.prefix => {
+                if self.feed(samples, &mut out)? {
+                    let text = self.stt.finish()?;
+                    if !text.is_empty() {
+                        out.push(Output::Final(text));
+                    }
+                }
+            }
             State::Idle => {
                 self.ring.push(samples);
                 if let Some(score) = self.wake.push(samples) {
@@ -272,6 +290,16 @@ mod tests {
         r.l.set_speaking(true, now);
         let out = r.say("jarvis");
         assert!(out.contains(&Output::BargeIn), "{out:?}");
+    }
+
+    #[test]
+    fn no_prefix_mode_takes_every_phrase() {
+        let Some(mut r) = Rig::new() else { return };
+        r.l.set_prefix(false);
+        assert_eq!(finals(&r.say("neg_browser")), vec!["открой браузер"]);
+        assert!(finals(&r.silence(3)).is_empty());
+        r.l.set_prefix(true);
+        assert!(finals(&r.say("neg_browser")).is_empty());
     }
 
     #[test]
