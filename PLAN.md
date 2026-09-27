@@ -33,7 +33,7 @@ Rule: take the FIRST `[ ]` in order. M13 is optional and runs only after v1.0.0.
 ## M3 Voice output
 - [x] T040 Voice pack format + player (cpal, not rodio), categories, no-repeat random, volume §6.1
 - [x] T041 Piper/VITS TTS via sherpa-onnx, lazy load/unload, sentence streaming, speed, FX (EQ+reverb) §6.2
-- [ ] T042 SAPI fallback + engine selector backend §6.3
+- [x] T042 SAPI fallback + engine selector backend §6.3
 - [ ] T043 Built-in dialog replies without LLM, ≥40 intents (как дела, ты тут, спасибо, время, дата, шутка, приветствие) §7.5
 - [ ] T044 Voice asset hunt: find more RU-dub Jarvis clips online, verify text via STT, normalize, trim, categorize into pack; map every reply category; originals (Jarvis-Sound/Priler: «да сэр», «загружаю», …) always win; also cut lines from user-supplied film audio (3:43 mp3 «Железный человек - Джарвис», kept outside git): Demucs vocals split + denoise, STT-verify, fun lines like «начинаю калибровку» → mode replies (e.g. игровой режим); Fish Audio only for phrases absent in originals — generate at build time via Fish Audio (`s2.1-pro-free`, voice 4c3eaacc1a0545cdb0295bfddf3e3785, key in env FISH_API_KEY, never in git) §6.1
 

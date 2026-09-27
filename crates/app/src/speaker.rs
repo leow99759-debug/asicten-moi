@@ -7,9 +7,10 @@ use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
 use jarvis_core::brain::Line;
+use jarvis_core::config::VoiceEngine;
 use jarvis_core::ipc::{CoreEvent, EventSink};
 use jarvis_core::tts::{self, Tts};
-use jarvis_core::voice::{Player, VoicePack};
+use jarvis_core::voice::{self, Player, VoicePack};
 use jarvis_core::Config;
 
 pub struct Speaker {
@@ -64,18 +65,33 @@ impl Speaker {
     }
 
     pub fn say(&self, line: &Line) {
-        let clip = self.pack.as_ref().and_then(|p| p.pick(&line.clips));
-        let shown = line.text.clone().or_else(|| {
+        let (silent, volume, speed, fx, engine) = {
+            let c = self.config.lock().unwrap_or_else(|e| e.into_inner());
+            (
+                c.silent_mode,
+                c.voice_volume,
+                c.voice_speed,
+                c.voice_fx,
+                c.voice_engine,
+            )
+        };
+        let clip = match engine {
+            VoiceEngine::Jarvis => self.pack.as_ref().and_then(|p| p.pick(&line.clips)),
+            VoiceEngine::Windows => None,
+        };
+        // no recording (or Windows voice): speak the category's words
+        let text = line.text.clone().or_else(|| {
+            line.clips
+                .iter()
+                .find_map(|c| voice::category_text(c))
+                .map(str::to_owned)
+        });
+        if let Some(t) = text.clone().or_else(|| {
             clip.and_then(|c| c.file_stem())
                 .map(|s| s.to_string_lossy().into_owned())
-        });
-        if let Some(t) = shown {
+        }) {
             self.sink.emit(CoreEvent::Say(t));
         }
-        let (silent, volume, speed, fx) = {
-            let c = self.config.lock().unwrap_or_else(|e| e.into_inner());
-            (c.silent_mode, c.voice_volume, c.voice_speed, c.voice_fx)
-        };
         let Some(player) = self.player.as_ref().filter(|_| !silent) else {
             return;
         };
@@ -86,17 +102,32 @@ impl Speaker {
             }
             return;
         }
-        let (Some(tts), Some(text)) = (&self.tts, &line.text) else {
-            return;
-        };
-        for sentence in tts::sentences(text) {
-            match tts.synth(&sentence, speed) {
-                Ok((s, rate)) if fx => player.play_samples(&tts::movie_fx(&s, rate), rate),
-                Ok((s, rate)) => player.play_samples(&s, rate),
-                Err(e) => {
-                    tracing::warn!("tts: {e}");
-                    return;
-                }
+        let Some(text) = text else { return };
+        for sentence in tts::sentences(&text) {
+            let neural = match (engine, &self.tts) {
+                (VoiceEngine::Jarvis, Some(t)) => t
+                    .synth(&sentence, speed)
+                    .map(|(s, rate)| {
+                        if fx {
+                            (tts::movie_fx(&s, rate), rate)
+                        } else {
+                            (s, rate)
+                        }
+                    })
+                    .map_err(|e| tracing::warn!("tts: {e}"))
+                    .ok(),
+                _ => None,
+            };
+            // Windows voice: chosen engine or fallback when Piper is missing/broken (§6.3)
+            let audio = neural.or_else(|| {
+                jarvis_win::speech::synth_wav(&sentence, speed)
+                    .map_err(|e| tracing::warn!("windows voice: {e}"))
+                    .ok()
+                    .and_then(|wav| voice::decode_wav(std::io::Cursor::new(wav)).ok())
+            });
+            match audio {
+                Some((s, rate)) => player.play_samples(&s, rate),
+                None => return,
             }
         }
     }

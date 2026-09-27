@@ -131,10 +131,16 @@ impl VoicePack {
     }
 }
 
-/// Decode a WAV to mono f32 and its sample rate.
+/// Decode a WAV file to mono f32 and its sample rate.
 pub fn read_wav(path: &Path) -> Result<(Vec<f32>, u32)> {
-    let mut r = hound::WavReader::open(path)
-        .map_err(|e| Error::Audio(format!("{}: {e}", path.display())))?;
+    let f = std::fs::File::open(path)?;
+    decode_wav(std::io::BufReader::new(f))
+        .map_err(|e| Error::Audio(format!("{}: {e}", path.display())))
+}
+
+/// Decode WAV bytes (files, Windows voice output) to mono f32 and sample rate.
+pub fn decode_wav(reader: impl std::io::Read) -> Result<(Vec<f32>, u32)> {
+    let mut r = hound::WavReader::new(reader).map_err(|e| Error::Audio(e.to_string()))?;
     let spec = r.spec();
     let ch = usize::from(spec.channels.max(1));
     let interleaved: Vec<f32> = match spec.sample_format {
@@ -152,6 +158,28 @@ pub fn read_wav(path: &Path) -> Result<(Vec<f32>, u32)> {
         .map(|f| f.iter().sum::<f32>() / ch as f32)
         .collect();
     Ok((mono, spec.sample_rate))
+}
+
+/// Words for a clip category, used when the category has no recording or the
+/// Windows voice is selected (§6.1 categories).
+pub fn category_text(category: &str) -> Option<&'static str> {
+    Some(match category {
+        "greet" | "run" => "Джарвис к вашим услугам, сэр",
+        "reply" => "Да, сэр?",
+        "ok" => "Да, сэр",
+        "loading" => "Загружаю, сэр",
+        "done" => "Запрос выполнен, сэр",
+        "ready" => "Всегда к вашим услугам, сэр",
+        "thanks" => "Всегда рад помочь, сэр",
+        "status" => "Все системы работают нормально, сэр",
+        "not_found" => "Простите, сэр, не понял команду",
+        "no_internet" => "Нет подключения к интернету, сэр",
+        "cancel" => "Отменено, сэр",
+        "error" => "Сэр, не удалось выполнить",
+        "off" | "goodbye" => "До свидания, сэр",
+        "game_mode" | "calibration" => "Начинаю калибровку, сэр",
+        _ => return None,
+    })
 }
 
 /// Linear resampler for playback (speech clips; quality is fine for voice).

@@ -1,5 +1,5 @@
-last: T041 core::tts (Piper denis via sherpa OfflineTts, lazy load, unload after 60s idle, sentences() streaming, movie_fx: HP150+presence+2 combs; round-trip test synth→STT) + Speaker: text without clip → TTS per sentence; config voice_speed/voice_fx
-next: T042 SAPI fallback + engine selector; T043 dialogs; T044 voice pack build (film cuts await user listen check)
+last: T042 win::speech::synth_wav (WinRT SpeechSynthesizer, ru voice if installed, WAV bytes → our player), config voice_engine jarvis|windows, Speaker: Windows engine or Piper failure → Windows voice; voice::category_text for clip-less lines; voice::decode_wav
+next: T043 ≥40 dialog intents; T044 voice pack build (film cuts v1 rejected by user: Tony audible, echo, quiet → htdemucs_ft retry, else Fish)
 blocked: T002 needs-user (workflow edits: user pastes tools/ci/ci.yml into .github/workflows) | wake sensitivity 50 needs real-voice tuning (synthetic «Джарвис, включи музыку» passes only at 70)
 decisions: dev agent on Linux (no mic/GUI) → windows-latest CI is truth; Windows-only code behind cfg(windows); local win check: clippy --target x86_64-pc-windows-msvc with llvm-rc/lib.exe stubs
 decisions: STT = sherpa-onnx streaming zipformer small-ru int8 (Vosk team) instead of Vosk: +90 MB RAM loaded vs +190 MB, 3x faster decode, no libvosk DLLs, better free speech. No grammar mode → no-prefix mode relies on strict NLU match
