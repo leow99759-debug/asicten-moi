@@ -53,22 +53,28 @@ impl Scheduler {
     }
 }
 
+type Jobs = BTreeMap<u64, (Instant, Job)>;
+
+/// Remove jobs due at `now`, in due-time order even when several are late (busy machine).
+fn take_due(jobs: &mut Jobs, now: Instant) -> Vec<Job> {
+    let mut due: Vec<(Instant, u64)> = jobs
+        .iter()
+        .filter(|(_, (t, _))| *t <= now)
+        .map(|(id, (t, _))| (*t, *id))
+        .collect();
+    due.sort();
+    due.into_iter()
+        .filter_map(|(_, id)| jobs.remove(&id).map(|(_, j)| j))
+        .collect()
+}
+
 fn run(rx: Receiver<Ctl>, fired: Sender<Job>) {
-    let mut jobs: BTreeMap<u64, (Instant, Job)> = BTreeMap::new();
+    let mut jobs = Jobs::new();
     loop {
         let now = Instant::now();
-        // fire in due-time order even when several are late (busy machine)
-        let mut due: Vec<(Instant, u64)> = jobs
-            .iter()
-            .filter(|(_, (t, _))| *t <= now)
-            .map(|(id, (t, _))| (*t, *id))
-            .collect();
-        due.sort();
-        for (_, id) in due {
-            if let Some((_, job)) = jobs.remove(&id) {
-                if fired.send(job).is_err() {
-                    return;
-                }
+        for job in take_due(&mut jobs, now) {
+            if fired.send(job).is_err() {
+                return;
             }
         }
         let wait = jobs
@@ -96,20 +102,17 @@ mod tests {
 
     #[test]
     fn late_jobs_fire_in_due_order() {
-        let (mut s, rx) = Scheduler::start();
-        // both already due when the thread wakes: order must follow due time, not id
-        s.add(Duration::from_millis(20), Job::Remind("второй".into()));
-        s.add(Duration::ZERO, Job::Remind("первый".into()));
-        std::thread::sleep(Duration::from_millis(60));
-        let t = Duration::from_secs(2);
-        let got = [rx.recv_timeout(t), rx.recv_timeout(t)];
-        assert_eq!(
-            got,
-            [
-                Ok(Job::Remind("первый".into())),
-                Ok(Job::Remind("второй".into()))
-            ]
-        );
+        // both already due when the thread wakes: order follows due time, not id
+        // (pure check: a thread-timing test was flaky on busy CI runners)
+        let t0 = Instant::now();
+        let mut jobs = Jobs::new();
+        let job = |s: &str| Job::Remind(s.into());
+        jobs.insert(1, (t0 + Duration::from_millis(20), job("второй")));
+        jobs.insert(2, (t0, job("первый")));
+        jobs.insert(3, (t0 + Duration::from_secs(60), job("потом")));
+        let got = take_due(&mut jobs, t0 + Duration::from_millis(50));
+        assert_eq!(got, vec![job("первый"), job("второй")]);
+        assert_eq!(jobs.len(), 1);
     }
 
     #[test]
