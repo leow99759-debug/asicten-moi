@@ -1,15 +1,21 @@
 <script lang="ts">
   // Command card (SPEC §5.3, video 26 t15/t18): name, Связывать / Подтверждать, action steps
-  // with drag-to-reorder, quick type chips. Phrases/reply editing: T062.
+  // with drag-to-reorder, quick type chips, phrase chips + live match preview, reply, «▶ Тест».
   import ActionRow from "./ActionRow.svelte";
   import Checkbox from "./Checkbox.svelte";
+  import ChipInput from "./ChipInput.svelte";
+  import MatchPreview from "./MatchPreview.svelte";
+  import ReplyPicker from "./ReplyPicker.svelte";
   import Icon from "./Icon.svelte";
   import Toggle from "./Toggle.svelte";
   import type { Action } from "../lib/bindings/Action";
   import type { Command } from "../lib/bindings/Command";
+  import type { CommandOutcome } from "../lib/bindings/CommandOutcome";
   import { DEFAULTS, GROUPS, QUICK, type ActionType } from "../lib/actions";
-  import { ed, issues, setEnabled, touch } from "../lib/editor.svelte";
+  import { ed, issues, runTest, setEnabled, touch } from "../lib/editor.svelte";
   import { t } from "../lib/i18n";
+  import { SLOTS } from "../lib/phrases";
+  import { inTauri } from "../lib/window";
 
   let { cmd }: { cmd: Command } = $props();
 
@@ -27,6 +33,35 @@
     edit(() => cmd.actions.push(structuredClone(DEFAULTS[type]) as Action));
     menu = false;
   }
+  let testing = $state(false);
+  let result = $state<{ ok: boolean; text: string } | null>(null);
+  let hide: ReturnType<typeof setTimeout> | undefined;
+
+  function verdict(o: CommandOutcome | null): { ok: boolean; text: string } {
+    if (!o) return { ok: false, text: t(inTauri() ? "card.test_timeout" : "card.test_app") };
+    if (o.status === "done") return { ok: true, text: t("card.test_done") };
+    const err = o.steps.find((s) => s.error)?.error;
+    return { ok: false, text: o.status === "error" && err ? err : t(`card.test_${o.status}`) };
+  }
+  async function test() {
+    testing = true;
+    result = null;
+    clearTimeout(hide);
+    try {
+      result = verdict(await runTest(cmd));
+    } catch (e) {
+      result = { ok: false, text: String(e) };
+    } finally {
+      testing = false;
+      hide = setTimeout(() => (result = null), 6000);
+    }
+  }
+  // a stale result must not stick to the next opened command
+  $effect(() => {
+    void cmd.id;
+    result = null;
+  });
+
   function move(from: number, to: number) {
     if (from === to) return;
     edit(() => {
@@ -45,7 +80,17 @@
     <p class="t-caption">{[t("editor.root"), ...cmd.folder].join(" › ")}</p>
   </div>
   <Toggle checked={cmd.enabled} label={t("editor.enabled")} onchange={(v) => setEnabled(cmd.id, v)} />
+  <button type="button" class="btn primary test" disabled={testing || bad.length > 0} title={t("card.test_hint")} onclick={test}>
+    <Icon name="play" size={14} />
+    {testing ? t("card.testing") : t("card.test")}
+  </button>
 </header>
+{#if result}
+  <div class="result" class:ok={result.ok} role="status">
+    <Icon name={result.ok ? "check" : "alert"} size={14} stroke={2} />
+    {result.text}
+  </div>
+{/if}
 <div class="badges">
   {#if meta?.builtin}<span class="chip">{t("editor.badge.builtin")}</span>{/if}
   {#if meta?.modified}<span class="chip accent">{t("editor.badge.modified")}</span>{/if}
@@ -141,18 +186,23 @@
 {/if}
 
 <h3 class="t-group">{t("editor.sec.phrases")}</h3>
-<div class="chips">
-  {#each cmd.phrases as p, i (i)}<span class="chip big">{p}</span>{:else}<span class="t-caption">{t("editor.none")}</span>{/each}
-</div>
+<ChipInput
+  big
+  values={cmd.phrases}
+  label={t("editor.sec.phrases")}
+  placeholder={t("card.phrases_ph")}
+  inserts={SLOTS}
+  onchange={(v) => edit(() => (cmd.phrases = v))} />
 <h3 class="t-group">{t("editor.sec.optional")}</h3>
-<div class="chips">
-  {#each cmd.optional as p, i (i)}<span class="chip">{p}</span>{:else}<span class="t-caption">{t("editor.none")}</span>{/each}
-</div>
+<ChipInput
+  values={cmd.optional}
+  label={t("editor.sec.optional")}
+  placeholder={t("card.optional_ph")}
+  onchange={(v) => edit(() => (cmd.optional = v))} />
+<h3 class="t-group">{t("card.preview")}</h3>
+<MatchPreview {cmd} />
 <h3 class="t-group">{t("editor.sec.reply")}</h3>
-<div class="chips">
-  {#each cmd.reply.clips as clip (clip)}<span class="chip"><Icon name="wave" size={12} /> {clip}</span>{/each}
-  {#if cmd.reply.text}<span class="quote">«{cmd.reply.text}»</span>{/if}
-</div>
+<ReplyPicker reply={cmd.reply} onchange={(r) => edit(() => (cmd.reply = r))} />
 
 <style>
   header {
@@ -180,7 +230,6 @@
     color: var(--text-2);
   }
   .badges,
-  .chips,
   .quick-hints {
     display: flex;
     flex-wrap: wrap;
@@ -205,12 +254,6 @@
     font-size: 12px;
     font-weight: 500;
     color: var(--text-2);
-  }
-  .chip.big {
-    height: 28px;
-    padding: 0 10px;
-    font-size: 13px;
-    color: var(--text);
   }
   .chip.accent {
     background: var(--accent-soft);
@@ -372,8 +415,30 @@
   h3.t-group {
     margin-top: 20px;
   }
-  .quote {
-    color: var(--text-2);
-    font-style: italic;
+  .test :global(svg) {
+    color: currentColor;
+  }
+  .result {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: -4px 0 12px;
+    padding: 8px 12px;
+    border-radius: var(--r-sm);
+    background: rgba(245, 184, 61, 0.1);
+    color: var(--warn);
+    font-size: 13px;
+    font-weight: 500;
+    transition:
+      opacity var(--t-base) var(--ease-out),
+      translate var(--t-base) var(--ease-out);
+    @starting-style {
+      opacity: 0;
+      translate: 0 -4px;
+    }
+  }
+  .result.ok {
+    background: rgba(52, 199, 89, 0.1);
+    color: var(--ok);
   }
 </style>

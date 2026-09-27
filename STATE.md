@@ -1,6 +1,6 @@
-last: T061 command card: tabs of open commands, name + Связывать/Подтверждать checkboxes, actions list (type picker for all 80 types via lib/actions.ts DEFAULTS, typed param fields, ⏱ pause-after, 📁 tauri-plugin-dialog, ⊗, grip drag reorder), quick chips; app shown as name chip (real exe icons: later)
-next: T062 phrases + optional chips input, live match preview, reply picker, ▶ Тест (run_text dry-run of the edited command)
-blocked: CI red since T054: sherpa-onnx libs vanish from target/ (rust-cache). tools/ci/ci.yml now points SHERPA_ONNX_LIB_DIR at a cached .sherpa/ folder; user must paste it | wake sensitivity 50 needs real-voice tuning
+last: T062 card: ChipInput phrases (+slot inserts) & optional words, live preview via core brain::probe against the unsaved set (✓ / clash → other command / не поймёт + own-phrase field), ReplyPicker (pack categories + TTS text, ▶ say_reply), ▶ Тест = Work::Test → Brain::test (slots from first sample), result from outcome event
+next: T063 action recorder (LL hooks in crates/win, pauses, ignore own window) §5.4
+blocked: wake sensitivity 50 needs real-voice tuning
 decisions: dev agent on Linux (no mic/GUI) → windows-latest CI is truth; Windows-only code behind cfg(windows); local win check: clippy --target x86_64-pc-windows-msvc with llvm-rc/lib.exe stubs
 decisions: STT = sherpa-onnx streaming zipformer small-ru int8 (Vosk team) instead of Vosk: +90 MB RAM loaded vs +190 MB, 3x faster decode, no libvosk DLLs, better free speech. No grammar mode → no-prefix mode relies on strict NLU match
 decisions: wake fallback = user-recorded custom .rpw (rustpotter) in settings, not Vosk grammar (zipformer doesn't know «джарвис»)

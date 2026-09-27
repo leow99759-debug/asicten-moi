@@ -1,6 +1,8 @@
-//! Command editor IPC (SPEC §5.1): read the merged library, save the user pack.
+//! Command editor IPC (SPEC §5.1, §5.3): read the merged library, save the user pack,
+//! live match preview, «▶ Тест» and reply preview for an unsaved command.
 
-use jarvis_core::commands::{self, Command, Library, Pack};
+use jarvis_core::brain::{self, Line, Probe};
+use jarvis_core::commands::{self, Command, Library, Pack, Reply};
 
 use crate::brain_worker::Work;
 use crate::AppState;
@@ -41,4 +43,30 @@ pub fn editor_save(
         .store(active.len(), std::sync::atomic::Ordering::Relaxed);
     let _ = state.work.send(Work::Reload(active));
     Ok(lib)
+}
+
+/// Which command each sample phrase reaches with the editor's current (unsaved) set.
+#[tauri::command]
+pub fn editor_probe(commands: Vec<Command>, target: Command, texts: Vec<String>) -> Vec<Probe> {
+    brain::probe(&commands, &target, &texts)
+}
+
+/// «▶ Тест»: run the edited command without voice; the result arrives as an `outcome` event.
+#[tauri::command]
+pub fn editor_test(state: tauri::State<'_, AppState>, command: Command, sample: String) {
+    let _ = state.work.send(Work::Test(Box::new(command), sample));
+}
+
+/// «▶» next to the reply: say it with the current voice settings.
+#[tauri::command]
+pub fn say_reply(state: tauri::State<'_, AppState>, reply: Reply) {
+    if let Some(s) = state.speaker.get().cloned() {
+        std::thread::spawn(move || {
+            s.stop();
+            s.say(&Line {
+                clips: reply.clips,
+                text: reply.text,
+            });
+        });
+    }
 }

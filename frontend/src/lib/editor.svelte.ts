@@ -1,8 +1,11 @@
 // Command editor state (SPEC §5.1). Edits stay local until «Сохранить» sends the whole set;
 // the core keeps only own commands + changed built-ins (crates/core/src/commands/library.rs).
 import type { Command } from "./bindings/Command";
+import type { CommandOutcome } from "./bindings/CommandOutcome";
 import type { Library } from "./bindings/Library";
-import { editorLibrary, editorSave } from "./commands";
+import { editorLibrary, editorSave, editorTest } from "./commands";
+import { on } from "./ipc";
+import { samples } from "./phrases";
 import { t } from "./i18n";
 import { allFolders, ckey, fkey, pkey, rebase, ROOT, startsWith, uniqueName } from "./tree";
 import { inTauri } from "./window";
@@ -274,4 +277,24 @@ export function closeTab(id: string) {
   ed.tabs = ed.tabs.filter((t) => t !== id);
   const s = resolve(ed.selected);
   if ((s.kind === "command" || s.kind === "phrase") && s.cmd.id === id) ed.selected = ed.tabs.length ? ckey(ed.tabs.at(-1)!) : ROOT;
+}
+
+/** «▶ Тест» (SPEC §5.3): run the unsaved command, wait for its outcome (null outside the app / timeout). */
+export async function runTest(c: Command): Promise<CommandOutcome | null> {
+  if (!inTauri()) return null;
+  const cmd = $state.snapshot(c);
+  let done!: (o: CommandOutcome | null) => void;
+  const result = new Promise<CommandOutcome | null>((r) => (done = r));
+  const off = await on("outcome", (o) => {
+    const r = o.commands.find((x) => x.id === cmd.id);
+    if (r && o.phrase.startsWith("тест:")) done(r);
+  });
+  const timer = setTimeout(() => done(null), 60_000);
+  try {
+    await editorTest(cmd, samples(cmd)[0] ?? "");
+    return await result;
+  } finally {
+    clearTimeout(timer);
+    off();
+  }
 }

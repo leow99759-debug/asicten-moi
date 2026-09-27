@@ -4,6 +4,8 @@ import type { Command } from "./bindings/Command";
 import type { HistoryEntry } from "./bindings/HistoryEntry";
 import type { Library } from "./bindings/Library";
 import type { ModeCommand } from "./bindings/ModeCommand";
+import type { Probe } from "./bindings/Probe";
+import type { Reply } from "./bindings/Reply";
 import type { UiSnapshot } from "./bindings/UiSnapshot";
 import { inTauri } from "./window";
 
@@ -28,3 +30,7 @@ export const hudPreview = () => call("hud_preview");
 export const editorLibrary = () => call<Library>("editor_library");
 export const editorSave = (commands: Command[], folders: string[][]) =>
   call<Library>("editor_save", { commands, folders });
+export const editorProbe = (commands: Command[], target: Command, texts: string[]) =>
+  call<Probe[]>("editor_probe", { commands, target, texts });
+export const editorTest = (command: Command, sample: string) => call("editor_test", { command, sample });
+export const sayReply = (reply: Reply) => call("say_reply", { reply });

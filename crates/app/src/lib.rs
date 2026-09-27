@@ -254,7 +254,10 @@ pub fn run() -> anyhow::Result<()> {
             avatar_edit,
             hud_preview,
             editor::editor_library,
-            editor::editor_save
+            editor::editor_save,
+            editor::editor_probe,
+            editor::editor_test,
+            editor::say_reply
         ])
         .setup(move |app| {
             let handle = app.handle().clone();

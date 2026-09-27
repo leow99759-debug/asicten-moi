@@ -108,6 +108,54 @@ impl Outcome {
     }
 }
 
+/// Match score needed to run a command.
+pub const THRESHOLD: f64 = 0.75;
+
+/// Editor live preview row (§5.3): the command a sample phrase reaches.
+#[derive(Debug, Clone, PartialEq, Serialize, TS)]
+#[ts(export)]
+pub struct Probe {
+    pub text: String,
+    /// First command the brain would run; `None` = not understood.
+    pub id: Option<String>,
+    pub name: Option<String>,
+}
+
+/// Which command each text reaches if `target` (unsaved edit) replaced its saved version.
+/// Uses `target`'s own `when` context, so context commands preview in their app.
+pub fn probe(commands: &[Command], target: &Command, texts: &[String]) -> Vec<Probe> {
+    let mut set: Vec<Command> = commands
+        .iter()
+        .filter(|c| c.enabled || c.id == target.id)
+        .cloned()
+        .collect();
+    match set.iter_mut().find(|c| c.id == target.id) {
+        Some(c) => *c = target.clone(),
+        None => set.push(target.clone()),
+    }
+    let matcher = Matcher::new(&set);
+    let fg = target
+        .when
+        .as_ref()
+        .and_then(|w| w.foreground.as_deref())
+        .and_then(|f| f.split('|').next())
+        .map(str::trim);
+    let rank = |i: usize| set[i].context_rank(fg);
+    texts
+        .iter()
+        .map(|text| {
+            let hit = plan(text, &matcher, &set, THRESHOLD, &rank)
+                .first()
+                .map(|m| &set[m.index]);
+            Probe {
+                text: text.clone(),
+                id: hit.map(|c| c.id.clone()),
+                name: hit.map(|c| c.name.clone()),
+            }
+        })
+        .collect()
+}
+
 pub struct Brain {
     commands: Vec<Command>,
     matcher: Matcher,
@@ -124,7 +172,7 @@ impl Brain {
             matcher,
             executor,
             assistant,
-            threshold: 0.75,
+            threshold: THRESHOLD,
         }
     }
 
@@ -160,6 +208,15 @@ impl Brain {
     pub fn run_by_id(&self, id: &str) -> Option<CommandOutcome> {
         let cmd = self.commands.iter().find(|c| c.id == id)?;
         Some(self.execute(cmd, &BTreeMap::new()))
+    }
+
+    /// Editor «▶ Тест» (§5.3): run an unsaved command; slots come from a sample phrase.
+    pub fn test(&self, cmd: &Command, sample: &str) -> CommandOutcome {
+        let slots = Matcher::new(std::slice::from_ref(cmd))
+            .best(sample, 0.0)
+            .map(|m| m.slots)
+            .unwrap_or_default();
+        self.execute(cmd, &slots)
     }
 
     fn execute(&self, cmd: &Command, slots: &BTreeMap<String, SlotValue>) -> CommandOutcome {
@@ -247,6 +304,40 @@ mod tests {
         assert!(o.commands[0].steps.is_empty());
 
         assert!(b.handle("квантовая абракадабра").commands.is_empty());
+    }
+
+    #[test]
+    fn probe_and_test_unsaved_command() {
+        let dry = Arc::new(DryRun::default());
+        let b = brain(dry.clone());
+        let mut timer = b.commands()[2].clone();
+        timer.phrases.push("выруби комп через {время}".into());
+        let texts = [
+            "открой браузер",
+            "выруби комп через 10 минут",
+            "абракадабра",
+        ]
+        .map(String::from);
+        let got: Vec<_> = probe(b.commands(), &timer, &texts)
+            .into_iter()
+            .map(|p| p.id)
+            .collect();
+        assert_eq!(
+            got,
+            [Some("browser"), Some("off_in"), None].map(|s| s.map(String::from))
+        );
+        // a new command whose phrase an existing one already owns shows the clash
+        let json =
+            r#"{"id":"b2","name":"Браузер 2","phrases":["браузер"],"reply":{"clips":["ok"]}}"#;
+        let b2: Command = serde_json::from_str(json).expect("cmd");
+        let p = probe(b.commands(), &b2, &["открой браузер".into()]);
+        assert_eq!(p[0].name.as_deref(), Some("Открыть браузер"));
+
+        let o = b.test(&timer, "выключи компьютер через 5 минут");
+        assert_eq!(o.status, Status::Done);
+        assert!(dry.actions().contains(&Action::Shutdown {
+            delay_sec: Num::Value(300.0)
+        }));
     }
 
     #[test]

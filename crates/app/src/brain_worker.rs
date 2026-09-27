@@ -28,6 +28,8 @@ pub enum Work {
     Repeat,
     /// Editor saved: swap the command set.
     Reload(Vec<commands::Command>),
+    /// Editor «▶ Тест»: unsaved command + sample phrase for its slots.
+    Test(Box<commands::Command>, String),
 }
 
 /// Pending confirmation shared by the worker (asks), the voice loop and the UI (answer).
@@ -232,6 +234,13 @@ pub fn spawn(
                         }),
                         None => tracing::warn!(%id, "timer: unknown command"),
                     },
+                    Work::Test(cmd, sample) => {
+                        let o = brain.test(&cmd, &sample);
+                        publish(Outcome {
+                            phrase: format!("тест: {}", o.name),
+                            commands: vec![o],
+                        });
+                    }
                     Work::Reload(cmds) => brain = Brain::new(cmds, executor(), assistant.clone()),
                     Work::Job(Job::Remind(text)) => {
                         speaker.say_text(&["remind"], &format!("Сэр, напоминаю: {text}"));
