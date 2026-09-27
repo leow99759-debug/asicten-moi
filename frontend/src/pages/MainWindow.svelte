@@ -1,214 +1,217 @@
 <script lang="ts">
-  // §3.4 Основное окно: history + control panel on the left, the orb on the right.
+  // §3.4 Голосовой центр: quick toggles, volume and history on the left, the orb stage right.
   import HistoryList from "../components/HistoryList.svelte";
   import Orb from "../components/Orb.svelte";
-  import Toggle from "../components/Toggle.svelte";
   import Slider from "../components/Slider.svelte";
   import Icon from "../components/Icon.svelte";
+  import PageHeader from "../components/PageHeader.svelte";
+  import QuickTile from "../components/QuickTile.svelte";
   import { app, togglePrefix, toggleSilent } from "../lib/app.svelte";
+  import { activate } from "../lib/commands";
   import { cfg, saved } from "../lib/settings.svelte";
   import { t } from "../lib/i18n";
 
   const level = $derived(Math.max(app.micLevel, app.ttsLevel));
+  const active = $derived(app.state === "listening" || app.state === "speaking" || app.state === "processing");
   const last = $derived(app.history[0]);
 </script>
 
-<div class="main">
-  <section class="left">
-    <div class="glass card history">
-      <header>
-        <h2 class="card-title">{t("main.history")}</h2>
-        <span class="count">{app.history.length}</span>
-      </header>
-      <div class="scroll">
+<PageHeader title={t("title.main")} subtitle={t("main.subtitle")}>
+  {#snippet actions()}
+    <button type="button" class="btn primary" onclick={activate}><Icon name="mic" size={15} /> {t("main.listen")}</button>
+  {/snippet}
+</PageHeader>
+
+<div class="grid">
+  <div class="left">
+    <div class="tiles">
+      <QuickTile icon="wave" label={t("panel.prefix")} checked={app.prefixMode} onchange={togglePrefix} />
+      <QuickTile icon="bellOff" label={t("panel.silent")} checked={app.silentMode} onchange={toggleSilent} />
+      <QuickTile
+        icon="person"
+        label={t("panel.avatar")}
+        checked={cfg.value.ui.avatar}
+        onchange={(v) => {
+          cfg.value.ui.avatar = v;
+          saved();
+        }} />
+      <QuickTile
+        icon="pin"
+        label={t("panel.onTop")}
+        checked={cfg.value.ui.on_top}
+        onchange={(v) => {
+          cfg.value.ui.on_top = v;
+          saved();
+        }} />
+    </div>
+
+    <div class="card vol">
+      <Icon name="volume" size={18} />
+      <span class="vl">{t("panel.volume")}</span>
+      <div class="vs">
+        <Slider
+          label={t("panel.volume")}
+          value={cfg.value.voice_volume}
+          oninput={(v) => {
+            cfg.value.voice_volume = v;
+            saved();
+          }} />
+      </div>
+    </div>
+
+    <section>
+      <div class="gh">
+        <h2 class="t-group">{t("main.history")}</h2>
+        <span class="t-caption num">{app.history.length}</span>
+      </div>
+      <div class="card hist">
         <HistoryList items={app.history} />
       </div>
-    </div>
+    </section>
+  </div>
 
-    <div class="glass card panel">
-      <h2 class="card-title">{t("main.panel")}</h2>
-      <div class="rows">
-        <div class="row">
-          <span>{t("panel.prefix")}</span>
-          <Toggle label={t("panel.prefix")} checked={app.prefixMode} onchange={togglePrefix} />
-        </div>
-        <div class="row">
-          <span>{t("panel.silent")}</span>
-          <Toggle label={t("panel.silent")} checked={app.silentMode} onchange={toggleSilent} />
-        </div>
-        <div class="row">
-          <span>{t("panel.avatar")}</span>
-          <Toggle label={t("panel.avatar")} checked={cfg.value.ui.avatar} onchange={(v) => { cfg.value.ui.avatar = v; saved(); }} />
-        </div>
-        <div class="row">
-          <span>{t("panel.onTop")}</span>
-          <Toggle label={t("panel.onTop")} checked={cfg.value.ui.on_top} onchange={(v) => { cfg.value.ui.on_top = v; saved(); }} />
-        </div>
-        <div class="row vol">
-          <span><Icon name="volume" size={16} /> {t("panel.volume")}</span>
-          <Slider label={t("panel.volume")} value={cfg.value.voice_volume} oninput={(v) => { cfg.value.voice_volume = v; saved(); }} />
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="stage">
-    <div class="orb-wrap">
-      <Orb {level} active={app.state === "listening" || app.state === "speaking"} />
-    </div>
+  <aside class="card stage">
+    <div class="orb"><Orb {level} {active} /></div>
+    <p class="state" class:on={active}>{t(`state.${app.state}`)}</p>
     {#if last}
       {#key last.id}
-        <div class="outcome glass">
-          <span class="badge {last.status}">
-            <Icon
-              name={last.status === "done" ? "check" : last.status === "no_internet" ? "wifiOff" : last.status === "cancelled" ? "ban" : "alert"}
-              size={20}
-              stroke={2.25} />
-          </span>
-          <span class="txt">
-            <span class="ph">{last.phrase}</span>
-            <span class="st">{t(`status.${last.status}`)}</span>
-          </span>
-        </div>
+        <p class="last">
+          <span class="lp">«{last.phrase}»</span>
+          <span class="ls {last.status}">{t(`status.${last.status}`)}</span>
+        </p>
       {/key}
     {/if}
-  </section>
+  </aside>
 </div>
 
 <style>
-  .main {
-    height: 100%;
+  .grid {
     display: grid;
-    grid-template-columns: minmax(300px, 380px) 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
     gap: 20px;
-    min-height: 0;
+    align-items: start;
   }
   .left {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    min-height: 0;
+    gap: 12px;
+    min-width: 0;
   }
-  .card {
-    padding: 16px;
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
   }
-  .history {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    padding-right: 8px;
-  }
-  .history header {
+  .vol {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding-right: 8px;
-    margin-bottom: 10px;
-  }
-  .count {
-    font-size: 12px;
-    color: var(--text-3);
-    font-variant-numeric: tabular-nums;
-  }
-  .scroll {
-    overflow-y: auto;
-    min-height: 0;
-    padding-right: 4px;
-    mask-image: linear-gradient(to bottom, #000 calc(100% - 24px), transparent);
-  }
-  .panel .rows {
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-  }
-  .row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    min-height: 38px;
-    font-size: 13.5px;
+    gap: 12px;
+    height: 52px;
+    padding: 0 16px;
     color: var(--text-2);
   }
-  .row + .row {
-    border-top: 1px solid var(--line);
+  .vl {
+    color: var(--text);
+    font-weight: 500;
+    flex: none;
   }
-  .row.vol {
-    display: grid;
-    grid-template-columns: auto 1fr;
+  .vs {
+    flex: 1;
+    min-width: 0;
   }
-  .row.vol > span {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+  section {
+    margin-top: 12px;
+  }
+  .gh {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-right: 4px;
+  }
+  .hist {
+    overflow: hidden;
   }
   .stage {
-    position: relative;
-    min-width: 0;
-    min-height: 0;
-    display: grid;
-    place-items: center;
-  }
-  .orb-wrap {
-    position: absolute;
-    inset: -40px -40px -20px -20px;
-  }
-  .outcome {
-    position: absolute;
-    left: 50%;
-    bottom: 8px;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 12px 22px 12px 12px;
-    min-width: 280px;
-    max-width: calc(100% - 32px);
-    border-radius: var(--r-xl);
-    box-shadow: var(--shadow-lg);
-    transition: opacity 260ms var(--ease-out), transform 260ms var(--ease-out), filter 260ms var(--ease-out);
-    @starting-style {
-      opacity: 0;
-      transform: translate(-50%, 10px) scale(0.97);
-      filter: blur(4px);
-    }
-  }
-  .badge {
-    width: 44px;
-    height: 44px;
-    border-radius: 14px;
-    display: grid;
-    place-items: center;
-    flex: none;
-    background: rgba(52, 211, 153, 0.14);
-    color: var(--ok);
-  }
-  .badge.error {
-    background: rgba(248, 113, 113, 0.14);
-    color: var(--err);
-  }
-  .badge.no_internet {
-    background: rgba(251, 191, 36, 0.14);
-    color: var(--warn);
-  }
-  .badge.cancelled {
-    background: rgba(148, 163, 184, 0.14);
-    color: var(--muted);
-  }
-  .txt {
+    position: sticky;
+    top: 0;
     display: flex;
     flex-direction: column;
-    min-width: 0;
+    align-items: center;
+    padding: 20px 20px 24px;
+    background:
+      radial-gradient(120% 70% at 50% 40%, rgba(var(--accent-rgb), 0.1), transparent 70%),
+      var(--bg-card);
   }
-  .ph {
-    font: 600 17px/1.25 var(--font-display);
+  .orb {
+    width: 100%;
+    aspect-ratio: 1;
+    max-width: 290px;
+  }
+  .state {
+    margin: 4px 0 0;
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    color: var(--text-2);
+    transition: color var(--t-base) ease;
+  }
+  .state.on {
+    color: var(--accent-text);
+  }
+  .last {
+    margin: 10px 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    text-align: center;
+    max-width: 100%;
+    animation: fade var(--t-slow) var(--ease-out) both;
+  }
+  @keyframes fade {
+    from {
+      opacity: 0;
+      translate: 0 4px;
+    }
+  }
+  .lp {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 100%;
   }
-  .st {
-    font-size: 13px;
-    color: var(--text-2);
+  .ls {
+    font-size: 12px;
+    color: var(--ok);
+    font-weight: 600;
+  }
+  .ls.error {
+    color: var(--err);
+  }
+  .ls.no_internet {
+    color: var(--warn);
+  }
+  .ls.cancelled {
+    color: var(--muted);
+  }
+  @media (max-width: 1040px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .stage {
+      position: static;
+      order: -1;
+      flex-direction: row;
+      gap: 16px;
+      padding: 12px 16px;
+    }
+    .orb {
+      width: 96px;
+      flex: none;
+    }
   }
 </style>

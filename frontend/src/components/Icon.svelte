@@ -29,6 +29,23 @@
     volume: '<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9.5 9.5 0 0 1 0 13"/>',
     repeat: '<path d="M3.5 12a8.5 8.5 0 1 0 2.8-6.3L3.5 8.3"/><path d="M3.5 3.5v4.8h4.8"/>',
     clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/>',
+    maximize: '<rect x="5" y="5" width="14" height="14" rx="2"/>',
+    restore: '<rect x="4.5" y="8" width="11.5" height="11.5" rx="2"/><path d="M8 8V6.5a2 2 0 0 1 2-2h7.5a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H16"/>',
+    palette: '<path d="M12 21a9 9 0 1 1 9-9c0 1.7-1.3 3-3 3h-2.2a1.8 1.8 0 0 0-1.3 3.1A1.7 1.7 0 0 1 12 21Z"/><circle cx="7.5" cy="11" r="1.1"/><circle cx="10.5" cy="7" r="1.1"/><circle cx="15.5" cy="7.5" r="1.1"/>',
+    keyboard: '<rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6.5 10h.01M10 10h.01M14 10h.01M17.5 10h.01M7.5 14h9"/>',
+    info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><path d="M12 7.5h.01"/>',
+    pin: '<path d="M12 17v4.5"/><path d="M9 3.5h6l-1 5.5 3.5 3.5v2H6.5v-2L10 9z"/>',
+    bellOff: '<path d="M8.7 3.9A6 6 0 0 1 18 9c0 2.9.6 4.9 1.3 6.2"/><path d="M17 17H4.5s2-1.5 2-8c0-.6.1-1.2.3-1.8"/><path d="M10.3 20.5a2 2 0 0 0 3.4 0"/><path d="m3 3 18 18"/>',
+    wave: '<path d="M3 10v4M7 6.5v11M11 3.5v17M15 8v8M19 5.5v13"/>',
+    chevron: '<path d="m9 6 6 6-6 6"/>',
+    person: '<circle cx="12" cy="8" r="4"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/>',
+    bolt: '<path d="M13 2.5 4.5 13.5H12l-1 8 8.5-11H12z"/>',
+    leaf: '<path d="M11 20A7 7 0 0 1 4 13c0-5 4-9 16-10-1 12-5 16-9 17Z"/><path d="M4 21c3-6 7-9 11-11"/>',
+    eye: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/>',
+    drop: '<path d="M12 3s6.5 7 6.5 11.5a6.5 6.5 0 0 1-13 0C5.5 10 12 3 12 3Z"/>',
+    target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+    play: '<path d="M7 4.5v15l12-7.5z"/>',
+    film: '<rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M7 3v18M17 3v18M3 8h4M3 16h4M17 8h4M17 16h4"/>',
   };
   export type IconName = keyof typeof PATHS;
 </script>

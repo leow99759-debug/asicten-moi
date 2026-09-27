@@ -6,3 +6,6 @@ Language: code/comments/commits EN; UI/voice RU.
 Target PC: 8 GB RAM (mostly used), RTX 3060 6 GB. Core works WITHOUT LLM (LLM = optional M13).
 Priorities: works offline > low RAM/CPU > matches reference videos 1:1 > extra features.
 Binaries (models/WAV/GGUF) go to GitHub Release assets, not git history. Private personal project: reusing code from SPEC §13 refs is OK.
+
+## UI design system
+Every UI change follows `docs/design/SYSTEM.md` (tokens in `frontend/src/styles/tokens.css`). Review screenshots with Chromium `--font-render-hinting=none`, otherwise Linux headless spaces Cyrillic unevenly.

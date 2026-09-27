@@ -48,6 +48,8 @@ Rule: take the FIRST `[ ]` in order. M13 is optional and runs only after v1.0.0.
 - [x] T057 Settings pages (all tabs, themes, transparency, blur, mic device+level, mode phrases, import/export) §10.4
 - [x] T058 Voice synthesis page (engine cards, speed, preview, waveform) §6.4
 
+- [x] T059 UI v2 by design system docs/design/SYSTEM.md (Inter bundled, grouped lists, sidebar+status panel, Fluent controls)
+
 ## M5 Command editor
 - [ ] T060 Tree folders→commands→phrases, toolbar, search, drag&drop, breadcrumbs §5.1
 - [ ] T061 Tabs + command card (name, Связывать, Подтверждать, actions list w/ drag, param pickers, app icons) §5.2 §5.3

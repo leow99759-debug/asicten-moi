@@ -1,11 +1,14 @@
 <script lang="ts">
-  // §10.4 Настройки + §6.4 Синтез речи (tab «Голос»).
+  // §10.4 Настройки + §6.4 Синтез речи (tab «Голос»). Layout: SYSTEM.md grouped lists.
   import Tabs from "../components/Tabs.svelte";
+  import Group from "../components/Group.svelte";
   import SettingRow from "../components/SettingRow.svelte";
+  import PageHeader from "../components/PageHeader.svelte";
   import Toggle from "../components/Toggle.svelte";
   import Slider from "../components/Slider.svelte";
   import Select from "../components/Select.svelte";
   import TextField from "../components/TextField.svelte";
+  import Logo from "../components/Logo.svelte";
   import Icon, { type IconName } from "../components/Icon.svelte";
   import { cfg, saved } from "../lib/settings.svelte";
   import { app, SWATCHES } from "../lib/app.svelte";
@@ -49,49 +52,49 @@
     setTimeout(() => (previewing = false), 3200);
   }
 
-  const WAVE = 44;
+  const WAVE = 56;
 </script>
 
 <div class="settings">
+  <PageHeader title={t("title.settings")} subtitle={t("set.subtitle")} />
   <Tabs {tabs} value={tab} onchange={(id) => (tab = id)} />
 
   {#key tab}
     <div class="panel">
       {#if tab === "general"}
-        <section class="glass group">
-          <header><Icon name="mic" size={18} /><div><h2>{t("set.modes")}</h2><p>{t("set.modes.sub")}</p></div></header>
-          <SettingRow label={t("set.sensitivity")} desc={t("set.sensitivity.sub")} wide>
+        <Group title={t("set.activation")}>
+          <SettingRow icon="mic" label={t("set.sensitivity")} desc={t("set.sensitivity.sub")} wide>
             <Slider label={t("set.sensitivity")} value={c.wake_sensitivity} oninput={(v) => set(() => (c.wake_sensitivity = v))} />
           </SettingRow>
-          {#each ["prefix_on", "prefix_off", "silent_on", "silent_off", "mic_off"] as const as k (k)}
-            <SettingRow label={t(`set.phrase.${k}`)} wide>
-              <TextField label={t(`set.phrase.${k}`)} value={c.mode_phrases[k]} onchange={(v) => set(() => (c.mode_phrases[k] = v))} />
-            </SettingRow>
-          {/each}
-        </section>
-        <section class="glass group">
-          <header><Icon name="monitor" size={18} /><div><h2>{t("set.system")}</h2><p>{t("set.system.sub")}</p></div></header>
-          <SettingRow label={t("set.mic")} desc={t("set.mic.sub")}>
+          <SettingRow icon="wave" label={t("set.mic")} desc={t("set.mic.sub")}>
             <Select
               label={t("set.mic")}
               value={c.mic_device ?? ""}
               options={[{ value: "", label: t("set.mic.default") }, ...mics.map((m) => ({ value: m, label: m }))]}
               onchange={(v) => set(() => (c.mic_device = v || null))} />
           </SettingRow>
-          <SettingRow label={t("set.tray")}>
+        </Group>
+        <Group title={t("set.modes")}>
+          {#each ["prefix_on", "prefix_off", "silent_on", "silent_off", "mic_off"] as const as k (k)}
+            <SettingRow label={t(`set.phrase.${k}`)} wide>
+              <TextField label={t(`set.phrase.${k}`)} value={c.mode_phrases[k]} onchange={(v) => set(() => (c.mode_phrases[k] = v))} />
+            </SettingRow>
+          {/each}
+        </Group>
+        <Group title={t("set.system")}>
+          <SettingRow icon="minus" label={t("set.tray")} desc={t("set.tray.sub")}>
             <Toggle label={t("set.tray")} checked={c.close_to_tray} onchange={(v) => set(() => (c.close_to_tray = v))} />
           </SettingRow>
-          <SettingRow label={t("set.autostart")}>
+          <SettingRow icon="bolt" label={t("set.autostart")} desc={t("set.autostart.sub")}>
             <Toggle label={t("set.autostart")} checked={c.autostart} onchange={(v) => set(() => (c.autostart = v))} />
           </SettingRow>
-          <SettingRow label={t("set.memory")} desc={t("set.memory.sub")}>
+          <SettingRow icon="leaf" label={t("set.memory")} desc={t("set.memory.sub")}>
             <Toggle label={t("set.memory")} checked={c.memory_saver} onchange={(v) => set(() => (c.memory_saver = v))} />
           </SettingRow>
-        </section>
+        </Group>
       {:else if tab === "ui"}
-        <section class="glass group">
-          <header><Icon name="sparkles" size={18} /><div><h2>{t("set.ui")}</h2><p>{t("set.ui.sub")}</p></div></header>
-          <SettingRow label={t("set.accent")}>
+        <Group title={t("set.look")}>
+          <SettingRow icon="palette" label={t("set.accent")}>
             <div class="swatches" role="radiogroup" aria-label={t("set.accent")}>
               {#each Object.entries(SWATCHES) as [name, hex] (name)}
                 <button
@@ -100,79 +103,92 @@
                   aria-checked={c.ui.accent === hex}
                   aria-label={name}
                   title={name}
-                  class="sw pressable"
+                  class="sw"
                   class:on={c.ui.accent === hex}
                   style="--c: {hex}"
-                  onclick={() => set(() => (c.ui.accent = hex))}></button>
+                  onclick={() => set(() => (c.ui.accent = hex))}>
+                  <Icon name="check" size={12} stroke={3} />
+                </button>
               {/each}
-              <label class="sw custom pressable" title={t("set.accent.custom")}>
+              <label class="sw custom" title={t("set.accent.custom")}>
                 <input type="color" value={c.ui.accent} oninput={(e) => set(() => (c.ui.accent = e.currentTarget.value))} />
                 <span>+</span>
               </label>
             </div>
           </SettingRow>
-          <SettingRow label={t("set.transparency")} wide>
+          <SettingRow icon="eye" label={t("set.transparency")} desc={t("set.transparency.sub")} wide>
             <Slider label={t("set.transparency")} value={c.ui.transparency} oninput={(v) => set(() => (c.ui.transparency = v))} />
           </SettingRow>
-          <SettingRow label={t("set.blur")} wide>
+          <SettingRow icon="drop" label={t("set.blur")} wide>
             <Slider label={t("set.blur")} value={c.ui.blur} oninput={(v) => set(() => (c.ui.blur = v))} />
           </SettingRow>
-          <SettingRow label={t("set.animations")}>
+          <SettingRow icon="sparkles" label={t("set.animations")} desc={t("set.animations.sub")}>
             <Toggle label={t("set.animations")} checked={c.ui.animations} onchange={(v) => set(() => (c.ui.animations = v))} />
           </SettingRow>
-          <SettingRow label={t("panel.avatar")} desc={t("set.avatar.sub")}>
+        </Group>
+        <Group title={t("set.overlay")}>
+          <SettingRow icon="person" label={t("panel.avatar")} desc={t("set.avatar.sub")}>
+            {#if c.ui.avatar}
+              <button type="button" class="btn" onclick={() => avatarEdit(true)}><Icon name="move" size={14} /> {t("avatar.move")}</button>
+            {/if}
             <Toggle label={t("panel.avatar")} checked={c.ui.avatar} onchange={(v) => set(() => (c.ui.avatar = v))} />
           </SettingRow>
-          {#if c.ui.avatar}
-            <SettingRow label={t("set.avatar.pos")} desc={t("set.avatar.pos.sub")}>
-              <button type="button" class="btn small pressable" onclick={() => avatarEdit(true)}>
-                <Icon name="move" size={14} /> {t("avatar.move")}
-              </button>
-            </SettingRow>
-          {/if}
-          <SettingRow label={t("set.hud")} desc={t("set.hud.sub")}>
-            <div class="inline">
-              {#if c.ui.hud}
-                <button type="button" class="btn small pressable" onclick={() => hudPreview()}>{t("hud.preview")}</button>
-              {/if}
-              <Toggle label={t("set.hud")} checked={c.ui.hud} onchange={(v) => set(() => (c.ui.hud = v))} />
-            </div>
+          <SettingRow icon="target" label={t("set.hud")} desc={t("set.hud.sub")}>
+            {#if c.ui.hud}
+              <button type="button" class="btn" onclick={() => hudPreview()}>{t("hud.preview")}</button>
+            {/if}
+            <Toggle label={t("set.hud")} checked={c.ui.hud} onchange={(v) => set(() => (c.ui.hud = v))} />
           </SettingRow>
-          <SettingRow label={t("panel.onTop")}>
+          <SettingRow icon="pin" label={t("panel.onTop")} desc={t("set.ontop.sub")}>
             <Toggle label={t("panel.onTop")} checked={c.ui.on_top} onchange={(v) => set(() => (c.ui.on_top = v))} />
           </SettingRow>
-          <SettingRow label={t("set.lang")}>
+        </Group>
+        <Group title={t("set.region")}>
+          <SettingRow icon="globe" label={t("set.lang")}>
             <Select label={t("set.lang")} value="ru" options={[{ value: "ru", label: "Русский" }]} disabled />
           </SettingRow>
-        </section>
+        </Group>
       {:else if tab === "voice"}
-        <section class="glass group">
-          <header><Icon name="volume" size={18} /><div><h2>{t("voice.title")}</h2><p>{t("voice.sub")}</p></div></header>
-          <div class="engines" role="radiogroup" aria-label={t("voice.title")}>
-            {#each engines as e (e.id)}
-              <button
-                type="button"
-                role="radio"
-                aria-checked={c.voice_engine === e.id}
-                disabled={e.soon}
-                class="engine pressable"
-                class:on={c.voice_engine === e.id}
-                onclick={() => set(() => (c.voice_engine = e.id as VoiceEngine))}>
-                <span class="eic"><Icon name={e.icon} size={20} /></span>
-                <span class="etx">
-                  <span class="et">{e.title}{#if e.soon}<span class="soon">{t("soon.badge")}</span>{/if}</span>
-                  <span class="es">{e.sub}</span>
-                </span>
-                <span class="radio"></span>
-              </button>
-            {/each}
-          </div>
+        <h2 class="t-group">{t("voice.title")}</h2>
+        <div class="engines" role="radiogroup" aria-label={t("voice.title")}>
+          {#each engines as e (e.id)}
+            <button
+              type="button"
+              role="radio"
+              aria-checked={c.voice_engine === e.id}
+              disabled={e.soon}
+              class="engine card"
+              class:on={c.voice_engine === e.id}
+              onclick={() => set(() => (c.voice_engine = e.id as VoiceEngine))}>
+              <span class="eic"><Icon name={e.icon} size={18} /></span>
+              <span class="etx">
+                <span class="et">{e.title}{#if e.soon}<span class="soon">{t("soon.badge")}</span>{/if}</span>
+                <span class="es">{e.sub}</span>
+              </span>
+              <span class="radio" aria-hidden="true"></span>
+            </button>
+          {/each}
+        </div>
+
+        <div class="card preview">
           <div class="wave" class:live={previewing} aria-hidden="true">
             {#each Array.from({ length: WAVE }) as _, i (i)}
-              <span style="--i: {i}; --h: {0.25 + 0.75 * Math.abs(Math.sin(i * 0.55) * Math.cos(i * 0.21))}"></span>
+              <span style="--i: {i}; --h: {0.22 + 0.78 * Math.abs(Math.sin(i * 0.5) * Math.cos(i * 0.17))}"></span>
             {/each}
           </div>
-          <SettingRow label={t("voice.speed")} wide>
+          <div class="pv">
+            <div>
+              <p class="t-subtitle">{t("voice.sample")}</p>
+              <p class="t-caption">«{t("voice.sample.text")}»</p>
+            </div>
+            <button type="button" class="btn primary" onclick={preview}>
+              <Icon name="play" size={14} /> {t("voice.preview")}
+            </button>
+          </div>
+        </div>
+
+        <Group title={t("voice.sound")}>
+          <SettingRow icon="bolt" label={t("voice.speed")} wide>
             <Slider
               label={t("voice.speed")}
               min={50}
@@ -181,36 +197,38 @@
               value={Math.round(c.voice_speed * 100)}
               oninput={(v) => set(() => (c.voice_speed = v / 100))} />
           </SettingRow>
-          <SettingRow label={t("panel.volume")} wide>
+          <SettingRow icon="volume" label={t("panel.volume")} wide>
             <Slider label={t("panel.volume")} value={c.voice_volume} oninput={(v) => set(() => (c.voice_volume = v))} />
           </SettingRow>
-          <SettingRow label={t("voice.fx")} desc={t("voice.fx.sub")}>
+          <SettingRow icon="film" label={t("voice.fx")} desc={t("voice.fx.sub")}>
             <Toggle label={t("voice.fx")} checked={c.voice_fx} disabled={c.voice_engine !== "jarvis"} onchange={(v) => set(() => (c.voice_fx = v))} />
           </SettingRow>
-          {#if c.voice_engine === "windows"}
-            <p class="note"><Icon name="alert" size={14} /> {t("voice.windows.note")}</p>
-          {/if}
-          <div class="actions">
-            <button type="button" class="btn primary pressable" onclick={preview}>
-              <Icon name="volume" size={16} /> {t("voice.preview")}
-            </button>
-          </div>
-        </section>
+        </Group>
+        {#if c.voice_engine === "windows"}
+          <p class="note"><Icon name="info" size={14} /> {t("voice.windows.note")}</p>
+        {/if}
       {:else if tab === "hotkeys"}
-        <section class="glass group">
-          <header><Icon name="terminal" size={18} /><div><h2>{t("set.tab.hotkeys")}</h2><p>{t("set.hotkeys.sub")}</p></div></header>
+        <Group title={t("set.hotkeys.sub")}>
           {#each ["push_to_talk", "toggle_window", "toggle_mic"] as const as k (k)}
-            <SettingRow label={t(`hk.${k}`)} wide>
+            <SettingRow icon="keyboard" label={t(`hk.${k}`)} wide>
               <TextField label={t(`hk.${k}`)} value={c.hotkeys[k]} onchange={(v) => set(() => (c.hotkeys[k] = v))} />
             </SettingRow>
           {/each}
-          <p class="note"><Icon name="alert" size={14} /> {t("set.hotkeys.restart")}</p>
-        </section>
+        </Group>
+        <p class="note"><Icon name="info" size={14} /> {t("set.hotkeys.restart")}</p>
       {:else}
-        <section class="glass group about">
-          <header><Icon name="user" size={18} /><div><h2>{t("app.name")}</h2><p>{t("about.version")} 0.1.0 · {app.commandCount} {t("tile.commands")}</p></div></header>
-          <p class="credits">{t("about.credits")}</p>
-        </section>
+        <div class="card about">
+          <Logo size={56} />
+          <div>
+            <p class="t-title">{t("app.name")}</p>
+            <p class="t-caption num">{t("about.version")} 0.1.0 · {app.commandCount} {t("tile.commands")}</p>
+          </div>
+        </div>
+        <Group title={t("about.thanks")}>
+          {#each t("about.credits").split("\n") as line (line)}
+            <SettingRow label={line}>{""}</SettingRow>
+          {/each}
+        </Group>
       {/if}
     </div>
   {/key}
@@ -218,56 +236,21 @@
 
 <style>
   .settings {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    min-height: 0;
+    max-width: 880px;
+    margin: 0 auto;
   }
   .panel {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-    align-content: start;
-    gap: 16px;
-    padding-right: 4px;
-    transition: opacity 180ms var(--ease-out), translate 180ms var(--ease-out);
+    transition:
+      opacity var(--t-base) var(--ease-out),
+      translate var(--t-base) var(--ease-out);
     @starting-style {
       opacity: 0;
       translate: 0 4px;
     }
   }
-  .group {
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .group header {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    margin-bottom: 6px;
-    color: var(--text-2);
-  }
-  .group header :global(svg) {
-    margin-top: 2px;
-  }
-  h2 {
-    margin: 0;
-    font: 600 15px/1.3 var(--font);
-    color: var(--text);
-  }
-  header p {
-    margin: 2px 0 0;
-    font-size: 12px;
-    color: var(--text-3);
-  }
   .swatches {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
   }
   .sw {
@@ -276,20 +259,34 @@
     border-radius: 50%;
     border: 0;
     padding: 0;
+    display: grid;
+    place-items: center;
     background: var(--c);
+    color: transparent;
     cursor: pointer;
-    box-shadow: 0 0 0 0 transparent;
-    transition: box-shadow var(--t-fast) ease, transform var(--t-press) var(--ease-out);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+    transition:
+      transform var(--t-fast) var(--ease-out),
+      color var(--t-fast) ease;
+  }
+  .sw:hover {
+    transform: scale(1.1);
+  }
+  .sw:active {
+    transform: scale(0.94);
   }
   .sw.on {
-    box-shadow: 0 0 0 2px var(--bg-1), 0 0 0 4px var(--c);
+    color: #fff;
+    box-shadow: 0 0 0 2px var(--bg-card), 0 0 0 3.5px var(--c);
+  }
+  .sw.on[style*="#f1f5f9"] {
+    color: #111;
   }
   .sw.custom {
     position: relative;
-    display: grid;
-    place-items: center;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px dashed var(--line-2);
+    background: var(--fill);
+    border: 1px dashed var(--stroke-strong);
+    box-sizing: border-box;
     color: var(--text-2);
     font-size: 15px;
     line-height: 1;
@@ -300,49 +297,55 @@
     opacity: 0;
     cursor: pointer;
   }
+
   .engines {
     display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 8px;
+    margin-bottom: 12px;
   }
   .engine {
     display: flex;
     align-items: center;
     gap: 12px;
     padding: 12px 14px;
-    border-radius: var(--r-md);
-    border: 1px solid var(--line);
-    background: rgba(255, 255, 255, 0.025);
     text-align: left;
     cursor: pointer;
     transition:
-      transform var(--t-press) var(--ease-out),
-      border-color var(--t-fast) ease,
-      background-color var(--t-fast) ease;
+      background-color var(--t-fast) ease,
+      border-color var(--t-base) ease,
+      transform var(--t-fast) var(--ease-out);
   }
   .engine:hover:not(:disabled) {
-    background: var(--surface-hover);
+    background: var(--bg-card-hover);
+  }
+  .engine:active:not(:disabled) {
+    transform: scale(0.985);
   }
   .engine.on {
-    border-color: rgba(var(--accent-rgb), 0.55);
-    background: rgba(var(--accent-rgb), 0.08);
+    border-color: rgba(var(--accent-rgb), 0.6);
+    background: color-mix(in srgb, var(--bg-card) 90%, var(--accent));
   }
   .engine:disabled {
-    opacity: 0.55;
     cursor: default;
+  }
+  .engine:disabled .eic,
+  .engine:disabled .etx {
+    opacity: 0.5;
   }
   .eic {
     width: 36px;
     height: 36px;
     display: grid;
     place-items: center;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.06);
+    border-radius: var(--r-md);
+    background: var(--fill);
     color: var(--text-2);
     flex: none;
   }
   .engine.on .eic {
-    background: var(--accent-soft);
-    color: var(--accent);
+    background: var(--accent);
+    color: var(--on-accent);
   }
   .etx {
     flex: 1;
@@ -359,111 +362,97 @@
   }
   .es {
     font-size: 12px;
-    color: var(--text-3);
+    line-height: 16px;
+    color: var(--text-2);
   }
   .soon {
     font-size: 10.5px;
+    line-height: 16px;
     font-weight: 600;
-    padding: 1px 6px;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.08);
+    padding: 0 6px;
+    border-radius: var(--r-xs);
+    background: var(--fill);
     color: var(--text-2);
   }
   .radio {
     width: 18px;
     height: 18px;
+    box-sizing: border-box;
     border-radius: 50%;
-    border: 1.5px solid var(--line-2);
+    border: 1.5px solid rgba(255, 255, 255, 0.45);
     flex: none;
-    transition: border-color var(--t-fast) ease, border-width var(--t-fast) var(--ease-out);
+    transition:
+      border-width var(--t-base) var(--spring),
+      border-color var(--t-base) ease;
   }
   .engine.on .radio {
     border: 5px solid var(--accent);
   }
-  .wave {
-    height: 44px;
+
+  .preview {
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+  .pv {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .pv p {
+    margin: 0;
+  }
+  .wave {
+    height: 48px;
+    display: flex;
+    align-items: center;
     gap: 3px;
-    margin: 6px 0;
+    margin-bottom: 14px;
   }
   .wave span {
-    width: 3px;
+    flex: 1;
     height: 100%;
     border-radius: 2px;
-    background: rgba(var(--accent-rgb), 0.55);
-    transform: scaleY(calc(var(--h) * 0.35));
-    transition: transform 300ms var(--ease-out);
+    background: rgba(var(--accent-rgb), 0.35);
+    transform: scaleY(calc(var(--h) * 0.4));
+    transition:
+      transform 400ms var(--ease-out),
+      background-color var(--t-base) ease;
   }
   .wave.live span {
-    animation: wave 900ms ease-in-out infinite alternate;
-    animation-delay: calc(var(--i) * -41ms);
+    animation: wave 700ms ease-in-out infinite alternate;
+    animation-delay: calc(var(--i) * -37ms);
     background: var(--accent);
   }
   @keyframes wave {
     from {
-      transform: scaleY(calc(var(--h) * 0.25));
+      transform: scaleY(calc(var(--h) * 0.2));
     }
     to {
       transform: scaleY(var(--h));
     }
   }
-  .actions {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 6px;
-  }
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    height: 36px;
-    padding: 0 16px;
-    border-radius: var(--r-md);
-    border: 1px solid var(--line-2);
-    background: rgba(255, 255, 255, 0.05);
-    font-weight: 600;
-    font-size: 13px;
-    cursor: pointer;
-  }
-  .btn.small {
-    height: 30px;
-    padding: 0 12px;
-    font-size: 12.5px;
-    gap: 6px;
-  }
-  .btn:hover {
-    background: rgba(255, 255, 255, 0.08);
-  }
-  .inline {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .btn.primary {
-    background: var(--accent);
-    border-color: transparent;
-    color: var(--on-accent);
-    box-shadow: 0 6px 18px -6px rgba(var(--accent-rgb), 0.6);
-  }
   .note {
     display: flex;
-    gap: 6px;
+    gap: 8px;
     align-items: flex-start;
-    margin: 4px 2px 0;
+    margin: -12px 2px 24px;
     font-size: 12px;
-    color: var(--text-3);
+    line-height: 16px;
+    color: var(--text-2);
   }
   .note :global(svg) {
     flex: none;
     margin-top: 1px;
   }
-  .credits {
+  .about {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  .about p {
     margin: 0;
-    font-size: 13px;
-    color: var(--text-2);
-    line-height: 1.6;
-    white-space: pre-line;
   }
 </style>

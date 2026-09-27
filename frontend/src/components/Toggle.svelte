@@ -1,4 +1,5 @@
 <script lang="ts">
+  // Fluent toggle: 40×20, knob grows on hover and stretches while pressed.
   let {
     checked = false,
     label,
@@ -21,44 +22,63 @@
 
 <style>
   .toggle {
-    width: 38px;
-    height: 22px;
-    padding: 0;
-    border-radius: 11px;
-    border: 1px solid var(--line-2);
-    background: rgba(255, 255, 255, 0.08);
     position: relative;
-    cursor: pointer;
+    width: 40px;
+    height: 20px;
     flex: none;
-    transition: background-color var(--t-fast) ease, border-color var(--t-fast) ease;
+    padding: 0;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    background: rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition:
+      background-color var(--t-base) ease,
+      border-color var(--t-base) ease;
   }
-  .toggle:disabled {
-    opacity: 0.45;
-    cursor: default;
-  }
-  .toggle.on {
-    background: var(--accent);
-    border-color: transparent;
+  .toggle:hover {
+    background: rgba(255, 255, 255, 0.05);
   }
   .knob {
     position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
-    transition: transform var(--t-med) var(--ease-out), width var(--t-press) var(--ease-out);
+    top: 50%;
+    left: 4px;
+    width: 12px;
+    height: 12px;
+    margin-top: -6px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.8);
+    transition:
+      translate var(--t-base) var(--spring),
+      width var(--t-fast) var(--ease-out),
+      height var(--t-fast) var(--ease-out),
+      margin var(--t-fast) var(--ease-out),
+      background-color var(--t-base) ease;
+  }
+  .toggle:hover .knob {
+    width: 14px;
+    height: 14px;
+    margin-top: -7px;
+    margin-left: -1px;
+  }
+  .toggle:active .knob {
+    width: 17px;
+  }
+  .toggle.on {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .toggle.on:hover {
+    background: color-mix(in srgb, var(--accent) 88%, white);
   }
   .toggle.on .knob {
-    transform: translateX(16px);
-  }
-  /* press stretches the knob like iOS/Win11 */
-  .toggle:active .knob {
-    width: 20px;
+    translate: 20px 0;
+    background: var(--on-accent);
   }
   .toggle.on:active .knob {
-    transform: translateX(12px);
+    translate: 17px 0;
+  }
+  .toggle:disabled {
+    opacity: 0.4;
+    cursor: default;
   }
 </style>

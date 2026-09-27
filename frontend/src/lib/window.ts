@@ -14,3 +14,11 @@ export async function close(): Promise<void> {
 export async function setOnTop(on: boolean): Promise<void> {
   if (inTauri()) await getCurrentWindow().setAlwaysOnTop(on);
 }
+
+/** Maximize ⇄ restore; returns the new maximized state. */
+export async function toggleMaximize(): Promise<boolean> {
+  if (!inTauri()) return false;
+  const w = getCurrentWindow();
+  await w.toggleMaximize();
+  return w.isMaximized();
+}

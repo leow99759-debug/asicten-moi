@@ -1,5 +1,5 @@
 <script lang="ts">
-  // Segmented control with a sliding pill (spatial continuity between tabs).
+  // Fluent SelectorBar: text tabs, a short accent indicator slides to the selected one.
   let {
     tabs,
     value,
@@ -7,16 +7,17 @@
   }: { tabs: { id: string; label: string; disabled?: boolean }[]; value: string; onchange: (id: string) => void } =
     $props();
   let el: HTMLDivElement;
-  let pill = $state({ x: 0, w: 0 });
+  let x = $state(-100);
+  let ready = $state(false);
   $effect(() => {
     void value;
     const b = el?.querySelector<HTMLElement>(`[data-id="${value}"]`);
-    if (b) pill = { x: b.offsetLeft, w: b.offsetWidth };
+    if (b) x = b.offsetLeft + b.offsetWidth / 2 - 8;
+    requestAnimationFrame(() => (ready = true));
   });
 </script>
 
 <div class="tabs" role="tablist" bind:this={el}>
-  <span class="pill" style="transform: translateX({pill.x}px); width: {pill.w}px"></span>
   {#each tabs as tab (tab.id)}
     <button
       type="button"
@@ -27,49 +28,48 @@
       class:on={value === tab.id}
       onclick={() => onchange(tab.id)}>{tab.label}</button>
   {/each}
+  <span class="ind" class:ready style="transform: translateX({x}px)"></span>
 </div>
 
 <style>
   .tabs {
     position: relative;
-    display: inline-flex;
-    padding: 3px;
-    gap: 2px;
-    border-radius: var(--r-md);
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--line);
-  }
-  .pill {
-    position: absolute;
-    top: 3px;
-    bottom: 3px;
-    left: 0;
-    border-radius: 9px;
-    background: rgba(255, 255, 255, 0.09);
-    box-shadow: inset 0 1px 0 var(--highlight), var(--shadow-sm);
-    transition: transform var(--t-med) var(--ease-out), width var(--t-med) var(--ease-out);
+    display: flex;
+    gap: 4px;
+    margin: 0 0 20px -10px;
   }
   button {
     position: relative;
-    height: 30px;
-    padding: 0 14px;
+    height: 36px;
+    padding: 0 10px;
     border: 0;
-    border-radius: 9px;
+    border-radius: var(--r-sm);
     background: transparent;
     color: var(--text-2);
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
-    transition: color var(--t-fast) ease;
+    transition:
+      color var(--t-fast) ease,
+      background-color var(--t-fast) ease;
   }
-  button:hover:not(:disabled) {
+  button:hover {
     color: var(--text);
+    background: var(--fill);
   }
   button.on {
     color: var(--text);
   }
-  button:disabled {
-    color: var(--text-3);
-    cursor: default;
+  .ind {
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 16px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--accent);
+  }
+  .ind.ready {
+    transition: transform var(--t-slow) var(--spring);
   }
 </style>

@@ -1,42 +1,38 @@
 <script lang="ts">
   import Icon, { type IconName } from "../components/Icon.svelte";
+  import PageHeader from "../components/PageHeader.svelte";
+  import type { Page } from "../lib/app.svelte";
   import { t } from "../lib/i18n";
-  let { icon, milestone }: { icon: IconName; milestone: string } = $props();
+  let { page, icon, milestone }: { page: Page; icon: IconName; milestone: string } = $props();
 </script>
 
-<div class="ph">
-  <span class="ic"><Icon name={icon} size={28} /></span>
-  <p class="t">{t("soon.title")}</p>
-  <p class="s">{t("soon.sub").replace("{m}", milestone)}</p>
+<PageHeader title={t(`title.${page}`)} />
+<div class="empty card">
+  <span class="ic"><Icon name={icon} size={24} /></span>
+  <p class="t-subtitle">{t("soon.title")}</p>
+  <p class="t-caption">{t("soon.sub").replace("{m}", milestone)}</p>
 </div>
 
 <style>
-  .ph {
-    height: 100%;
+  .empty {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 6px;
-    color: var(--text-2);
+    gap: 4px;
+    padding: 56px 24px;
+    text-align: center;
   }
   .ic {
-    width: 64px;
-    height: 64px;
+    width: 48px;
+    height: 48px;
     display: grid;
     place-items: center;
-    border-radius: 20px;
+    border-radius: var(--r-lg);
     background: var(--accent-soft);
-    color: var(--accent);
-    margin-bottom: 8px;
+    color: var(--accent-text);
+    margin-bottom: 10px;
   }
-  .t {
+  p {
     margin: 0;
-    font-weight: 600;
-    color: var(--text);
-  }
-  .s {
-    margin: 0;
-    font-size: 13px;
   }
 </style>

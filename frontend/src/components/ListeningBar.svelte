@@ -1,6 +1,6 @@
 <script lang="ts">
-  // Listening pill (SPEC §3.2): accent mic disc, live transcript with «Джарвис» highlighted,
-  // level bars on the right. Visible while listening/processing.
+  // Listening pill in the title bar (SPEC §3.2): mic, live transcript with «Джарвис»
+  // highlighted, level bars. Idle it reads like a search field (Teams/Discord title bar).
   import Icon from "./Icon.svelte";
   import { app } from "../lib/app.svelte";
   import { activate } from "../lib/commands";
@@ -14,18 +14,18 @@
       : { lead: "", wake: "", rest: app.transcript };
   });
   const live = $derived(app.state === "listening" || app.state === "processing");
-  const BARS = 9;
+  const BARS = 7;
   const bars = $derived(
     Array.from({ length: BARS }, (_, i) => {
       const center = 1 - Math.abs(i - (BARS - 1) / 2) / ((BARS - 1) / 2);
-      return 0.18 + Math.min(1, app.micLevel * 1.6) * (0.35 + center * 0.65);
+      return 0.2 + Math.min(1, app.micLevel * 1.6) * (0.3 + center * 0.7);
     }),
   );
 </script>
 
 <div class="bar" class:live>
-  <button type="button" class="mic pressable" aria-label={t("mic.activate")} title={t("mic.activate")} onclick={activate}>
-    <Icon name={app.state === "mic_off" ? "micOff" : "mic"} size={18} stroke={2} />
+  <button type="button" class="mic" aria-label={t("mic.activate")} title={t("mic.activate")} onclick={activate}>
+    <Icon name={app.state === "mic_off" ? "micOff" : "mic"} size={14} stroke={2} />
   </button>
   <p class="text" aria-live="polite">
     {#if app.transcript}
@@ -36,80 +36,93 @@
   </p>
   <div class="level" aria-hidden="true">
     {#each bars as h, i (i)}
-      <span style="transform: scaleY({live ? h : 0.18})"></span>
+      <span style="transform: scaleY({live ? h : 0.2})"></span>
     {/each}
   </div>
 </div>
 
 <style>
   .bar {
+    height: 30px;
     display: flex;
     align-items: center;
-    gap: 12px;
-    height: 48px;
-    padding: 0 18px 0 6px;
-    border-radius: 24px;
-    background: var(--surface-2);
-    backdrop-filter: blur(var(--blur)) saturate(140%);
-    border: 1px solid var(--line);
-    box-shadow: inset 0 1px 0 var(--highlight), var(--shadow-sm);
-    min-width: 0;
-    transition: border-color var(--t-med) ease, box-shadow var(--t-med) ease;
+    gap: 10px;
+    padding: 0 12px 0 4px;
+    border-radius: var(--r-md);
+    background: var(--fill);
+    border: 1px solid var(--stroke);
+    transition:
+      border-color var(--t-base) ease,
+      box-shadow var(--t-base) ease,
+      background-color var(--t-base) ease;
   }
   .bar.live {
-    border-color: rgba(var(--accent-rgb), 0.35);
-    box-shadow: inset 0 1px 0 var(--highlight), 0 0 0 4px rgba(var(--accent-rgb), 0.08);
+    background: rgba(var(--accent-rgb), 0.08);
+    border-color: rgba(var(--accent-rgb), 0.45);
+    box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.1);
   }
   .mic {
-    width: 36px;
-    height: 36px;
+    width: 22px;
+    height: 22px;
     flex: none;
-    border-radius: 50%;
-    border: 0;
     display: grid;
     place-items: center;
+    border: 0;
+    border-radius: var(--r-sm);
+    background: transparent;
+    color: var(--text-2);
+    cursor: pointer;
+    transition:
+      background-color var(--t-fast) ease,
+      color var(--t-fast) ease,
+      transform var(--t-fast) var(--ease-out);
+  }
+  .mic:hover {
+    background: var(--fill-hover);
+    color: var(--text);
+  }
+  .mic:active {
+    transform: scale(0.9);
+  }
+  .live .mic {
     background: var(--accent);
     color: var(--on-accent);
-    cursor: pointer;
-    box-shadow: 0 4px 14px rgba(var(--accent-rgb), 0.45);
   }
   .text {
     flex: 1;
     min-width: 0;
     margin: 0;
-    font-size: 16px;
+    font-size: 13px;
+    line-height: 18px;
     font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
   mark {
-    background: rgba(var(--accent-rgb), 0.9);
-    color: var(--on-accent);
-    border-radius: 6px;
-    padding: 1px 6px;
-    margin-right: 2px;
+    background: none;
+    color: var(--accent-text);
+    font-weight: 650;
   }
   .hint {
     color: var(--text-3);
-    font-weight: 400;
+    font-weight: 450;
   }
   .level {
     display: flex;
     align-items: center;
-    gap: 3px;
-    height: 22px;
+    gap: 2px;
+    height: 14px;
     flex: none;
   }
   .level span {
-    width: 3px;
+    width: 2px;
     height: 100%;
-    border-radius: 2px;
-    background: var(--text-2);
-    transform-origin: center;
+    border-radius: 1px;
+    background: var(--text-3);
     transition: transform 90ms linear;
   }
-  .bar.live .level span {
-    background: var(--text);
+  .live .level span {
+    background: var(--accent-text);
   }
 </style>

@@ -11,7 +11,6 @@
   import Settings from "./pages/Settings.svelte";
   import { app, connect } from "./lib/app.svelte";
   import { windowMaterial } from "./lib/commands";
-  import { t } from "./lib/i18n";
 
   let settingsTab = $state("general");
   onMount(() => {
@@ -28,15 +27,13 @@
 </script>
 
 <div class="window">
-  <div class="backdrop" aria-hidden="true"></div>
   <Sidebar />
-  <div class="content">
-    <header class="top" data-tauri-drag-region>
-      <h1 class="section-title" data-tauri-drag-region>{t(`title.${app.page}`)}</h1>
+  <div class="right">
+    <header class="titlebar" data-tauri-drag-region>
       <div class="listen"><ListeningBar /></div>
       <WindowControls />
     </header>
-    <main>
+    <main class="layer">
       {#key app.page}
         <div class="page">
           {#if app.page === "main"}
@@ -44,11 +41,11 @@
           {:else if app.page === "dashboard"}
             <Dashboard />
           {:else if app.page === "editor"}
-            <Placeholder icon="terminal" milestone="M5" />
+            <Placeholder page="editor" icon="terminal" milestone="M5" />
           {:else if app.page === "addons"}
-            <Placeholder icon="puzzle" milestone="M6" />
+            <Placeholder page="addons" icon="puzzle" milestone="M6" />
           {:else if app.page === "ai"}
-            <Placeholder icon="sparkles" milestone="M13" />
+            <Placeholder page="ai" icon="sparkles" milestone="M13" />
           {:else if app.page === "settings"}
             <Settings bind:tab={settingsTab} />
           {:else}
@@ -67,54 +64,57 @@
     height: 100%;
     display: flex;
     overflow: hidden;
-    background: var(--bg-1);
-    border: 1px solid var(--line);
-    box-sizing: border-box;
+    background: var(--bg-base);
   }
   :global(:root[data-material="mica"] body) {
     background: transparent;
   }
   :global(:root[data-material="mica"]) .window {
-    background: rgba(16, 18, 23, 0.6);
+    background: rgba(12, 13, 16, 0.35);
   }
-  /* soft accent light behind the glass (the orb's room glow) */
-  .backdrop {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background:
-      radial-gradient(900px 600px at 85% 55%, rgba(var(--accent-rgb), 0.1), transparent 60%),
-      radial-gradient(700px 500px at 0% 0%, rgba(255, 255, 255, 0.025), transparent 60%);
+  :global(:root[data-material="mica"]) .layer {
+    background: rgba(19, 21, 25, 0.78);
   }
-  .content {
-    position: relative;
+  .right {
     flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
-    padding: 0 20px 20px 24px;
   }
-  .top {
-    height: 64px;
+  .titlebar {
+    height: 48px;
     flex: none;
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-columns: 1fr minmax(0, 460px) 1fr;
     align-items: center;
-    gap: 24px;
   }
   .listen {
-    justify-self: center;
-    width: min(520px, 100%);
+    grid-column: 2;
   }
-  main {
+  .titlebar :global(.controls) {
+    grid-column: 3;
+    justify-self: end;
+    height: 100%;
+  }
+  .layer {
     flex: 1;
     min-height: 0;
     position: relative;
+    background: var(--bg-layer);
+    border-top: 1px solid var(--stroke);
+    border-left: 1px solid var(--stroke);
+    border-top-left-radius: var(--r-layer);
+    overflow: hidden;
   }
   .page {
     position: absolute;
     inset: 0;
-    transition: opacity 200ms var(--ease-out), translate 200ms var(--ease-out);
+    overflow-y: auto;
+    padding: 28px 32px 32px;
+    box-sizing: border-box;
+    transition:
+      opacity var(--t-slow) var(--ease-out),
+      translate var(--t-slow) var(--ease-out);
     @starting-style {
       opacity: 0;
       translate: 0 6px;

@@ -73,13 +73,13 @@
   .dialog {
     width: min(420px, 90vw);
     padding: 28px 28px 22px;
-    border-radius: var(--r-xl);
-    background: rgba(28, 31, 38, 0.92);
-    backdrop-filter: blur(var(--blur)) saturate(140%);
+    border-radius: var(--r-lg);
+    background: var(--bg-flyout);
+    backdrop-filter: blur(30px) saturate(150%);
     border: 1px solid var(--line-2);
-    box-shadow: var(--shadow-lg), inset 0 1px 0 var(--highlight);
+    box-shadow: var(--shadow-dialog);
     text-align: center;
-    transition: transform 240ms var(--ease-out), opacity 240ms var(--ease-out);
+    transition: transform var(--t-slow) var(--ease-out), opacity var(--t-slow) var(--ease-out);
     @starting-style {
       transform: scale(0.96);
       opacity: 0;
@@ -91,13 +91,16 @@
     margin: 0 auto;
     display: grid;
     place-items: center;
-    border-radius: 18px;
+    border-radius: var(--r-lg);
     background: var(--accent-soft);
     color: var(--accent);
   }
   h2 {
     margin: 14px 0 6px;
-    font: 600 17px/1.3 var(--font-display);
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
   }
   #confirm-q {
     margin: 0;
@@ -110,8 +113,8 @@
     margin: 22px 0 14px;
   }
   button {
-    height: 40px;
-    border-radius: var(--r-md);
+    height: 36px;
+    border-radius: var(--r-sm);
     border: 1px solid var(--line-2);
     background: rgba(255, 255, 255, 0.05);
     font-weight: 600;

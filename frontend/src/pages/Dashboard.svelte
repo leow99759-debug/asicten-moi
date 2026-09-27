@@ -1,108 +1,175 @@
 <script lang="ts">
-  // §3.3 Главная: hero + tiles. Tiles open their section.
-  import Logo from "../components/Logo.svelte";
+  // §3.3 Главная: greeting + status, section tiles, recent commands.
   import Icon, { type IconName } from "../components/Icon.svelte";
+  import HistoryList from "../components/HistoryList.svelte";
   import { app, type Page } from "../lib/app.svelte";
   import { t } from "../lib/i18n";
 
-  const tiles: { icon: IconName; label: () => string; sub: () => string; page: Page }[] = [
-    { icon: "sparkles", label: () => t("tile.ai"), sub: () => t("tile.off"), page: "ai" },
-    { icon: "list", label: () => `${app.commandCount} ${t("tile.commands")}`, sub: () => t("tile.all"), page: "editor" },
-    { icon: "terminal", label: () => t("nav.editor"), sub: () => t("tile.create"), page: "editor" },
-    { icon: "gamepad", label: () => t("tile.games"), sub: () => t("tile.packs"), page: "addons" },
-    { icon: "globe", label: () => t("tile.browser"), sub: () => t("tile.packs"), page: "addons" },
-    { icon: "monitor", label: () => t("tile.system"), sub: () => t("tile.packs"), page: "addons" },
+  const tiles: { icon: IconName; label: () => string; sub: () => string; page: Page; tint: string }[] = [
+    { icon: "wave", label: () => t("nav.main"), sub: () => t("tile.voice"), page: "main", tint: "var(--accent)" },
+    { icon: "list", label: () => `${app.commandCount} ${t("tile.commands")}`, sub: () => t("tile.all"), page: "editor", tint: "#8b7cf6" },
+    { icon: "terminal", label: () => t("nav.editor"), sub: () => t("tile.create"), page: "editor", tint: "#22c1a4" },
+    { icon: "gamepad", label: () => t("tile.games"), sub: () => t("tile.packs"), page: "addons", tint: "#f97362" },
+    { icon: "globe", label: () => t("tile.browser"), sub: () => t("tile.packs"), page: "addons", tint: "#3fb3f5" },
+    { icon: "sparkles", label: () => t("tile.ai"), sub: () => t("tile.off"), page: "ai", tint: "#e0a33a" },
   ];
+
+  const hour = new Date().getHours();
+  const greet = hour < 5 ? "greet.night" : hour < 12 ? "greet.morning" : hour < 18 ? "greet.day" : "greet.evening";
 </script>
 
 <div class="dash">
-  <div class="hero">
-    <div class="mark"><Logo size={88} /></div>
-    <h1>{t("app.name")}</h1>
-    <p>{t("app.tagline")}</p>
-  </div>
+  <header class="hero">
+    <h1 class="t-display">{t(greet)}</h1>
+    <p>
+      <span class="live" class:off={app.state === "mic_off"}></span>
+      {t(`state.${app.state}`)} · <span class="num">{app.commandCount} {t("tile.commands")}</span>
+    </p>
+  </header>
+
   <div class="tiles">
     {#each tiles as tile, i (i)}
-      <button type="button" class="tile glass pressable" style="--i: {i}" onclick={() => (app.page = tile.page)}>
-        <span class="ic"><Icon name={tile.icon} size={22} /></span>
-        <span class="lb">{tile.label()}</span>
-        <span class="sb">{tile.sub()}</span>
+      <button type="button" class="tile card" style="--i: {i}; --tint: {tile.tint}" onclick={() => (app.page = tile.page)}>
+        <span class="ic"><Icon name={tile.icon} size={18} /></span>
+        <span class="tx">
+          <span class="lb">{tile.label()}</span>
+          <span class="sb">{tile.sub()}</span>
+        </span>
+        <span class="go"><Icon name="chevron" size={16} /></span>
       </button>
     {/each}
   </div>
+
+  <section>
+    <div class="gh">
+      <h2 class="t-group">{t("dash.recent")}</h2>
+      <button type="button" class="btn subtle more" onclick={() => (app.page = "main")}>{t("dash.all")}</button>
+    </div>
+    <div class="card hist">
+      <HistoryList items={app.history.slice(0, 4)} />
+    </div>
+  </section>
 </div>
 
 <style>
   .dash {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 40px;
+    max-width: 880px;
+    margin: 0 auto;
   }
   .hero {
-    text-align: center;
+    margin: 8px 0 24px;
   }
-  .mark {
-    display: inline-block;
-    filter: drop-shadow(0 12px 40px rgba(var(--accent-rgb), 0.55));
-  }
-  h1 {
-    margin: 18px 0 6px;
-    font: 700 34px/1.1 var(--font-display);
-    letter-spacing: -0.02em;
-  }
-  p {
-    margin: 0;
+  .hero p {
+    margin: 6px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
     color: var(--text-2);
+  }
+  .live {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 0 3px rgba(62, 207, 142, 0.18);
+    margin-right: 2px;
+  }
+  .live.off {
+    background: var(--muted);
+    box-shadow: none;
   }
   .tiles {
     display: grid;
-    grid-template-columns: repeat(3, 180px);
-    gap: 12px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 28px;
   }
   .tile {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
-    padding: 16px;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
     text-align: left;
     cursor: pointer;
-    border-radius: var(--r-lg);
+    animation: rise var(--t-slow) var(--ease-out) both;
+    animation-delay: calc(var(--i) * 30ms);
     transition:
-      transform var(--t-press) var(--ease-out),
       background-color var(--t-fast) ease,
-      border-color var(--t-fast) ease,
-      opacity 400ms var(--ease-out),
-      translate 400ms var(--ease-out);
-    transition-delay: 0ms, 0ms, 0ms, calc(var(--i) * 40ms), calc(var(--i) * 40ms);
-    @starting-style {
+      transform var(--t-fast) var(--ease-out);
+  }
+  @keyframes rise {
+    from {
       opacity: 0;
-      translate: 0 8px;
+      translate: 0 6px;
     }
   }
   .tile:hover {
-    background: var(--surface-2);
-    border-color: var(--line-2);
+    background: var(--bg-card-hover);
+  }
+  .tile:active {
+    transform: scale(0.98);
   }
   .ic {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
+    flex: none;
     display: grid;
     place-items: center;
     border-radius: var(--r-md);
-    background: var(--accent-soft);
-    color: var(--accent);
-    margin-bottom: 10px;
+    color: var(--tint);
+    background: color-mix(in srgb, var(--tint) 16%, transparent);
+  }
+  .tx {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
   }
   .lb {
-    font-weight: 600;
     font-size: 14px;
+    line-height: 20px;
+    font-weight: 600;
+    letter-spacing: -0.006em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .sb {
     font-size: 12px;
+    line-height: 16px;
+    color: var(--text-2);
+  }
+  .go {
     color: var(--text-3);
+    transition:
+      transform var(--t-base) var(--ease-out),
+      color var(--t-fast) ease;
+  }
+  .tile:hover .go {
+    color: var(--text-2);
+    transform: translateX(2px);
+  }
+  .gh {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+  .gh .t-group {
+    margin-bottom: 0;
+  }
+  .more {
+    height: 28px;
+    padding: 0 8px;
+    font-size: 12.5px;
+    color: var(--accent-text);
+  }
+  .hist {
+    overflow: hidden;
+  }
+  @media (max-width: 999px) {
+    .tiles {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 </style>

@@ -1,10 +1,18 @@
 <script lang="ts">
+  // One row of a Group: optional icon, title + description, control on the right.
   import type { Snippet } from "svelte";
-  let { label, desc, children, wide = false }: { label: string; desc?: string; children: Snippet; wide?: boolean } =
-    $props();
+  import Icon, { type IconName } from "./Icon.svelte";
+  let {
+    label,
+    desc,
+    icon,
+    children,
+    wide = false,
+  }: { label: string; desc?: string; icon?: IconName; children: Snippet; wide?: boolean } = $props();
 </script>
 
 <div class="row" class:wide>
+  {#if icon}<span class="ic"><Icon name={icon} size={18} /></span>{/if}
   <div class="lbl">
     <span class="l">{label}</span>
     {#if desc}<span class="d">{desc}</span>{/if}
@@ -14,43 +22,48 @@
 
 <style>
   .row {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    display: flex;
     align-items: center;
-    gap: 24px;
-    min-height: 52px;
+    gap: 14px;
+    min-height: 48px;
     padding: 8px 16px;
-    border-radius: var(--r-md);
-    background: rgba(255, 255, 255, 0.025);
-    border: 1px solid var(--line);
+    box-sizing: border-box;
   }
-  .row.wide {
-    grid-template-columns: minmax(160px, 0.8fr) minmax(0, 1.2fr);
-  }
-  .row.wide .ctl {
-    justify-content: stretch;
-  }
-  .row.wide .ctl > :global(*) {
-    flex: 1;
+  .ic {
+    width: 20px;
+    flex: none;
+    color: var(--text-2);
+    display: grid;
+    place-items: center;
   }
   .lbl {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 1px;
     min-width: 0;
   }
   .l {
     font-size: 13.5px;
+    line-height: 20px;
+    font-weight: 500;
   }
   .d {
     font-size: 12px;
-    color: var(--text-3);
+    line-height: 16px;
+    color: var(--text-2);
   }
   .ctl {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 8px;
+    gap: 10px;
+    flex: none;
     min-width: 0;
+  }
+  .wide .ctl {
+    flex: 0 1 320px;
+  }
+  .wide .ctl > :global(*) {
+    flex: 1;
   }
 </style>
