@@ -8,6 +8,17 @@ use crate::{apps, system};
 pub struct WinBackend;
 
 impl Backend for WinBackend {
+    fn foreground_exe(&self) -> Option<String> {
+        #[cfg(windows)]
+        {
+            crate::window::foreground_exe()
+        }
+        #[cfg(not(windows))]
+        {
+            None
+        }
+    }
+
     fn perform(&self, action: &Action) -> Result<Option<String>, String> {
         if let Some(r) = system::perform(action) {
             return r;

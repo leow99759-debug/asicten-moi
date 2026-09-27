@@ -2,6 +2,6 @@
 
 export type When = { 
 /**
- * Foreground process exe, e.g. `POWERPNT.EXE` (§4.5).
+ * Foreground process exe, e.g. `POWERPNT.EXE`; several as `WINWORD.EXE|POWERPNT.EXE` (§4.5).
  */
 foreground: string | null, };

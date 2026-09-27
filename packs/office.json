@@ -1,0 +1,28 @@
+{
+  "id": "office",
+  "name": "Office (контекст)",
+  "description": "Контекстные команды (SPEC §4.5): работают, когда PowerPoint или Word в фокусе, иначе срабатывает обычная команда с той же фразой.",
+  "category": "Офис",
+  "version": "0.1.0",
+  "commands": [
+    {"id": "office.theme_generic", "folder": ["Интерфейс"], "name": "Цвет темы Джарвиса",
+     "phrases": ["измени цвет темы на {текст}", "цвет темы {текст}", "сделай тему {текст}"],
+     "actions": [{"type": "Assistant.SetTheme", "color": "{текст}"}], "reply": {"clips": ["ok"]}},
+    {"id": "office.ppt_theme", "folder": ["Управление PowerPoint"], "name": "Цвет темы презентации",
+     "phrases": ["измени цвет темы на {текст}", "цвет темы {текст}", "сделай тему {текст}"],
+     "when": {"foreground": "POWERPNT.EXE"},
+     "actions": [{"type": "PowerPoint.SetVariantColor", "color": "{текст}"}], "reply": {"clips": ["ok"]}},
+    {"id": "office.ppt_next", "folder": ["Управление PowerPoint"], "name": "Следующий слайд",
+     "phrases": ["следующий слайд", "дальше"], "when": {"foreground": "POWERPNT.EXE"},
+     "actions": [{"type": "Keys.Press", "keys": "Right"}]},
+    {"id": "office.ppt_prev", "folder": ["Управление PowerPoint"], "name": "Предыдущий слайд",
+     "phrases": ["предыдущий слайд", "назад"], "when": {"foreground": "POWERPNT.EXE"},
+     "actions": [{"type": "Keys.Press", "keys": "Left"}]},
+    {"id": "office.word_bold", "folder": ["Управление Microsoft Word"], "name": "Жирный шрифт",
+     "phrases": ["жирный", "сделай жирным"], "when": {"foreground": "WINWORD.EXE"},
+     "actions": [{"type": "Word.Bold"}]},
+    {"id": "office.save", "folder": ["Управление Microsoft Word"], "name": "Сохранить документ",
+     "phrases": ["сохрани документ", "сохрани"], "when": {"foreground": "WINWORD.EXE|POWERPNT.EXE|EXCEL.EXE"},
+     "actions": [{"type": "Keys.Press", "keys": "Ctrl+S"}], "reply": {"clips": ["done"]}}
+  ]
+}

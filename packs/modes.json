@@ -1,0 +1,58 @@
+{
+  "id": "modes",
+  "name": "Режимы ПК",
+  "description": "Готовые режимы (SPEC §4.7). Обычные сценарии: меняйте действия в редакторе. Закрытие фоновых программ: добавьте Process.Kill с нужными exe в «Игровой режим».",
+  "category": "Система",
+  "version": "0.1.0",
+  "commands": [
+    {"id": "modes.game_on", "folder": ["Режимы"], "name": "Игровой режим",
+     "phrases": ["игровой режим", "режим игры"], "optional": ["включи", "запусти", "активируй"],
+     "actions": [
+       {"type": "System.PowerPlan", "plan": "high"},
+       {"type": "System.GameMode", "on": true},
+       {"type": "System.DND", "on": true}
+     ],
+     "reply": {"clips": ["calibration", "ok"], "text": "Игровой режим активирован, сэр"}},
+    {"id": "modes.game_off", "folder": ["Режимы"], "name": "Выключить игровой режим",
+     "phrases": ["выключи игровой режим", "выйди из игрового режима"],
+     "actions": [
+       {"type": "System.PowerPlan", "plan": "balanced"},
+       {"type": "System.DND", "on": false}
+     ],
+     "reply": {"clips": ["ok"], "text": "Игровой режим выключен, сэр"}},
+    {"id": "modes.work_on", "folder": ["Режимы"], "name": "Рабочий режим",
+     "phrases": ["рабочий режим", "режим работы"], "optional": ["включи", "запусти", "активируй"],
+     "actions": [
+       {"type": "System.PowerPlan", "plan": "balanced"},
+       {"type": "System.DND", "on": true},
+       {"type": "System.VolumeSet", "level": 30}
+     ],
+     "reply": {"clips": ["ok"], "text": "Рабочий режим, сэр. Не буду отвлекать"}},
+    {"id": "modes.movie_on", "folder": ["Режимы"], "name": "Режим фильма",
+     "phrases": ["режим фильма", "режим кино", "кинорежим"], "optional": ["включи", "запусти", "активируй"],
+     "actions": [
+       {"type": "System.DND", "on": true},
+       {"type": "System.VolumeSet", "level": 70},
+       {"type": "System.Brightness", "level": 100},
+       {"type": "Window.Fullscreen"}
+     ],
+     "reply": {"clips": ["ok"], "text": "Приятного просмотра, сэр"}},
+    {"id": "modes.night_on", "folder": ["Режимы"], "name": "Ночной режим",
+     "phrases": ["ночной режим", "режим ночи"], "optional": ["включи", "запусти", "активируй"],
+     "actions": [
+       {"type": "System.Brightness", "level": 30},
+       {"type": "System.VolumeSet", "level": 20},
+       {"type": "System.DND", "on": true},
+       {"type": "System.OpenSettings", "uri": "ms-settings:nightlight"}
+     ],
+     "reply": {"clips": ["ok"], "text": "Ночной режим, сэр. Ночник можно включить в открытом окне"}},
+    {"id": "modes.normal", "folder": ["Режимы"], "name": "Обычный режим",
+     "phrases": ["обычный режим", "выключи режим", "стандартный режим"],
+     "actions": [
+       {"type": "System.PowerPlan", "plan": "balanced"},
+       {"type": "System.DND", "on": false},
+       {"type": "System.Brightness", "level": 80}
+     ],
+     "reply": {"clips": ["ok"], "text": "Возвращаю обычный режим, сэр"}}
+  ]
+}

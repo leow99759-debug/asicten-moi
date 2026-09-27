@@ -19,6 +19,10 @@ use crate::scheduler::Job;
 /// Pauses are handled by the executor itself.
 pub trait Backend: Send + Sync {
     fn perform(&self, action: &Action) -> Result<Option<String>, String>;
+    /// Exe of the focused window for context rules (§4.5), e.g. `POWERPNT.EXE`.
+    fn foreground_exe(&self) -> Option<String> {
+        None
+    }
 }
 
 /// Assistant-level actions (Speak, Ask, Timer, Reminder, Assistant.*), implemented by the app.
@@ -38,6 +42,8 @@ pub trait Assistant: Send + Sync {
 #[derive(Default)]
 pub struct DryRun {
     pub log: Mutex<Vec<Action>>,
+    /// Pretend-focused exe for context tests.
+    pub foreground: Mutex<Option<String>>,
 }
 
 impl DryRun {
@@ -102,6 +108,9 @@ impl Backend for DryRun {
         }
         Ok(None)
     }
+    fn foreground_exe(&self) -> Option<String> {
+        self.foreground.lock().ok()?.clone()
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, TS)]
@@ -154,6 +163,10 @@ impl Executor {
     }
 
     /// Run a command's actions with matched slot values.
+    pub fn foreground_exe(&self) -> Option<String> {
+        self.backend.foreground_exe()
+    }
+
     pub fn run(&self, cmd: &Command, slots: &BTreeMap<String, SlotValue>) -> Vec<StepResult> {
         let mut out = Vec::new();
         for raw in &cmd.actions {

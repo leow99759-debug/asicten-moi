@@ -32,7 +32,7 @@ pub struct Reply {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct When {
-    /// Foreground process exe, e.g. `POWERPNT.EXE` (§4.5).
+    /// Foreground process exe, e.g. `POWERPNT.EXE`; several as `WINWORD.EXE|POWERPNT.EXE` (§4.5).
     #[serde(default)]
     pub foreground: Option<String>,
 }
@@ -65,9 +65,23 @@ pub struct Command {
     pub when: Option<When>,
 }
 
+/// Bonus for a context-specific command whose `when` matches (beats generic ones).
+pub const CONTEXT_BONUS: f64 = 0.1;
+
 impl Command {
     pub fn needs_confirm(&self) -> bool {
         self.confirm || self.actions.iter().any(Action::needs_confirm)
+    }
+
+    /// Context rule (§4.5): `None` = not applicable now, `Some(bonus)` = candidate.
+    pub fn context_rank(&self, foreground: Option<&str>) -> Option<f64> {
+        let Some(want) = self.when.as_ref().and_then(|w| w.foreground.as_deref()) else {
+            return Some(0.0);
+        };
+        let fg = foreground?;
+        want.split('|')
+            .any(|w| w.trim().eq_ignore_ascii_case(fg))
+            .then_some(CONTEXT_BONUS)
     }
 }
 

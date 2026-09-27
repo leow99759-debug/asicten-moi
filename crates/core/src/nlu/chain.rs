@@ -46,16 +46,17 @@ pub fn plan(
     matcher: &Matcher,
     commands: &[Command],
     threshold: f64,
+    rank: &dyn Fn(usize) -> Option<f64>,
 ) -> Vec<Match> {
     let norm = normalize_utterance(utterance);
     let parts = split(&norm);
-    let whole = matcher.best(&norm, threshold);
+    let whole = matcher.best_with(&norm, threshold, rank);
     if parts.len() > 1 {
         let chain: Option<Vec<Match>> = parts
             .iter()
             .map(|p| {
                 matcher
-                    .best(p, threshold)
+                    .best_with(p, threshold, rank)
                     .filter(|m| commands[m.index].chainable)
             })
             .collect();
@@ -126,7 +127,7 @@ mod tests {
     fn ids(u: &str) -> Vec<String> {
         let c = cmds();
         let m = Matcher::new(&c);
-        plan(u, &m, &c, 0.7)
+        plan(u, &m, &c, 0.7, &|_| Some(0.0))
             .into_iter()
             .map(|x| c[x.index].id.clone())
             .collect()

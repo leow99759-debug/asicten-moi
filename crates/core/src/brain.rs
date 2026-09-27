@@ -61,7 +61,15 @@ impl Brain {
             phrase: utterance.to_owned(),
             commands: Vec::new(),
         };
-        for m in plan(utterance, &self.matcher, &self.commands, self.threshold) {
+        let fg = self.executor.foreground_exe();
+        let rank = |i: usize| self.commands[i].context_rank(fg.as_deref());
+        for m in plan(
+            utterance,
+            &self.matcher,
+            &self.commands,
+            self.threshold,
+            &rank,
+        ) {
             let o = self.execute(&self.commands[m.index], &m.slots);
             let stop = o.status != Status::Done;
             out.commands.push(o);
@@ -163,5 +171,69 @@ mod tests {
         assert!(o.commands[0].steps.is_empty());
 
         assert!(b.handle("спой песню").commands.is_empty());
+    }
+
+    #[test]
+    fn context_rules_pick_by_foreground() {
+        let json = r#"{"id":"t","name":"T","commands":[
+          {"id":"theme","name":"Тема Джарвиса","phrases":["измени цвет темы на {текст}"],
+           "actions":[{"type":"Assistant.SetTheme","color":"{текст}"}]},
+          {"id":"ppt","name":"Тема презентации","phrases":["измени цвет темы на {текст}"],
+           "when":{"foreground":"WINWORD.EXE|POWERPNT.EXE"},
+           "actions":[{"type":"PowerPoint.SetVariantColor","color":"{текст}"}]},
+          {"id":"slide","name":"Следующий слайд","phrases":["следующий слайд"],
+           "when":{"foreground":"POWERPNT.EXE"},"actions":[{"type":"Keys.Press","keys":"Right"}]}
+        ]}"#;
+        let dry = Arc::new(DryRun::default());
+        let mut ex = Executor::new(dry.clone(), dry.clone(), Arc::new(NoApps));
+        ex.pauses = false;
+        let b = Brain::new(parse_pack(json).expect("pack").0.commands, ex, dry.clone());
+        let id = |u: &str| b.handle(u).commands.first().map(|c| c.id.clone());
+
+        assert_eq!(
+            id("измени цвет темы на фиолетовый").as_deref(),
+            Some("theme")
+        );
+        assert_eq!(id("следующий слайд"), None);
+
+        *dry.foreground.lock().expect("lock") = Some("powerpnt.exe".into());
+        assert_eq!(id("измени цвет темы на фиолетовый").as_deref(), Some("ppt"));
+        assert_eq!(id("следующий слайд").as_deref(), Some("slide"));
+        assert!(dry.actions().contains(&Action::PptSetVariantColor {
+            color: "фиолетовый".into()
+        }));
+    }
+
+    #[test]
+    fn repo_packs_modes_and_context() {
+        let dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../packs");
+        let cmds: Vec<Command> = crate::commands::load_dir(&dir)
+            .0
+            .into_iter()
+            .flat_map(|p| p.commands)
+            .collect();
+        let dry = Arc::new(DryRun::default());
+        let mut ex = Executor::new(dry.clone(), dry.clone(), Arc::new(NoApps));
+        ex.pauses = false;
+        let b = Brain::new(cmds, ex, dry.clone());
+        let ids =
+            |u: &str| -> Vec<String> { b.handle(u).commands.into_iter().map(|c| c.id).collect() };
+
+        for (u, id) in [
+            ("Джарвис, запусти игровой режим", "modes.game_on"),
+            ("включи режим фильма", "modes.movie_on"),
+            ("ночной режим", "modes.night_on"),
+            ("рабочий режим", "modes.work_on"),
+            ("выключи игровой режим", "modes.game_off"),
+            ("дальше", "basic.next"),
+        ] {
+            assert_eq!(ids(u), vec![id.to_owned()], "{u}");
+        }
+        *dry.foreground.lock().expect("lock") = Some("POWERPNT.EXE".into());
+        assert_eq!(ids("дальше"), vec!["office.ppt_next".to_owned()]);
+        assert_eq!(
+            ids("измени цвет темы на синий"),
+            vec!["office.ppt_theme".to_owned()]
+        );
     }
 }

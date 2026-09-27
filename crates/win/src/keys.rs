@@ -189,6 +189,21 @@ mod tests {
     use super::*;
 
     #[test]
+    fn repo_pack_hotkeys_parse() {
+        use jarvis_core::commands::{load_dir, Action};
+        let dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../packs");
+        for pack in load_dir(&dir).0 {
+            for c in &pack.commands {
+                for a in &c.actions {
+                    if let Action::KeysPress { keys } | Action::KeysHold { key: keys, .. } = a {
+                        assert!(parse_combo(keys).is_ok(), "{}: {keys}", c.id);
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
     fn parses_combos() {
         assert_eq!(parse_combo("ctrl+shift+s"), Ok(vec![0x11, 0x10, 0x53]));
         assert_eq!(parse_combo("Win+D"), Ok(vec![0x5B, 0x44]));

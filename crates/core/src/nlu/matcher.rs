@@ -165,39 +165,62 @@ impl Matcher {
 
     /// Best command for an utterance with score ≥ `threshold`.
     pub fn best(&self, utterance: &str, threshold: f64) -> Option<Match> {
+        self.best_with(utterance, threshold, &|_| Some(0.0))
+    }
+
+    /// Like [`best`](Self::best), but `rank(command index)` filters (`None`) or boosts
+    /// candidates — used for context rules (§4.5).
+    pub fn best_with(
+        &self,
+        utterance: &str,
+        threshold: f64,
+        rank: &dyn Fn(usize) -> Option<f64>,
+    ) -> Option<Match> {
         let u = tokens(&normalize_utterance(utterance));
         if u.is_empty() {
             return None;
         }
         // exact: utterance minus optional/soft words equals a phrase
-        if let Some(e) = self.exact_candidate(&u) {
+        let exact = self
+            .exact_candidates(&u)
+            .filter_map(|e| Some((e.index, rank(e.index)?)))
+            .max_by(|a, b| a.1.total_cmp(&b.1));
+        if let Some((index, _)) = exact {
             return Some(Match {
-                index: e.index,
+                index,
                 score: 1.0,
                 slots: BTreeMap::new(),
             });
         }
-        let mut best: Option<Match> = None;
+        let mut best: Option<(f64, Match)> = None;
         for e in &self.entries {
+            let Some(bonus) = rank(e.index) else { continue };
             if let Some((score, slots)) = score_entry(e, &u) {
-                let better = best.as_ref().is_none_or(|b| score > b.score);
-                if score >= threshold && better {
-                    best = Some(Match {
-                        index: e.index,
-                        score,
-                        slots,
-                    });
+                let key = score + bonus;
+                if score >= threshold && best.as_ref().is_none_or(|b| key > b.0) {
+                    best = Some((
+                        key,
+                        Match {
+                            index: e.index,
+                            score,
+                            slots,
+                        },
+                    ));
                 }
             }
         }
-        best
+        best.map(|(_, m)| m)
     }
 
-    fn exact_candidate(&self, u: &[String]) -> Option<&Entry> {
-        if let Some(&i) = self.exact.get(&u.join(" ")).and_then(|v| v.first()) {
-            return Some(&self.entries[i]);
-        }
-        self.entries.iter().find(|e| {
+    fn exact_candidates<'a>(&'a self, u: &'a [String]) -> impl Iterator<Item = &'a Entry> {
+        let joined = u.join(" ");
+        let direct = self
+            .exact
+            .get(&joined)
+            .into_iter()
+            .flatten()
+            .map(|&i| &self.entries[i]);
+        let with_optional = self.entries.iter().filter(move |e| {
             let phrase: Vec<&str> = e
                 .phrase
                 .iter()
@@ -212,7 +235,8 @@ impl Matcher {
                 .filter(|w| !e.optional.iter().any(|o| o == w))
                 .collect();
             !e.optional.is_empty() && phrase.len() == e.phrase.len() && rest == phrase
-        })
+        });
+        direct.chain(with_optional)
     }
 }
 
