@@ -9,6 +9,7 @@ pub mod ipc;
 pub mod listener;
 pub mod logging;
 pub mod modes;
+pub mod nlu;
 pub mod paths;
 #[cfg(test)]
 mod s11_tests;
