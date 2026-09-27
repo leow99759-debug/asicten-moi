@@ -1,5 +1,7 @@
 //! Tauri shell: wires the core to the UI windows.
 
+pub mod ipc;
+
 use std::sync::Mutex;
 
 use anyhow::Context;

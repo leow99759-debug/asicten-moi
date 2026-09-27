@@ -24,6 +24,7 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 tracing-appender = "0.2"
 dirs = "7"
 tempfile = "3"
+ts-rs = { version = "12", features = ["no-serde-warnings"] }
 tauri = { version = "2", features = [] }
 tauri-build = { version = "2", features = [] }
 

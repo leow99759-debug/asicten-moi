@@ -50,3 +50,6 @@ jobs:
 
       - name: cargo test
         run: cargo test --workspace
+
+      - name: TS bindings up to date
+        run: git diff --exit-code -- frontend/src/lib/bindings

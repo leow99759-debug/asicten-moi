@@ -4,13 +4,15 @@ use std::path::Path;
 
 use rusqlite::{params, Connection, OptionalExtension};
 use serde::{Deserialize, Serialize};
+use ts_rs::TS;
 
 use crate::Result;
 
 const HISTORY_LIMIT: i64 = 500;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[serde(rename_all = "snake_case")]
+#[ts(export)]
 pub enum Status {
     Done,
     Error,
@@ -38,10 +40,13 @@ impl Status {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct HistoryEntry {
+    #[ts(type = "number")]
     pub id: i64,
     /// Unix time, milliseconds.
+    #[ts(type = "number")]
     pub ts: i64,
     pub phrase: String,
     pub command_id: Option<String>,
