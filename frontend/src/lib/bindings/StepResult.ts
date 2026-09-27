@@ -4,4 +4,8 @@ export type StepResult = {
 /**
  * Action type, e.g. `Launch.File`.
  */
-action: string, ok: boolean, error: string | null, };
+action: string, ok: boolean, error: string | null, 
+/**
+ * Text to speak/show (System.Info, clipboard…).
+ */
+output: string | null, };

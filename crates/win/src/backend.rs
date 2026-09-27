@@ -3,12 +3,15 @@
 use jarvis_core::commands::{Action, Num, Side};
 use jarvis_core::executor::Backend;
 
-use crate::apps;
+use crate::{apps, system};
 
 pub struct WinBackend;
 
 impl Backend for WinBackend {
-    fn perform(&self, action: &Action) -> Result<(), String> {
+    fn perform(&self, action: &Action) -> Result<Option<String>, String> {
+        if let Some(r) = system::perform(action) {
+            return r;
+        }
         match action {
             Action::LaunchFile {
                 path,
@@ -30,11 +33,12 @@ impl Backend for WinBackend {
             Action::ProcessKill { name } => kill(name),
             other => input_or_window(other),
         }
+        .map(|()| None)
     }
 }
 
 /// Value of a numeric param; slots are already filled by the executor.
-fn n(v: &Num) -> Result<f64, String> {
+pub(crate) fn n(v: &Num) -> Result<f64, String> {
     match v {
         Num::Value(x) => Ok(*x),
         Num::Slot(s) => Err(format!("не заполнен слот {s}")),
@@ -104,7 +108,12 @@ fn input_or_window(action: &Action) -> Result<(), String> {
 }
 
 #[cfg(windows)]
-fn shell_open(file: &str, args: &str, workdir: Option<&str>, admin: bool) -> Result<(), String> {
+pub(crate) fn shell_open(
+    file: &str,
+    args: &str,
+    workdir: Option<&str>,
+    admin: bool,
+) -> Result<(), String> {
     use windows::core::HSTRING;
     use windows::Win32::UI::Shell::ShellExecuteW;
     use windows::Win32::UI::WindowsAndMessaging::SW_SHOWNORMAL;
@@ -127,31 +136,45 @@ fn shell_open(file: &str, args: &str, workdir: Option<&str>, admin: bool) -> Res
 }
 
 #[cfg(not(windows))]
-fn shell_open(file: &str, _args: &str, _workdir: Option<&str>, _admin: bool) -> Result<(), String> {
+pub(crate) fn shell_open(
+    file: &str,
+    _args: &str,
+    _workdir: Option<&str>,
+    _admin: bool,
+) -> Result<(), String> {
     Err(format!("launch «{file}»: Windows only"))
 }
 
-/// `taskkill /IM name.exe /F` without a console window.
-fn kill(name: &str) -> Result<(), String> {
-    let exe = if name.to_lowercase().ends_with(".exe") {
-        name.to_owned()
-    } else {
-        format!("{name}.exe")
-    };
-    let mut cmd = std::process::Command::new("taskkill");
-    cmd.args(["/IM", &exe, "/F"]);
+/// Run a console tool without flashing a window; stdout on success, stderr/stdout on failure.
+pub(crate) fn run_hidden(program: &str, args: &[&str]) -> Result<String, String> {
+    let mut cmd = std::process::Command::new(program);
+    cmd.args(args);
     #[cfg(windows)]
     {
         use std::os::windows::process::CommandExt;
         const CREATE_NO_WINDOW: u32 = 0x0800_0000;
         cmd.creation_flags(CREATE_NO_WINDOW);
     }
-    let out = cmd.output().map_err(|e| e.to_string())?;
+    let out = cmd.output().map_err(|e| format!("{program}: {e}"))?;
+    let text = |b: &[u8]| String::from_utf8_lossy(b).trim().to_owned();
     if out.status.success() {
-        Ok(())
+        Ok(text(&out.stdout))
     } else {
-        Err(format!("процесс «{exe}» не найден"))
+        let e = text(&out.stderr);
+        Err(if e.is_empty() { text(&out.stdout) } else { e })
     }
+}
+
+/// `taskkill /IM name.exe /F`.
+fn kill(name: &str) -> Result<(), String> {
+    let exe = if name.to_lowercase().ends_with(".exe") {
+        name.to_owned()
+    } else {
+        format!("{name}.exe")
+    };
+    run_hidden("taskkill", &["/IM", &exe, "/F"])
+        .map(|_| ())
+        .map_err(|_| format!("процесс «{exe}» не найден"))
 }
 
 #[cfg(all(test, windows))]

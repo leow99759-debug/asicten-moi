@@ -6,6 +6,7 @@ pub mod apps;
 pub mod audio;
 pub mod backend;
 pub mod keys;
+pub mod system;
 #[cfg(windows)]
 pub mod window;
 

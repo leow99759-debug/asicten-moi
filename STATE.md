@@ -1,5 +1,5 @@
-last: T025 win::audio Core Audio: volume get/set/±step, mute, list outputs, switch default device (IPolicyConfig, fuzzy name); Media.* via VK_MEDIA keys
-next: T026
+last: T026 win::system: shutdown/restart(delay)/logoff/hibernate/cancel (shutdown.exe), sleep/lock (Win32), powercfg plans, WMI brightness, screenshot (Win+PrtScn / ms-screenclip), ms-settings, recycle bin, WinRT radios WiFi/BT, DND (toasts reg), game mode, clipboard get/set, Info time/date/battery/load (core::info RU phrases); Backend now returns Option<String> to speak
+next: T027
 blocked: T002 needs-user (workflow edits: user pastes tools/ci/ci.yml into .github/workflows) | wake sensitivity 50 needs real-voice tuning (synthetic «Джарвис, включи музыку» passes only at 70)
 decisions: dev agent on Linux (no mic/GUI) → windows-latest CI is truth; Windows-only code behind cfg(windows); local win check: clippy --target x86_64-pc-windows-msvc with llvm-rc/lib.exe stubs
 decisions: STT = sherpa-onnx streaming zipformer small-ru int8 (Vosk team) instead of Vosk: +90 MB RAM loaded vs +190 MB, 3x faster decode, no libvosk DLLs, better free speech. No grammar mode → no-prefix mode relies on strict NLU match

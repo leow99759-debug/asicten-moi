@@ -14,9 +14,10 @@ use ts_rs::TS;
 use crate::commands::{expand, Action, AppLocator, Command, Num};
 use crate::nlu::matcher::SlotValue;
 
-/// Performs one side effect. Pauses are handled by the executor itself.
+/// Performs one side effect. `Ok(Some(text))` = something to say (time, clipboard…).
+/// Pauses are handled by the executor itself.
 pub trait Backend: Send + Sync {
-    fn perform(&self, action: &Action) -> Result<(), String>;
+    fn perform(&self, action: &Action) -> Result<Option<String>, String>;
 }
 
 /// Records actions instead of touching the machine.
@@ -32,11 +33,11 @@ impl DryRun {
 }
 
 impl Backend for DryRun {
-    fn perform(&self, action: &Action) -> Result<(), String> {
+    fn perform(&self, action: &Action) -> Result<Option<String>, String> {
         if let Ok(mut l) = self.log.lock() {
             l.push(action.clone());
         }
-        Ok(())
+        Ok(None)
     }
 }
 
@@ -47,6 +48,8 @@ pub struct StepResult {
     pub action: String,
     pub ok: bool,
     pub error: Option<String>,
+    /// Text to speak/show (System.Info, clipboard…).
+    pub output: Option<String>,
 }
 
 pub struct Executor {
@@ -87,10 +90,15 @@ impl Executor {
         for raw in &cmd.actions {
             let result = self.resolve(raw, slots).and_then(|a| self.step(&a));
             let ok = result.is_ok();
+            let (output, error) = match result {
+                Ok(o) => (o, None),
+                Err(e) => (None, Some(e)),
+            };
             out.push(StepResult {
                 action: type_name(raw),
                 ok,
-                error: result.err(),
+                error,
+                output,
             });
             if !ok {
                 break;
@@ -119,7 +127,7 @@ impl Executor {
         serde_json::from_value(v).map_err(|e| format!("bad params: {e}"))
     }
 
-    fn step(&self, action: &Action) -> Result<(), String> {
+    fn step(&self, action: &Action) -> Result<Option<String>, String> {
         let pause = match action {
             Action::PauseMs { ms } => Some(num(ms).ok_or("pause without value")? / 1000.0),
             Action::PauseSec { s } => Some(num(s).ok_or("pause without value")?),
@@ -129,7 +137,7 @@ impl Executor {
             if self.pauses {
                 std::thread::sleep(Duration::from_secs_f64(secs.clamp(0.0, 600.0)));
             }
-            return Ok(());
+            return Ok(None);
         }
         let (tx, rx) = mpsc::channel();
         let backend = self.backend.clone();
@@ -176,14 +184,14 @@ mod tests {
 
     struct Failing;
     impl Backend for Failing {
-        fn perform(&self, a: &Action) -> Result<(), String> {
+        fn perform(&self, a: &Action) -> Result<Option<String>, String> {
             match a {
                 Action::ProcessKill { .. } => Err("no such process".into()),
                 Action::LaunchUwp { .. } => {
                     std::thread::sleep(Duration::from_millis(300));
-                    Ok(())
+                    Ok(None)
                 }
-                _ => Ok(()),
+                _ => Ok(None),
             }
         }
     }
