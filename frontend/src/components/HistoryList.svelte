@@ -6,7 +6,7 @@
   import { runText } from "../lib/commands";
   import { t } from "../lib/i18n";
 
-  let { items }: { items: HistoryEntry[] } = $props();
+  let { items, compact = false }: { items: HistoryEntry[]; compact?: boolean } = $props();
 
   const STATUS: Record<Status, { icon: IconName; cls: string }> = {
     done: { icon: "check", cls: "ok" },
@@ -24,16 +24,20 @@
     <p>{t("history.empty")}</p>
   </div>
 {:else}
-  <ul class="list">
+  <ul class="list" class:compact>
     {#each items as h, i (h.id)}
       <li style="--i: {Math.min(i, 8)}">
         <button type="button" class="row" title={t("history.repeat")} onclick={() => runText(h.phrase)}>
-          <span class="chip {STATUS[h.status].cls}"><Icon name={STATUS[h.status].icon} size={12} stroke={2.5} /></span>
+          {#if compact}
+            <span class="bar {STATUS[h.status].cls}"></span>
+          {:else}
+            <span class="chip {STATUS[h.status].cls}"><Icon name={STATUS[h.status].icon} size={12} stroke={2.5} /></span>
+          {/if}
           <span class="body">
             <span class="phrase">{h.phrase}</span>
             <span class="status {STATUS[h.status].cls}">{t(`status.${h.status}`)}</span>
           </span>
-          <span class="time num">{time(h.ts)}</span>
+          {#if !compact}<span class="time num">{time(h.ts)}</span>{/if}
           <span class="again" aria-hidden="true"><Icon name="repeat" size={14} /></span>
         </button>
       </li>
@@ -142,6 +146,43 @@
   }
   .row:hover .again {
     opacity: 1;
+  }
+  /* video26: accent bar + phrase + status, no dividers */
+  .compact li + li {
+    border-top: 0;
+  }
+  .compact .row {
+    min-height: 40px;
+    padding: 4px 8px 4px 4px;
+    gap: 10px;
+    border-radius: 8px;
+  }
+  .compact .phrase {
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 600;
+  }
+  .compact .status {
+    font-size: 11.5px;
+    line-height: 15px;
+    color: var(--text-3);
+  }
+  .bar {
+    width: 2px;
+    align-self: stretch;
+    margin: 3px 0;
+    border-radius: 2px;
+    background: var(--accent);
+    flex: none;
+  }
+  .bar.err {
+    background: var(--err);
+  }
+  .bar.warn {
+    background: var(--warn);
+  }
+  .bar.muted {
+    background: var(--muted);
   }
   .empty {
     display: flex;

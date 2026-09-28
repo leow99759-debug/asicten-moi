@@ -6,7 +6,6 @@
   import ListeningBar from "./components/ListeningBar.svelte";
   import ConfirmDialog from "./components/ConfirmDialog.svelte";
   import MainWindow from "./pages/MainWindow.svelte";
-  import Dashboard from "./pages/Dashboard.svelte";
   import Placeholder from "./pages/Placeholder.svelte";
   import Settings from "./pages/Settings.svelte";
   import Editor from "./pages/Editor.svelte";
@@ -36,12 +35,11 @@
       <WindowControls />
     </header>
     <main class="layer">
+      {#if app.page !== "main"}<div class="glow" aria-hidden="true"></div>{/if}
       {#key app.page}
         <div class="page">
           {#if app.page === "main"}
             <MainWindow />
-          {:else if app.page === "dashboard"}
-            <Dashboard />
           {:else if app.page === "editor"}
             <Editor />
           {:else if app.page === "addons"}
@@ -66,28 +64,31 @@
     height: 100%;
     display: flex;
     overflow: hidden;
-    background: var(--bg-base);
+    background:
+      radial-gradient(90% 60% at 100% 0%, rgba(var(--accent-rgb), 0.07), transparent 60%),
+      radial-gradient(70% 50% at 0% 100%, rgba(var(--accent-rgb), 0.04), transparent 60%),
+      linear-gradient(180deg, #1b1c21, var(--bg-base));
   }
   :global(:root[data-material="mica"] body) {
     background: transparent;
   }
   :global(:root[data-material="mica"]) .window {
-    background: rgba(12, 13, 16, 0.35);
-  }
-  :global(:root[data-material="mica"]) .layer {
-    background: rgba(19, 21, 25, 0.78);
+    background: rgba(20, 21, 25, 0.62);
   }
   .right {
     flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
+    position: relative;
   }
   .titlebar {
-    height: 48px;
+    height: 38px;
     flex: none;
+    position: relative;
+    z-index: 5;
     display: grid;
-    grid-template-columns: 1fr minmax(0, 460px) 1fr;
+    grid-template-columns: 1fr minmax(0, 440px) 1fr;
     align-items: center;
   }
   .listen {
@@ -102,17 +103,34 @@
     flex: 1;
     min-height: 0;
     position: relative;
-    background: var(--bg-layer);
-    border-top: 1px solid var(--stroke);
-    border-left: 1px solid var(--stroke);
-    border-top-left-radius: var(--r-layer);
     overflow: hidden;
+  }
+  /* static orb rings peeking in from the right edge (video26/30), no animation = free */
+  .glow {
+    position: absolute;
+    right: -300px;
+    top: 50%;
+    width: 640px;
+    height: 640px;
+    translate: 0 -40%;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(
+      circle,
+      rgba(var(--accent-rgb), 0.55) 0 22%,
+      rgba(var(--accent-rgb), 0.3) 22.5% 31%,
+      rgba(var(--accent-rgb), 0.16) 31.5% 40%,
+      rgba(var(--accent-rgb), 0.07) 40.5% 50%,
+      transparent 50.5%
+    );
+    filter: blur(1px);
+    opacity: 0.7;
   }
   .page {
     position: absolute;
     inset: 0;
     overflow-y: auto;
-    padding: 28px 32px 32px;
+    padding: 2px 28px 28px;
     box-sizing: border-box;
     transition:
       opacity var(--t-slow) var(--ease-out),

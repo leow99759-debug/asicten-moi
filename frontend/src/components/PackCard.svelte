@@ -13,15 +13,13 @@
 </script>
 
 <article class="pc card" class:on={addon.installed} style="--i: {Math.min(i, 12)}">
-  <div class="top">
-    <BrandIcon icon={p.icon} color={p.color} name={p.name} size={44} />
-    <div class="tx">
-      <h3>{p.name}</h3>
-      <span class="meta">{plural(p.commands.length, words)}{#if p.popular}{" · "}<span class="hot">{t("addons.popular")}</span>{/if}</span>
-    </div>
+  <BrandIcon icon={p.icon} color={p.color} name={p.name} size={64} glyph />
+  <div class="tx">
+    <h3>{p.name}</h3>
+    <p class="desc" title={p.description}>{p.description}</p>
   </div>
-  <p class="desc" title={p.description}>{p.description}</p>
   <div class="foot">
+    <span class="meta">{plural(p.commands.length, words)}{#if p.popular}{" · "}<span class="hot">{t("addons.popular")}</span>{/if}</span>
     {#if addon.default}
       <span class="badge"><Icon name="check" size={12} stroke={2.5} /> {t("addons.builtin")}</span>
     {:else if addon.installed}
@@ -39,11 +37,14 @@
 </article>
 
 <style>
+  /* video30: big dark icon tile left, title + description right, status badge bottom-right */
   .pc {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 14px;
+    position: relative;
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    column-gap: 16px;
+    align-items: start;
+    padding: 12px 12px 12px;
     min-width: 0;
     animation: rise var(--t-slow) var(--ease-out) both;
     animation-delay: calc(var(--i) * 24ms);
@@ -59,31 +60,27 @@
   }
   .pc:hover {
     background: var(--bg-card-hover);
-  }
-  .top {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-width: 0;
+    border-color: var(--stroke-strong);
   }
   .tx {
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: 3px;
+    padding-top: 4px;
   }
   h3 {
     margin: 0;
     font-size: 14.5px;
     line-height: 20px;
-    font-weight: 650;
+    font-weight: 700;
     letter-spacing: -0.01em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
   .meta {
-    font-size: 12px;
+    font-size: 11.5px;
     line-height: 16px;
     color: var(--text-3);
     font-weight: 500;
@@ -94,20 +91,23 @@
   }
   .desc {
     margin: 0;
-    flex: 1;
-    font-size: 12.5px;
-    line-height: 18px;
+    font-size: 12px;
+    line-height: 17px;
     color: var(--text-2);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    min-height: 36px;
+    min-height: 34px;
   }
   .foot {
+    grid-column: 2;
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 6px;
   }
   .foot .btn {
     height: 30px;
@@ -126,9 +126,13 @@
     color: var(--text-3);
   }
   /* installed: calm label, turns into «Удалить» on hover (same width, crossfade) */
+  /* video30: green outlined «✓ Установлено» */
   .inst {
     display: inline-grid;
     color: var(--ok);
+    border-color: rgba(62, 207, 142, 0.55);
+    background: rgba(62, 207, 142, 0.08);
+    box-shadow: none;
   }
   .inst > span {
     grid-area: 1 / 1;

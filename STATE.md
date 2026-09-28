@@ -1,6 +1,7 @@
 last: T071 packs batch 1 in packs/addons: windows(106) explorer(36) chrome/edge/firefox/yandex/operagx(~40 each, tab/nav keys scoped by when=exe) youtube(24); url slots percent-encoded; keys plus/minus/comma/period/slash; test: every addon phrase reaches its command in its context. Catalog 450 cmds / 13 packs
 next: T072 packs batch 2 (Spotify, Яндекс Музыка, VK, Telegram, Discord, WhatsApp, Zoom). Untested on real Windows: recorder hooks, ▶ Тест, probe, say_reply, dialogs, import/export, addon install, T071 hotkeys (YouTube keys on RU layout)
 blocked: wake sensitivity: default .rpw weak (synthetic probe: sens 50 → 2/4 pos, 3/46 neg; community .rpw far worse) → real fix = user-recorded .rpw; needs real-voice tuning
+decisions: UI v3 = Luxify videos 1:1 (user 2026-09-28): 64px icon rail, UPPERCASE titles, glass cards, blue pills, orb from right edge; Dashboard page removed (home = Основное окно); refs docs/design/video30 + reference/chatgpt-main.jpg
 decisions: dev agent on Linux (no mic/GUI) → windows-latest CI is truth; Windows-only code behind cfg(windows); local win check: clippy --target x86_64-pc-windows-msvc with llvm-rc/lib.exe stubs
 decisions: STT = sherpa-onnx streaming zipformer small-ru int8 (Vosk team) instead of Vosk: +90 MB RAM loaded vs +190 MB, 3x faster decode, no libvosk DLLs, better free speech. No grammar mode → no-prefix mode relies on strict NLU match
 decisions: wake fallback = user-recorded custom .rpw (rustpotter) in settings, not Vosk grammar (zipformer doesn't know «джарвис»)

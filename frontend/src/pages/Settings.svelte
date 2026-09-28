@@ -236,8 +236,9 @@
 
 <style>
   .settings {
-    max-width: 880px;
-    margin: 0 auto;
+    max-width: 820px;
+    margin: 0;
+    position: relative;
   }
   .panel {
     transition:

@@ -7,7 +7,7 @@ import { history as loadHistory, setMode, uiSnapshot } from "./commands";
 import { inTauri } from "./window";
 import { applyUi, cfg, loadConfig, saved } from "./settings.svelte";
 
-export type Page = "dashboard" | "main" | "editor" | "addons" | "ai" | "settings" | "profile";
+export type Page = "main" | "editor" | "addons" | "ai" | "settings" | "profile";
 
 export const app = $state({
   page: "main" as Page,

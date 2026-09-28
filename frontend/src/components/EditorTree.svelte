@@ -158,35 +158,60 @@
 
 <style>
   .tree {
-    padding: 6px;
+    padding: 8px;
     outline: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
+  /* video30: every node is a boxed glass row, children hang on an indent guide */
   .row {
     position: relative;
     height: 32px;
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 0 8px 0 calc(4px + var(--d) * 16px);
-    border-radius: var(--r-sm);
+    gap: 8px;
+    margin-left: calc(var(--d) * 18px);
+    padding: 0 8px;
+    border: 1px solid var(--stroke-strong);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    box-shadow: var(--rim);
     cursor: default;
-    transition: background-color var(--t-fast) ease;
+    transition:
+      background-color var(--t-fast) ease,
+      border-color var(--t-fast) ease;
   }
-  .row:hover {
-    background: var(--fill);
-  }
-  .row.sel {
-    background: var(--fill-hover);
-  }
-  .row.sel::before {
+  .row::after {
     content: "";
     position: absolute;
-    left: 0;
-    top: 8px;
-    width: 3px;
-    height: 16px;
-    border-radius: 2px;
+    left: -11px;
+    top: -7px;
+    bottom: 50%;
+    width: 10px;
+    border-left: 1px solid var(--stroke-strong);
+    border-bottom: 1px solid var(--stroke-strong);
+    border-bottom-left-radius: 4px;
+    display: var(--guide, block);
+  }
+  .row[aria-level="1"]::after {
+    display: none;
+  }
+  .row:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .row.sel {
     background: var(--accent);
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      0 4px 14px rgba(var(--accent-rgb), 0.3);
+  }
+  .row.sel .ic,
+  .row.sel .count,
+  .row.sel .chev,
+  .row.sel .label.phrase {
+    color: #fff;
   }
   .row:focus-visible {
     outline: 2px solid var(--accent);
@@ -234,7 +259,7 @@
     color: var(--accent-text);
   }
   .ic.folder {
-    color: #e8b558;
+    color: var(--text-2);
   }
   .ic.phrase {
     color: var(--text-3);

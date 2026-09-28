@@ -1,217 +1,251 @@
 <script lang="ts">
-  // §3.4 Голосовой центр: quick toggles, volume and history on the left, the orb stage right.
+  // ОСНОВНОЕ ОКНО (video26 t08): history + control panel on the left, the orb glowing in
+  // from the right edge behind them, the last command as a glass toast over the orb.
   import HistoryList from "../components/HistoryList.svelte";
   import Orb from "../components/Orb.svelte";
   import Slider from "../components/Slider.svelte";
+  import Toggle from "../components/Toggle.svelte";
   import Icon from "../components/Icon.svelte";
-  import PageHeader from "../components/PageHeader.svelte";
-  import QuickTile from "../components/QuickTile.svelte";
+  import BrandIcon from "../components/BrandIcon.svelte";
   import { app, togglePrefix, toggleSilent } from "../lib/app.svelte";
   import { activate } from "../lib/commands";
+  import { BRANDS } from "../lib/brands";
   import { cfg, saved } from "../lib/settings.svelte";
   import { t } from "../lib/i18n";
 
   const level = $derived(Math.max(app.micLevel, app.ttsLevel));
   const active = $derived(app.state === "listening" || app.state === "speaking" || app.state === "processing");
   const last = $derived(app.history[0]);
+  const brand = (id: string | null) => {
+    const b = id?.split(".")[0] ?? "";
+    return BRANDS[b] ? b : "i:mic";
+  };
+  const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 </script>
 
-<PageHeader title={t("title.main")} subtitle={t("main.subtitle")}>
-  {#snippet actions()}
-    <button type="button" class="btn primary" onclick={activate}><Icon name="mic" size={15} /> {t("main.listen")}</button>
-  {/snippet}
-</PageHeader>
+<div class="main">
+  <div class="stage" aria-hidden="true"><Orb {level} {active} /></div>
 
-<div class="grid">
-  <div class="left">
-    <div class="tiles">
-      <QuickTile icon="wave" label={t("panel.prefix")} checked={app.prefixMode} onchange={togglePrefix} />
-      <QuickTile icon="bellOff" label={t("panel.silent")} checked={app.silentMode} onchange={toggleSilent} />
-      <QuickTile
-        icon="person"
-        label={t("panel.avatar")}
-        checked={cfg.value.ui.avatar}
-        onchange={(v) => {
-          cfg.value.ui.avatar = v;
-          saved();
-        }} />
-      <QuickTile
-        icon="pin"
-        label={t("panel.onTop")}
-        checked={cfg.value.ui.on_top}
-        onchange={(v) => {
-          cfg.value.ui.on_top = v;
-          saved();
-        }} />
-    </div>
+  <div class="col">
+    <header class="hd">
+      <h1 class="t-display">{t("title.main")}</h1>
+      <button type="button" class="listen" class:on={active} onclick={activate} title={t("main.listen")} aria-label={t("main.listen")}>
+        <Icon name="mic" size={16} />
+      </button>
+    </header>
 
-    <div class="card vol">
-      <Icon name="volume" size={18} />
-      <span class="vl">{t("panel.volume")}</span>
-      <div class="vs">
-        <Slider
-          label={t("panel.volume")}
-          value={cfg.value.voice_volume}
-          oninput={(v) => {
-            cfg.value.voice_volume = v;
-            saved();
-          }} />
-      </div>
-    </div>
+    <section class="card panel">
+      <h2 class="ph">{t("main.history")}</h2>
+      <HistoryList items={app.history.slice(0, 6)} compact />
+    </section>
 
-    <section>
-      <div class="gh">
-        <h2 class="t-group">{t("main.history")}</h2>
-        <span class="t-caption num">{app.history.length}</span>
-      </div>
-      <div class="card hist">
-        <HistoryList items={app.history} />
+    <section class="card panel">
+      <h2 class="ph">{t("main.panel")}</h2>
+      <div class="rows">
+        <div class="row">
+          <span>{t("panel.prefix")}</span>
+          <Toggle small label={t("panel.prefix")} checked={app.prefixMode} onchange={togglePrefix} />
+        </div>
+        <div class="row">
+          <span>{t("panel.silent")}</span>
+          <Toggle small label={t("panel.silent")} checked={app.silentMode} onchange={toggleSilent} />
+        </div>
+        <div class="row">
+          <span>{t("panel.avatar")}</span>
+          <Toggle
+            small
+            label={t("panel.avatar")}
+            checked={cfg.value.ui.avatar}
+            onchange={(v) => {
+              cfg.value.ui.avatar = v;
+              saved();
+            }} />
+        </div>
+        <div class="row">
+          <span>{t("panel.onTop")}</span>
+          <Toggle
+            small
+            label={t("panel.onTop")}
+            checked={cfg.value.ui.on_top}
+            onchange={(v) => {
+              cfg.value.ui.on_top = v;
+              saved();
+            }} />
+        </div>
+        <div class="row vol">
+          <span>{t("panel.volume")}</span>
+          <div class="vs">
+            <Slider
+              label={t("panel.volume")}
+              value={cfg.value.voice_volume}
+              oninput={(v) => {
+                cfg.value.voice_volume = v;
+                saved();
+              }} />
+          </div>
+        </div>
       </div>
     </section>
   </div>
 
-  <aside class="card stage">
-    <div class="orb"><Orb {level} {active} /></div>
-    <p class="state" class:on={active}>{t(`state.${app.state}`)}</p>
-    {#if last}
-      {#key last.id}
-        <p class="last">
-          <span class="lp">«{last.phrase}»</span>
-          <span class="ls {last.status}">{t(`status.${last.status}`)}</span>
-        </p>
-      {/key}
-    {/if}
-  </aside>
+  {#if last}
+    {#key last.id}
+      <div class="toast">
+        <BrandIcon icon={brand(last.command_id)} name={last.phrase} size={44} />
+        <span class="tt">
+          <span class="tp">{cap(last.phrase.replace(/^джарвис,?\s*/i, ""))}</span>
+          <span class="ts {last.status}">{t(`status.${last.status}`)}</span>
+        </span>
+      </div>
+    {/key}
+  {/if}
 </div>
 
 <style>
-  .grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
-    gap: 20px;
-    align-items: start;
+  .main {
+    position: relative;
+    min-height: 100%;
   }
-  .left {
+  /* the orb bleeds off the right edge like the video */
+  .stage {
+    position: absolute;
+    top: 50%;
+    right: -16%;
+    width: min(760px, 72%);
+    aspect-ratio: 1;
+    translate: 0 -50%;
+    pointer-events: none;
+  }
+  .col {
+    position: relative;
+    width: min(460px, 50%);
+    min-width: 340px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    min-width: 0;
+    gap: 14px;
   }
-  .tiles {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 8px;
-  }
-  .vol {
+  .hd {
     display: flex;
     align-items: center;
-    gap: 12px;
-    height: 52px;
-    padding: 0 16px;
+    justify-content: space-between;
+    height: 44px;
+    margin-bottom: 2px;
+  }
+  .listen {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      0 4px 14px rgba(var(--accent-rgb), 0.35);
+    transition:
+      transform var(--t-fast) var(--ease-out),
+      box-shadow var(--t-base) ease;
+  }
+  .listen:active {
+    transform: scale(0.94);
+  }
+  .listen.on {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      0 0 0 4px rgba(var(--accent-rgb), 0.25),
+      0 4px 18px rgba(var(--accent-rgb), 0.5);
+  }
+  .panel {
+    padding: 14px 14px 12px;
+  }
+  .ph {
+    margin: 0 0 10px 2px;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 650;
+    letter-spacing: -0.006em;
+  }
+  .rows {
+    display: flex;
+    flex-direction: column;
+  }
+  .row {
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0 4px 0 2px;
+    font-size: 13px;
     color: var(--text-2);
   }
-  .vl {
-    color: var(--text);
-    font-weight: 500;
-    flex: none;
+  .row + .row {
+    border-top: 1px solid var(--divider);
   }
   .vs {
     flex: 1;
-    min-width: 0;
+    max-width: 230px;
   }
-  section {
-    margin-top: 12px;
-  }
-  .gh {
+  .toast {
+    position: absolute;
+    left: calc(min(460px, 50%) - 110px);
+    bottom: 8px;
+    width: 400px;
     display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding-right: 4px;
-  }
-  .hist {
-    overflow: hidden;
-  }
-  .stage {
-    position: sticky;
-    top: 0;
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    padding: 20px 20px 24px;
-    background:
-      radial-gradient(120% 70% at 50% 40%, rgba(var(--accent-rgb), 0.1), transparent 70%),
-      var(--bg-card);
+    gap: 14px;
+    padding: 12px 18px 12px 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(38, 40, 48, 0.62);
+    backdrop-filter: blur(18px) saturate(140%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 18px 40px rgba(0, 0, 0, 0.4);
+    animation: rise var(--t-slow) var(--ease-out) both;
   }
-  .orb {
-    width: 100%;
-    aspect-ratio: 1;
-    max-width: 290px;
-  }
-  .state {
-    margin: 4px 0 0;
-    font-size: 15px;
-    line-height: 20px;
-    font-weight: 650;
-    letter-spacing: -0.01em;
-    color: var(--text-2);
-    transition: color var(--t-base) ease;
-  }
-  .state.on {
-    color: var(--accent-text);
-  }
-  .last {
-    margin: 10px 0 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-    text-align: center;
-    max-width: 100%;
-    animation: fade var(--t-slow) var(--ease-out) both;
-  }
-  @keyframes fade {
+  @keyframes rise {
     from {
       opacity: 0;
-      translate: 0 4px;
+      translate: 0 8px;
     }
   }
-  .lp {
-    font-size: 13px;
-    color: var(--text);
-    font-weight: 500;
+  .toast :global(.bi) {
+    border-radius: 12px;
+  }
+  .tt {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .tp {
+    font-size: 17px;
+    line-height: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 100%;
   }
-  .ls {
-    font-size: 12px;
-    color: var(--ok);
-    font-weight: 600;
+  .ts {
+    font-size: 13px;
+    color: var(--text-2);
   }
-  .ls.error {
+  .ts.error {
     color: var(--err);
   }
-  .ls.no_internet {
+  .ts.no_internet {
     color: var(--warn);
   }
-  .ls.cancelled {
-    color: var(--muted);
-  }
-  @media (max-width: 1040px) {
-    .grid {
-      grid-template-columns: 1fr;
-    }
+  @media (max-width: 900px) {
     .stage {
-      position: static;
-      order: -1;
-      flex-direction: row;
-      gap: 16px;
-      padding: 12px 16px;
+      right: -40%;
+      opacity: 0.6;
     }
-    .orb {
-      width: 96px;
-      flex: none;
+    .toast {
+      display: none;
     }
   }
 </style>

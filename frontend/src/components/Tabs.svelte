@@ -1,5 +1,5 @@
 <script lang="ts">
-  // Fluent SelectorBar: text tabs, a short accent indicator slides to the selected one.
+  // video26/30 segmented tabs: the selected one is a blue pill that slides between tabs.
   let {
     tabs,
     value,
@@ -8,11 +8,15 @@
     $props();
   let el: HTMLDivElement;
   let x = $state(-100);
+  let w = $state(0);
   let ready = $state(false);
   $effect(() => {
     void value;
     const b = el?.querySelector<HTMLElement>(`[data-id="${value}"]`);
-    if (b) x = b.offsetLeft + b.offsetWidth / 2 - 8;
+    if (b) {
+      x = b.offsetLeft;
+      w = b.offsetWidth;
+    }
     requestAnimationFrame(() => (ready = true));
   });
 </script>
@@ -28,48 +32,57 @@
       class:on={value === tab.id}
       onclick={() => onchange(tab.id)}>{tab.label}</button>
   {/each}
-  <span class="ind" class:ready style="transform: translateX({x}px)"></span>
+  <span class="ind" class:ready style="transform: translateX({x}px); width: {w}px"></span>
 </div>
 
 <style>
   .tabs {
     position: relative;
-    display: flex;
+    display: inline-flex;
     gap: 4px;
-    margin: 0 0 20px -10px;
+    margin: 0 0 18px;
+    padding: 3px;
+    border: 1px solid var(--stroke);
+    border-radius: 11px;
+    background: rgba(0, 0, 0, 0.18);
+    isolation: isolate;
   }
   button {
     position: relative;
-    height: 36px;
-    padding: 0 10px;
+    z-index: 1;
+    height: 32px;
+    min-width: 96px;
+    padding: 0 16px;
     border: 0;
-    border-radius: var(--r-sm);
+    border-radius: 8px;
     background: transparent;
     color: var(--text-2);
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 550;
     cursor: pointer;
-    transition:
-      color var(--t-fast) ease,
-      background-color var(--t-fast) ease;
+    transition: color var(--t-base) ease;
   }
   button:hover {
     color: var(--text);
-    background: var(--fill);
   }
   button.on {
-    color: var(--text);
+    color: #fff;
   }
   .ind {
     position: absolute;
+    z-index: 0;
     left: 0;
-    bottom: -3px;
-    width: 16px;
-    height: 3px;
-    border-radius: 2px;
+    top: 3px;
+    height: 32px;
+    border-radius: 8px;
     background: var(--accent);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      0 4px 14px rgba(var(--accent-rgb), 0.3);
   }
   .ind.ready {
-    transition: transform var(--t-slow) var(--spring);
+    transition:
+      transform var(--t-slow) var(--spring),
+      width var(--t-slow) var(--spring);
   }
 </style>

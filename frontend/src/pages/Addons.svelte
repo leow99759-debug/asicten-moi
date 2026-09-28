@@ -207,32 +207,37 @@
   }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 10px;
   }
+  /* video30: categories = stacked pills in a bordered glass panel, selected is blue */
   .cats {
     position: sticky;
     top: 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 6px;
+    padding: 8px;
+    border: 1px solid var(--stroke);
+    border-radius: 12px;
+    background: var(--bg-card);
+    box-shadow: var(--shadow-card);
   }
   .cats .t-group {
-    margin: 0 0 6px 10px;
+    margin: 4px 0 4px 8px;
   }
   .cat {
-    position: relative;
     display: flex;
     align-items: center;
     gap: 10px;
     min-height: 34px;
-    padding: 7px 10px;
+    padding: 7px 12px;
     line-height: 18px;
-    border: 0;
-    border-radius: var(--r-sm);
-    background: transparent;
+    border: 1px solid var(--stroke);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
     color: var(--text-2);
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 550;
     text-align: left;
     cursor: pointer;
@@ -241,32 +246,17 @@
       color var(--t-fast) ease;
   }
   .cat:hover {
-    background: var(--fill);
-    color: var(--text);
-  }
-  .cat.on {
     background: var(--fill-hover);
     color: var(--text);
   }
-  /* Fluent NavigationView pill */
-  .cat::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    width: 3px;
-    height: 16px;
-    margin-top: -8px;
-    border-radius: 2px;
+  .cat.on {
     background: var(--accent);
-    transform: scaleY(0);
-    transition: transform var(--t-base) var(--spring);
+    border-color: rgba(255, 255, 255, 0.16);
+    color: #fff;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
   }
-  .cat.on::before {
-    transform: scaleY(1);
-  }
-  .cat.on :global(svg) {
-    color: var(--accent-text);
+  .cat.on .cn {
+    color: rgba(255, 255, 255, 0.8);
   }
   .cl {
     flex: 1;

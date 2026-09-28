@@ -28,7 +28,7 @@
     align-self: stretch;
   }
   button {
-    width: 46px;
+    width: 44px;
     display: grid;
     place-items: center;
     border: 0;
