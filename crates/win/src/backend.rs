@@ -7,7 +7,7 @@ use std::sync::{Arc, Mutex};
 
 use jarvis_core::Config;
 
-use crate::{apps, online, system};
+use crate::{apps, classroom, online, system};
 
 #[derive(Default)]
 pub struct WinBackend {
@@ -28,13 +28,20 @@ impl Backend for WinBackend {
     }
 
     fn perform(&self, action: &Action) -> Result<Option<String>, String> {
-        if matches!(action, Action::Info { what } if what == "news") {
-            let keys = self
-                .config
-                .as_ref()
-                .map(|c| c.lock().unwrap_or_else(|e| e.into_inner()).online.clone())
-                .unwrap_or_default();
-            return online::digest(&keys).map(Some);
+        if let Action::Info { what } = action {
+            if what == "news" || what.starts_with("homework") {
+                let keys = self
+                    .config
+                    .as_ref()
+                    .map(|c| c.lock().unwrap_or_else(|e| e.into_inner()).online.clone())
+                    .unwrap_or_default();
+                return if what == "news" {
+                    online::digest(&keys)
+                } else {
+                    classroom::homework(&keys, what)
+                }
+                .map(Some);
+            }
         }
         if let Some(r) = system::perform(action) {
             return r;

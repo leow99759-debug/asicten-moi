@@ -3,6 +3,7 @@
 
 pub mod audio;
 pub mod brain;
+pub mod classroom;
 pub mod commands;
 pub mod config;
 pub mod db;

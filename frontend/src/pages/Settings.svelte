@@ -10,9 +10,9 @@
   import TextField from "../components/TextField.svelte";
   import Logo from "../components/Logo.svelte";
   import Icon, { type IconName } from "../components/Icon.svelte";
-  import { cfg, saved } from "../lib/settings.svelte";
+  import { cfg, loadConfig, saved } from "../lib/settings.svelte";
   import { app, SWATCHES } from "../lib/app.svelte";
-  import { avatarEdit, hudPreview, micDevices, previewVoice } from "../lib/commands";
+  import { avatarEdit, classroomConnect, classroomDisconnect, hudPreview, micDevices, previewVoice, setConfig } from "../lib/commands";
   import type { VoiceEngine } from "../lib/bindings/VoiceEngine";
   import { t } from "../lib/i18n";
   import { onMount } from "svelte";
@@ -49,6 +49,25 @@
       keys[i] = v;
       c.online.gemini_keys = keys;
     });
+  }
+
+  let gc = $state<{ busy: boolean; error: string }>({ busy: false, error: "" });
+
+  async function connectClassroom() {
+    gc = { busy: true, error: "" };
+    try {
+      await setConfig($state.snapshot(cfg.value));
+      await classroomConnect();
+      await loadConfig();
+      gc = { busy: false, error: "" };
+    } catch (e) {
+      gc = { busy: false, error: String(e) };
+    }
+  }
+
+  async function disconnectClassroom() {
+    await classroomDisconnect();
+    await loadConfig();
   }
 
   function set(fn: () => void) {
@@ -234,6 +253,28 @@
           </SettingRow>
           <SettingRow icon="person" label={t("ai.fish.voice")} wide>
             <TextField label={t("ai.fish.voice")} value={c.online.fish_voice} onchange={(v) => set(() => (c.online.fish_voice = v))} />
+          </SettingRow>
+        </Group>
+        <Group title={t("gc.title")}>
+          <SettingRow icon="user" label={t("gc.id")} desc={t("gc.id.sub")} wide>
+            <TextField label={t("gc.id")} placeholder="….apps.googleusercontent.com" value={c.online.classroom_id} onchange={(v) => set(() => (c.online.classroom_id = v))} />
+          </SettingRow>
+          <SettingRow icon="eye" label={t("gc.secret")} wide>
+            <TextField secret label={t("gc.secret")} placeholder="GOCSPX-…" value={c.online.classroom_secret} onchange={(v) => set(() => (c.online.classroom_secret = v))} />
+          </SettingRow>
+          <SettingRow
+            icon={c.online.classroom_token ? "check" : "globe"}
+            label={c.online.classroom_token ? t("gc.on") : gc.busy ? t("gc.wait") : t("gc.off")}
+            desc={gc.error || t("gc.sub")}>
+            {#if c.online.classroom_token}
+              <button type="button" class="btn" onclick={disconnectClassroom}>{t("gc.disconnect")}</button>
+            {:else}
+              <button
+                type="button"
+                class="btn primary"
+                disabled={gc.busy || !c.online.classroom_id.trim() || !c.online.classroom_secret.trim()}
+                onclick={connectClassroom}>{t("gc.connect")}</button>
+            {/if}
           </SettingRow>
         </Group>
         <p class="note"><Icon name="info" size={14} /> {t("ai.note")}</p>

@@ -359,6 +359,16 @@
   "ai.fish": "Ключ Fish Audio",
   "ai.fish.sub": "fish.audio → API Keys. Ответы без записи звучат голосом Джарвиса",
   "ai.fish.voice": "ID голоса Fish Audio",
+  "gc.title": "Google Classroom — «какие задания на завтра»",
+  "gc.id": "Client ID",
+  "gc.id.sub": "Google Cloud → Credentials → OAuth client (Desktop app)",
+  "gc.secret": "Client secret",
+  "gc.connect": "Подключить",
+  "gc.disconnect": "Отключить",
+  "gc.on": "Classroom подключён",
+  "gc.off": "Classroom не подключён",
+  "gc.wait": "Войдите в Google в открывшемся браузере…",
+  "gc.sub": "Доступ только на чтение. Спросите: «Джарвис, какие задания на завтра»",
   "ai.note": "Ключи хранятся только на этом компьютере (config.json). Без сети Джарвис скажет, что интернета нет",
   "voice.fish.sub": "Онлайн, ключ во вкладке «ИИ»"
 }

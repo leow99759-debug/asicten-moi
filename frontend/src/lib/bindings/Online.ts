@@ -8,4 +8,12 @@ gemini_keys: Array<string>, gemini_model: string,
 /**
  * Fish Audio key: any text without a recording is spoken in the Jarvis voice online.
  */
-fish_key: string, fish_voice: string, };
+fish_key: string, fish_voice: string, 
+/**
+ * Google Cloud OAuth «Desktop app» client for Classroom homework.
+ */
+classroom_id: string, classroom_secret: string, 
+/**
+ * Refresh token from «Подключить» (set by the app, kept on UI saves).
+ */
+classroom_token: string, };

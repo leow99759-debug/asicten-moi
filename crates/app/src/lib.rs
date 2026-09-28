@@ -122,6 +122,8 @@ fn set_config(
         config.voice_speed = config.voice_speed.clamp(0.5, 2.0);
         // placement is saved by the avatar itself (overlay edit mode)
         config.ui.avatar_pos = cur.ui.avatar_pos;
+        // set only by classroom_connect / classroom_disconnect
+        config.online.classroom_token = cur.online.classroom_token.clone();
         config
             .save(&state.paths.config())
             .map_err(|e| e.to_string())?;
@@ -183,6 +185,29 @@ fn preview_voice(state: tauri::State<'_, AppState>) {
             );
         });
     }
+}
+
+/// Settings → ИИ «Подключить»: Google consent in the browser, then keep the refresh token.
+#[tauri::command]
+async fn classroom_connect(app: tauri::AppHandle) -> Result<(), String> {
+    let online = app.state::<AppState>().config_snapshot().online;
+    let token = tauri::async_runtime::spawn_blocking(move || {
+        jarvis_win::classroom::connect(&online.classroom_id, &online.classroom_secret)
+    })
+    .await
+    .map_err(|e| e.to_string())??;
+    set_classroom_token(&app.state::<AppState>(), token)
+}
+
+#[tauri::command]
+fn classroom_disconnect(state: tauri::State<'_, AppState>) -> Result<(), String> {
+    set_classroom_token(&state, String::new())
+}
+
+fn set_classroom_token(state: &AppState, token: String) -> Result<(), String> {
+    let mut cur = state.config.lock().unwrap_or_else(|e| e.into_inner());
+    cur.online.classroom_token = token;
+    cur.save(&state.paths.config()).map_err(|e| e.to_string())
 }
 
 /// Main window start-up state.
@@ -255,6 +280,8 @@ pub fn run() -> anyhow::Result<()> {
             set_config,
             mic_devices,
             preview_voice,
+            classroom_connect,
+            classroom_disconnect,
             avatar_edit,
             hud_preview,
             editor::editor_library,

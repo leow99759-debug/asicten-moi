@@ -23,10 +23,10 @@ fn get(url: &str) -> Option<String> {
 }
 
 /// Temp file removed on drop.
-struct Temp(PathBuf);
+pub(crate) struct Temp(pub(crate) PathBuf);
 
 impl Temp {
-    fn new(ext: &str, data: &[u8]) -> Result<Self, String> {
+    pub(crate) fn new(ext: &str, data: &[u8]) -> Result<Self, String> {
         static N: AtomicU32 = AtomicU32::new(0);
         let p = std::env::temp_dir().join(format!(
             "jarvis-{}-{}.{ext}",
@@ -37,7 +37,7 @@ impl Temp {
         Ok(Self(p))
     }
 
-    fn at(&self) -> String {
+    pub(crate) fn at(&self) -> String {
         format!("@{}", self.0.display())
     }
 }

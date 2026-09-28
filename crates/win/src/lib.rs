@@ -7,6 +7,7 @@ pub mod audio;
 #[cfg(windows)]
 pub mod autostart;
 pub mod backend;
+pub mod classroom;
 pub mod keys;
 pub mod online;
 pub mod recorder;

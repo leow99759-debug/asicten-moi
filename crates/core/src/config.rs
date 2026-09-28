@@ -61,6 +61,11 @@ pub struct Online {
     /// Fish Audio key: any text without a recording is spoken in the Jarvis voice online.
     pub fish_key: String,
     pub fish_voice: String,
+    /// Google Cloud OAuth «Desktop app» client for Classroom homework.
+    pub classroom_id: String,
+    pub classroom_secret: String,
+    /// Refresh token from «Подключить» (set by the app, kept on UI saves).
+    pub classroom_token: String,
 }
 
 impl Default for Online {
@@ -71,6 +76,9 @@ impl Default for Online {
             fish_key: String::new(),
             // «ДЖАРВИС» (ru) on fish.audio, same voice as the recorded extra phrases
             fish_voice: "4c3eaacc1a0545cdb0295bfddf3e3785".into(),
+            classroom_id: String::new(),
+            classroom_secret: String::new(),
+            classroom_token: String::new(),
         }
     }
 }
