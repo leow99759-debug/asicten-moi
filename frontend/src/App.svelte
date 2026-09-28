@@ -130,6 +130,7 @@
     position: absolute;
     inset: 0;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 2px 28px 28px;
     box-sizing: border-box;
     transition:

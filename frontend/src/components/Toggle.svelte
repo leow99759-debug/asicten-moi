@@ -33,15 +33,15 @@
     flex: none;
     padding: 0;
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.55);
-    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.12);
     cursor: pointer;
     transition:
       background-color var(--t-base) ease,
       border-color var(--t-base) ease;
   }
   .toggle:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.18);
   }
   .knob {
     position: absolute;
@@ -51,7 +51,7 @@
     height: 12px;
     margin-top: -6px;
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.55);
     transition:
       translate var(--t-base) var(--spring),
       width var(--t-fast) var(--ease-out),

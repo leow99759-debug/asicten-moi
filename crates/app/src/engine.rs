@@ -130,6 +130,8 @@ fn run(
     // speakers busy (echo tracking); None = quiet, Some(t) = drained at t (tail running)
     let mut playing = false;
     let mut drained: Option<Instant> = None;
+    // voice «выключи микрофон»: only «включи микрофон» is heard (the UI button closes the mic)
+    let mut asleep = false;
     let set_state = |s: AssistantState, state: &mut AssistantState| {
         if *state != s {
             *state = s;
@@ -155,6 +157,7 @@ fn run(
             Err(RecvTimeoutError::Disconnected) => return Ok(()),
         };
         let now = Instant::now();
+        let mut unprompted = false;
         let outputs = match msg {
             Msg::Audio(chunk) => {
                 if now.duration_since(last_level) >= LEVEL_EVERY {
@@ -170,7 +173,7 @@ fn run(
                     listener.set_speaking(true, &route.speaker.said(), now);
                     if !playing {
                         playing = true;
-                        if !listener.is_listening() {
+                        if !listener.is_listening() && !asleep {
                             set_state(AssistantState::Speaking, &mut state);
                         }
                     }
@@ -182,6 +185,7 @@ fn run(
                         set_state(AssistantState::Listening, &mut state);
                     }
                 }
+                unprompted = listener.unprompted();
                 listener.push(&chunk, now)?
             }
             Msg::Activate => {
@@ -195,6 +199,9 @@ fn run(
                 vec![]
             }
             Msg::Mode(cmd) => {
+                if cmd == ModeCommand::MicOn {
+                    asleep = false;
+                }
                 let cfg = apply_mode(config, config_path, cmd);
                 apply_to_runtime(&cfg, &mut listener, &mut mic);
                 vec![]
@@ -202,6 +209,7 @@ fn run(
         };
         for out in outputs {
             match out {
+                Output::Wake(score) if asleep => tracing::info!(score, "wake word (asleep)"),
                 Output::Wake(score) => {
                     tracing::info!(score, "wake word");
                     route.speaker.stop();
@@ -231,18 +239,31 @@ fn run(
                         .unwrap_or_else(|e| e.into_inner())
                         .mode_phrases
                         .clone();
-                    if route.confirm.is_pending() {
+                    let ok = || {
+                        route.speaker.say(&Line {
+                            clips: vec!["ok".into()],
+                            text: None,
+                        })
+                    };
+                    if asleep {
+                        if modes::is_mic_on(&text) {
+                            asleep = false;
+                            set_state(AssistantState::Idle, &mut state);
+                            ok();
+                        }
+                    } else if route.confirm.is_pending() {
                         if let Some(yes) = yes_no(&text) {
                             route.confirm.answer(yes);
                         }
                     } else if let Some(cmd) = modes::from_phrase(&text, &phrases) {
-                        let cfg = apply_mode(config, config_path, cmd);
-                        apply_to_runtime(&cfg, &mut listener, &mut mic);
-                        route.speaker.say(&Line {
-                            clips: vec!["ok".into()],
-                            text: None,
-                        });
-                    } else if route.work.send(Work::Utterance(text)).is_err() {
+                        if cmd == ModeCommand::MicOff {
+                            asleep = true;
+                        } else {
+                            let cfg = apply_mode(config, config_path, cmd);
+                            apply_to_runtime(&cfg, &mut listener, &mut mic);
+                        }
+                        ok();
+                    } else if route.work.send(Work::Utterance(text, unprompted)).is_err() {
                         tracing::warn!("command worker is gone");
                     }
                 }
@@ -251,7 +272,7 @@ fn run(
         if !listener.is_listening() && state == AssistantState::Listening {
             set_state(AssistantState::Idle, &mut state);
         }
-        if !mic.is_on() {
+        if !mic.is_on() || asleep {
             set_state(AssistantState::MicOff, &mut state);
         } else if state == AssistantState::MicOff {
             set_state(AssistantState::Idle, &mut state);

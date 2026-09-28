@@ -70,6 +70,7 @@ export const DEFAULTS: { [T in ActionType]: Extract<Action, { type: T }> } = {
   "Assistant.OpenPage": { type: "Assistant.OpenPage", page: "editor" },
   "Assistant.Repeat": { type: "Assistant.Repeat" },
   "Assistant.Cancel": { type: "Assistant.Cancel" },
+  "Assistant.Quit": { type: "Assistant.Quit" },
   "PowerPoint.NewPresentation": { type: "PowerPoint.NewPresentation", topic: "", slides: null },
   "PowerPoint.ApplyTheme": { type: "PowerPoint.ApplyTheme", name: "" },
   "PowerPoint.SetVariantColor": { type: "PowerPoint.SetVariantColor", color: "" },

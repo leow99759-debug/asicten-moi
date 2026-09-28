@@ -12,8 +12,8 @@ use ts_rs::TS;
 
 pub use action::{Action, AssistantMode, Num, PowerPlan, Side};
 pub use library::{
-    addons, builtin_packs, drop_overrides, read_installed, read_user, user_pack, write_installed,
-    write_user, Addon, Entry, Library,
+    addons, builtin_packs, drop_overrides, install_defaults, read_installed, read_user, user_pack,
+    write_installed, write_user, Addon, Entry, Library,
 };
 pub use pathvars::{expand, AppLocator, APP_VARS};
 

@@ -83,6 +83,15 @@ impl Listener {
         matches!(self.state, State::Listening { .. })
     }
 
+    /// The next phrase comes without «Джарвис» (follow-up window, or prefix mode off):
+    /// it may be the TV or a talk in the room, so an unknown phrase gets no reply.
+    pub fn unprompted(&self) -> bool {
+        match self.state {
+            State::Listening { followup, .. } => followup,
+            _ => !self.prefix,
+        }
+    }
+
     /// Prefix mode off = every phrase is a command (STT stays loaded, SPEC §2.2).
     pub fn set_prefix(&mut self, on: bool) {
         self.prefix = on;

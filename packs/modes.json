@@ -54,6 +54,10 @@
        {"type": "System.DND", "on": false},
        {"type": "System.Brightness", "level": 80}
      ],
-     "reply": {"clips": ["ok"], "text": "Возвращаю обычный режим, сэр"}}
+     "reply": {"clips": ["ok"], "text": "Возвращаю обычный режим, сэр"}},
+    {"id": "modes.silent_on", "folder": ["Режимы"], "name": "Тихий режим",
+     "phrases": ["тихий режим", "включи тихий режим"],
+     "actions": [{"type": "Assistant.Mode", "mode": "silent", "on": true}],
+     "reply": {"clips": ["ok"]}}
   ]
 }

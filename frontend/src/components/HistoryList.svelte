@@ -4,6 +4,7 @@
   import type { HistoryEntry } from "../lib/bindings/HistoryEntry";
   import type { Status } from "../lib/bindings/Status";
   import { runText } from "../lib/commands";
+  import { statusLabel } from "../lib/app.svelte";
   import { t } from "../lib/i18n";
 
   let { items, compact = false }: { items: HistoryEntry[]; compact?: boolean } = $props();
@@ -14,6 +15,8 @@
     cancelled: { icon: "ban", cls: "muted" },
     no_internet: { icon: "wifiOff", cls: "warn" },
   };
+  const UNKNOWN = { icon: "info" as IconName, cls: "muted" };
+  const st = (h: HistoryEntry) => (h.command_id ? STATUS[h.status] : UNKNOWN);
   const time = (ms: number) =>
     new Date(ms).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
 </script>
@@ -29,13 +32,13 @@
       <li style="--i: {Math.min(i, 8)}">
         <button type="button" class="row" title={t("history.repeat")} onclick={() => runText(h.phrase)}>
           {#if compact}
-            <span class="bar {STATUS[h.status].cls}"></span>
+            <span class="bar {st(h).cls}"></span>
           {:else}
-            <span class="chip {STATUS[h.status].cls}"><Icon name={STATUS[h.status].icon} size={12} stroke={2.5} /></span>
+            <span class="chip {st(h).cls}"><Icon name={st(h).icon} size={12} stroke={2.5} /></span>
           {/if}
           <span class="body">
             <span class="phrase">{h.phrase}</span>
-            <span class="status {STATUS[h.status].cls}">{t(`status.${h.status}`)}</span>
+            <span class="status {st(h).cls}">{statusLabel(h)}</span>
           </span>
           {#if !compact}<span class="time num">{time(h.ts)}</span>{/if}
           <span class="again" aria-hidden="true"><Icon name="repeat" size={14} /></span>

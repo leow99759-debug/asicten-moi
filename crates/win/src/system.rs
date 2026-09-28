@@ -50,9 +50,25 @@ pub fn perform(action: &Action) -> Option<Out> {
             Some(t) => done(win::set_clipboard(t)),
             None => win::get_clipboard().map(Some),
         },
+        Action::Info { what } if what.starts_with("rate:") => rate(&what[5..]).map(Some),
         Action::Info { what } => win::info(what).map(Some),
         _ => return None,
     })
+}
+
+/// Hryvnia rate from the NBU via the built-in curl.exe (Windows 10 1803+), §8.
+fn rate(code: &str) -> Result<String, String> {
+    let json = run_hidden(
+        "curl",
+        &[
+            "-sf",
+            "-m",
+            "4",
+            "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json",
+        ],
+    )
+    .map_err(|_| jarvis_core::NO_INTERNET.to_owned())?;
+    jarvis_core::info::rate_phrase(&json, code).ok_or_else(|| format!("нет курса {code}"))
 }
 
 fn power_plan(plan: PowerPlan) -> Result<(), String> {

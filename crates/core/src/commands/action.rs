@@ -319,6 +319,9 @@ pub enum Action {
     AssistantRepeat,
     #[serde(rename = "Assistant.Cancel")]
     AssistantCancel,
+    /// «Джарвис, выключи себя»: exit the app (not the PC).
+    #[serde(rename = "Assistant.Quit")]
+    AssistantQuit,
 
     // Office (COM)
     #[serde(rename = "PowerPoint.NewPresentation")]

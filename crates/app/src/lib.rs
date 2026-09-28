@@ -79,7 +79,7 @@ fn confirm_answer(state: tauri::State<'_, AppState>, yes: bool) {
 /// Typed command (PWA/remote, editor «▶ Test», history repeat).
 #[tauri::command]
 fn run_text(state: tauri::State<'_, AppState>, text: String) {
-    let _ = state.work.send(Work::Utterance(text));
+    let _ = state.work.send(Work::Utterance(text, false));
 }
 
 /// Main window history list (§3.4), newest first.
@@ -293,6 +293,11 @@ pub fn run() -> anyhow::Result<()> {
             let resources = app.path().resource_dir().ok();
             let packs = jarvis_core::paths::find_packs(resources.as_deref());
             let _ = state.packs.set(packs.clone());
+            if let Some(d) = &packs {
+                if let Err(e) = jarvis_core::commands::install_defaults(&state.paths.addons(), d) {
+                    tracing::warn!("addons: {e}");
+                }
+            }
             let sink: Arc<dyn jarvis_core::ipc::EventSink> =
                 Arc::new(ipc::TauriSink(handle.clone()));
             let Some(assets) = jarvis_core::paths::find_assets(resources.as_deref()) else {
@@ -337,6 +342,10 @@ pub fn run() -> anyhow::Result<()> {
                     db: state.db.clone(),
                     confirm: state.confirm.clone(),
                     engine: engine.clone(),
+                    quit: {
+                        let h = handle.clone();
+                        Arc::new(move || h.exit(0))
+                    },
                 },
                 state.work.clone(),
                 work_rx,

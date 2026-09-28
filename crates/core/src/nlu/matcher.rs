@@ -294,7 +294,13 @@ fn align(
                     let mut sub = slots.clone();
                     sub.insert(name.clone(), v);
                     let r = align(e, &p[1..], &u[end..], &mut sub);
-                    consider(r, 1.0, skipped, sub);
+                    // «открой {приложение}» is a catch-all: a named command wins ties
+                    let gain = if name == "{приложение}" {
+                        0.9
+                    } else {
+                        1.0
+                    };
+                    consider(r, gain, skipped, sub);
                 }
             }
         }

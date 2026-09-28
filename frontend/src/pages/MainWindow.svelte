@@ -7,14 +7,14 @@
   import Toggle from "../components/Toggle.svelte";
   import Icon from "../components/Icon.svelte";
   import BrandIcon from "../components/BrandIcon.svelte";
-  import { app, togglePrefix, toggleSilent } from "../lib/app.svelte";
-  import { activate } from "../lib/commands";
+  import { app, statusLabel, toggleMic, togglePrefix, toggleSilent } from "../lib/app.svelte";
   import { BRANDS } from "../lib/brands";
   import { cfg, saved } from "../lib/settings.svelte";
   import { t } from "../lib/i18n";
 
   const level = $derived(Math.max(app.micLevel, app.ttsLevel));
   const active = $derived(app.state === "listening" || app.state === "speaking" || app.state === "processing");
+  const micOff = $derived(app.state === "mic_off");
   const last = $derived(app.history[0]);
   const brand = (id: string | null) => {
     const b = id?.split(".")[0] ?? "";
@@ -29,8 +29,16 @@
   <div class="col">
     <header class="hd">
       <h1 class="t-display">{t("title.main")}</h1>
-      <button type="button" class="listen" class:on={active} onclick={activate} title={t("main.listen")} aria-label={t("main.listen")}>
-        <Icon name="mic" size={16} />
+      <button
+        type="button"
+        class="listen"
+        class:on={active}
+        class:off={micOff}
+        onclick={toggleMic}
+        aria-pressed={micOff}
+        title={micOff ? t("mic.on") : t("mic.off")}
+        aria-label={micOff ? t("mic.on") : t("mic.off")}>
+        <Icon name={micOff ? "micOff" : "mic"} size={16} />
       </button>
     </header>
 
@@ -94,7 +102,7 @@
         <BrandIcon icon={brand(last.command_id)} name={last.phrase} size={44} />
         <span class="tt">
           <span class="tp">{cap(last.phrase.replace(/^джарвис,?\s*/i, ""))}</span>
-          <span class="ts {last.status}">{t(`status.${last.status}`)}</span>
+          <span class="ts {last.command_id ? last.status : ''}">{statusLabel(last)}</span>
         </span>
       </div>
     {/key}
@@ -111,7 +119,7 @@
     position: absolute;
     top: 50%;
     right: -16%;
-    width: min(760px, 72%);
+    width: min(760px, 72%, calc(100vh - 80px));
     aspect-ratio: 1;
     translate: 0 -50%;
     pointer-events: none;
@@ -151,6 +159,10 @@
   .listen:active {
     transform: scale(0.94);
   }
+  .listen.off {
+    background: var(--err);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
   .listen.on {
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.2),
@@ -189,10 +201,12 @@
     max-width: 230px;
   }
   .toast {
+    --col: max(min(460px, 50%), 340px);
     position: absolute;
-    left: calc(min(460px, 50%) - 110px);
+    left: calc(var(--col) + 28px);
     bottom: 8px;
-    width: 400px;
+    width: min(400px, calc(100% - var(--col) - 28px));
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     gap: 14px;

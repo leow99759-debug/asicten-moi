@@ -41,13 +41,23 @@ pub fn from_phrase(text: &str, p: &ModePhrases) -> Option<ModeCommand> {
         (&p.silent_off, ModeCommand::SilentOff),
         (&p.silent_on, ModeCommand::SilentOn),
         (&p.mic_off, ModeCommand::MicOff),
+        (&MIC_OFF.to_owned(), ModeCommand::MicOff),
     ]
     .into_iter()
-    .find(|(phrase, _)| {
-        let ph = norm(phrase);
-        !ph.is_empty() && t.contains(&format!(" {ph} "))
-    })
+    .find(|(phrase, _)| has(&t, phrase))
     .map(|(_, cmd)| cmd)
+}
+
+const MIC_OFF: &str = "выключи микрофон";
+
+/// «Джарвис, включи микрофон»: the only phrase heard after a voice «mic off».
+pub fn is_mic_on(text: &str) -> bool {
+    has(&format!(" {} ", norm(text)), "включи микрофон")
+}
+
+fn has(padded: &str, phrase: &str) -> bool {
+    let ph = norm(phrase);
+    !ph.is_empty() && padded.contains(&format!(" {ph} "))
 }
 
 #[cfg(test)]
@@ -66,12 +76,21 @@ mod tests {
             ),
             ("выключи тихий режим", Some(ModeCommand::SilentOff)),
             ("хватит слушать", Some(ModeCommand::MicOff)),
+            ("Джарвис, выключи микрофон", Some(ModeCommand::MicOff)),
+            ("включи микрофон", None),
             ("включи музыку", None),
             ("перейди в тихий", None),
         ];
         for (text, want) in cases {
             assert_eq!(from_phrase(text, &p), want, "{text}");
         }
+    }
+
+    #[test]
+    fn mic_on_phrase() {
+        assert!(is_mic_on("Джарвис, включи микрофон"));
+        assert!(!is_mic_on("выключи микрофон"));
+        assert!(!is_mic_on("включи музыку"));
     }
 
     #[test]

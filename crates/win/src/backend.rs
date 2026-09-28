@@ -38,8 +38,9 @@ impl Backend for WinBackend {
                 false,
             ),
             Action::LaunchFind { name } => {
-                let lnk = apps::find_app(name).ok_or_else(|| format!("«{name}» не найдено"))?;
-                shell_open(&lnk.to_string_lossy(), "", None, false)
+                let target =
+                    apps::resolve(name).ok_or_else(|| format!("программа «{name}» не найдена"))?;
+                shell_open(&target, "", None, false)
             }
             Action::ProcessKill { name } => kill(name),
             Action::PlayWav { path } => play_wav(path),

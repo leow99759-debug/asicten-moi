@@ -136,6 +136,21 @@ pub fn write_installed(path: &Path, ids: &[String]) -> crate::Result<()> {
     Ok(())
 }
 
+/// First run (no `addons.json`): every catalog add-on starts installed. They are scoped by
+/// `when` and tested clash-free together, and a fresh Jarvis that doesn't know
+/// «открой проводник» feels broken.
+pub fn install_defaults(path: &Path, dir: &Path) -> crate::Result<()> {
+    if path.exists() {
+        return Ok(());
+    }
+    let ids: Vec<String> = load_dir(&dir.join(CATALOG))
+        .0
+        .into_iter()
+        .map(|p| p.id)
+        .collect();
+    write_installed(path, &ids)
+}
+
 /// What the brain and the editor see: default packs + installed add-ons.
 pub fn builtin_packs(dir: &Path, installed: &[String]) -> Vec<Pack> {
     let mut packs = load_dir(dir).0;
@@ -274,6 +289,9 @@ mod tests {
 
         let file = dir.path().join("addons.json");
         assert!(read_installed(&file).is_empty());
+        install_defaults(&file, dir.path()).expect("defaults");
+        assert_eq!(read_installed(&file), ["spotify", "steam"]);
+        std::fs::remove_file(&file).expect("rm");
         write_installed(&file, &on).expect("write");
         assert_eq!(read_installed(&file), on);
 

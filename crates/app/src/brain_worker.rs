@@ -23,7 +23,8 @@ use crate::speaker::Speaker;
 const CONFIRM_TIMEOUT: Duration = Duration::from_secs(30);
 
 pub enum Work {
-    Utterance(String),
+    /// Phrase + heard without the wake word (unknown ones are then dropped silently).
+    Utterance(String, bool),
     Job(Job),
     Repeat,
     /// Editor saved: swap the command set.
@@ -75,7 +76,11 @@ struct AppAssistant {
     engine: Engine,
     work: Sender<Work>,
     scheduler: Mutex<Scheduler>,
+    quit: Quit,
 }
+
+/// Exits the app (tray icon cleaned up by Tauri).
+pub type Quit = Arc<dyn Fn() + Send + Sync>;
 
 impl Assistant for AppAssistant {
     fn speak(&self, text: Option<&str>, clip: Option<&str>) -> Result<(), String> {
@@ -128,6 +133,20 @@ impl Assistant for AppAssistant {
         Ok(())
     }
 
+    fn quit(&self) -> Result<(), String> {
+        let (speaker, quit) = (self.speaker.clone(), self.quit.clone());
+        // the goodbye line is queued after the actions run: let it play first
+        std::thread::spawn(move || {
+            std::thread::sleep(Duration::from_millis(500));
+            let until = std::time::Instant::now() + Duration::from_secs(5);
+            while speaker.is_playing() && std::time::Instant::now() < until {
+                std::thread::sleep(Duration::from_millis(100));
+            }
+            quit();
+        });
+        Ok(())
+    }
+
     fn schedule(&self, after: Duration, job: Job) -> Result<(), String> {
         self.scheduler
             .lock()
@@ -160,6 +179,7 @@ pub struct Deps {
     pub db: Arc<Mutex<Db>>,
     pub confirm: Arc<Confirm>,
     pub engine: Engine,
+    pub quit: Quit,
 }
 
 pub fn spawn(
@@ -174,6 +194,7 @@ pub fn spawn(
         db,
         confirm,
         engine,
+        quit,
     } = deps;
     let (scheduler, fired) = Scheduler::start();
     let fwd = work_tx.clone();
@@ -191,6 +212,7 @@ pub fn spawn(
         engine,
         work: work_tx,
         scheduler: Mutex::new(scheduler),
+        quit,
     });
     let spawned = std::thread::Builder::new()
         .name("jarvis-brain".into())
@@ -220,8 +242,16 @@ pub fn spawn(
             };
             for work in work_rx {
                 match work {
-                    Work::Utterance(text) => {
+                    Work::Utterance(text, unprompted) => {
                         let outcome = brain.handle(&text);
+                        // not understood + no «Джарвис» or a long sentence = TV/room talk:
+                        // a «не понял» reply would reopen the follow-up window and loop
+                        if outcome.commands.is_empty()
+                            && (unprompted || text.split_whitespace().count() > 6)
+                        {
+                            tracing::info!(%text, "ignored: not a command");
+                            continue;
+                        }
                         if !outcome.commands.is_empty() {
                             last = Some(text);
                         }

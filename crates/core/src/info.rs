@@ -96,9 +96,49 @@ pub fn load_phrase(cpu: u8, ram: u8) -> String {
     )
 }
 
+/// NBU daily rates JSON (`bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json`,
+/// hryvnias per 1 unit) → «Доллар — 41 гривна 25 копеек, сэр».
+pub fn rate_phrase(json: &str, code: &str) -> Option<String> {
+    let code = code.to_uppercase();
+    let list: Vec<serde_json::Value> = serde_json::from_str(json).ok()?;
+    let rate = list
+        .iter()
+        .find(|v| v["cc"].as_str() == Some(code.as_str()))?["rate"]
+        .as_f64()?;
+    let kop_total = (rate * 100.0).round() as i64;
+    let (uah, kop) = (kop_total / 100, kop_total % 100);
+    let name = match code.as_str() {
+        "USD" => "Доллар",
+        "EUR" => "Евро",
+        "CNY" => "Юань",
+        "PLN" => "Злотый",
+        other => other,
+    };
+    Some(format!(
+        "{name} — {uah} {} {kop} {}, сэр",
+        plural(uah, "гривна", "гривны", "гривен"),
+        plural(kop, "копейка", "копейки", "копеек")
+    ))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn rates_from_nbu_json() {
+        let json = r#"[{"r030":840,"txt":"Долар США","rate":41.2534,"cc":"USD"},
+            {"r030":985,"txt":"Злотий","rate":11.05,"cc":"PLN"}]"#;
+        assert_eq!(
+            rate_phrase(json, "usd").as_deref(),
+            Some("Доллар — 41 гривна 25 копеек, сэр")
+        );
+        assert_eq!(
+            rate_phrase(json, "PLN").as_deref(),
+            Some("Злотый — 11 гривен 5 копеек, сэр")
+        );
+        assert_eq!(rate_phrase(json, "EUR"), None);
+    }
 
     #[test]
     fn plurals() {

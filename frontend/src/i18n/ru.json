@@ -30,6 +30,7 @@
   "panel.volume": "Громкость",
   "status.done": "Выполнено",
   "status.error": "Ошибка",
+  "status.unknown": "Не понял",
   "status.cancelled": "Отменено",
   "status.no_internet": "Нет сети",
   "history.empty": "Скажите «Джарвис» — команды появятся здесь",

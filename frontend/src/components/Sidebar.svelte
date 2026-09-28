@@ -3,8 +3,7 @@
   // square; mic mute and profile at the bottom. Labels live in tooltips.
   import Icon, { type IconName } from "./Icon.svelte";
   import Logo from "./Logo.svelte";
-  import { app, type Page } from "../lib/app.svelte";
-  import { setMode } from "../lib/commands";
+  import { app, toggleMic, type Page } from "../lib/app.svelte";
   import { t } from "../lib/i18n";
 
   const items: { page: Page; icon: IconName }[] = [
@@ -17,12 +16,6 @@
 
   const micOff = $derived(app.state === "mic_off");
   const busy = $derived(app.state === "listening" || app.state === "processing" || app.state === "speaking");
-
-  function toggleMic() {
-    const off = !micOff;
-    app.state = off ? "mic_off" : "idle";
-    setMode(off ? "mic_off" : "mic_on");
-  }
 </script>
 
 {#snippet nav(page: Page, icon: IconName)}

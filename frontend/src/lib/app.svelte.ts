@@ -6,6 +6,7 @@ import { on } from "./ipc";
 import { history as loadHistory, setMode, uiSnapshot } from "./commands";
 import { inTauri } from "./window";
 import { applyUi, cfg, loadConfig, saved } from "./settings.svelte";
+import { t } from "./i18n";
 
 export type Page = "main" | "editor" | "addons" | "ai" | "settings" | "profile";
 
@@ -48,6 +49,16 @@ export function togglePrefix(on: boolean): void {
   app.prefixMode = on;
   setMode(on ? "prefix_on" : "prefix_off");
 }
+
+/** Mic button (header, rail): closes/opens the microphone completely. */
+export function toggleMic(): void {
+  const off = app.state !== "mic_off";
+  app.state = off ? "mic_off" : "idle";
+  setMode(off ? "mic_off" : "mic_on");
+}
+
+/** History row status; no command = the phrase wasn't understood (not an error). */
+export const statusLabel = (h: HistoryEntry): string => t(h.command_id ? `status.${h.status}` : "status.unknown");
 
 export function toggleSilent(on: boolean): void {
   app.silentMode = on;

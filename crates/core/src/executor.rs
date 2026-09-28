@@ -35,6 +35,8 @@ pub trait Assistant: Send + Sync {
     fn open_page(&self, page: &str) -> Result<(), String>;
     fn repeat(&self) -> Result<(), String>;
     fn cancel(&self) -> Result<(), String>;
+    /// Exit Jarvis after the goodbye line.
+    fn quit(&self) -> Result<(), String>;
     fn schedule(&self, after: Duration, job: Job) -> Result<(), String>;
 }
 
@@ -88,6 +90,9 @@ impl Assistant for DryRun {
     }
     fn cancel(&self) -> Result<(), String> {
         self.record(Action::AssistantCancel)
+    }
+    fn quit(&self) -> Result<(), String> {
+        self.record(Action::AssistantQuit)
     }
     fn schedule(&self, after: Duration, job: Job) -> Result<(), String> {
         let sec = Num::Value(after.as_secs_f64());
@@ -235,6 +240,7 @@ impl Executor {
             Action::AssistantOpenPage { page } => Some(a.open_page(page)),
             Action::AssistantRepeat => Some(a.repeat()),
             Action::AssistantCancel => Some(a.cancel()),
+            Action::AssistantQuit => Some(a.quit()),
             Action::Timer { sec, then_command } => Some(
                 secs(sec)
                     .ok_or_else(|| "таймер без времени".to_owned())
