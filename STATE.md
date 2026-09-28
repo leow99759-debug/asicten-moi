@@ -14,5 +14,4 @@ decisions: playback via cpal directly (already a dep, rodio 0.22 needs MSRV 1.87
 decisions: Fish Audio lines never mix into categories that have originals (user rule: originals win); Priler howdy/remaster skipped (synthetic, speaker sim 0.55–0.79 vs og 0.8–0.94)
 decisions: WinRT (speech/radios) + audio COM → keep_mta() pins process MTA once (CoIncrementMTAUsage), fixes flaky 0xc0000005 in jarvis-win tests
 decisions: same phrase in several packs is OK only with different `when` (browsers share «новая вкладка» per exe); T075 dup check = (phrase, foreground)
-decisions: same phrase in several packs is OK only with different `when` (browsers share «новая вкладка» per exe); T075 dup check = (phrase, foreground)
-decisions: local build needs MSVC 14.44+ (VS 2022 17.14): sherpa-onnx prebuilt static libs → LNK2001 __std_find_first_of_trivial_pos_1 on 14.43
+decisions: MSVC ≤14.43 can't link sherpa-onnx prebuilt (LNK2001 __std_find_first_of_trivial_pos_1/2) → core/build.rs detects toolset via find-msvc-tools, cfg old_msvc_stl exports Rust shims (msvc_compat.rs); never enable on 14.44+ (LNK2005)

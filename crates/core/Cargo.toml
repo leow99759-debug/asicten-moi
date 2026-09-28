@@ -24,6 +24,9 @@ hound.workspace = true
 [target.'cfg(windows)'.dependencies]
 cpal.workspace = true
 
+[build-dependencies]
+find-msvc-tools = "0.1"
+
 [dev-dependencies]
 tempfile.workspace = true
 
