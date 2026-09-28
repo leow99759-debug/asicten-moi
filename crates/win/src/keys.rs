@@ -26,6 +26,11 @@ pub fn vk(name: &str) -> Option<u16> {
         "down" => 0x28,
         "printscreen" | "prtsc" => 0x2C,
         "capslock" => 0x14,
+        "plus" | "equals" => 0xBB,
+        "comma" => 0xBC,
+        "minus" => 0xBD,
+        "period" | "dot" => 0xBE,
+        "slash" => 0xBF,
         "volume_mute" => 0xAD,
         "volume_down" => 0xAE,
         "volume_up" => 0xAF,
@@ -51,7 +56,7 @@ pub fn vk(name: &str) -> Option<u16> {
 
 /// Key name for a VK code, as packs write it (`Ctrl`, `S`, `F5`, `Enter`); inverse of [`vk`].
 pub fn name(code: u16) -> Option<String> {
-    const NAMED: [&str; 28] = [
+    const NAMED: [&str; 33] = [
         "ctrl",
         "shift",
         "alt",
@@ -73,6 +78,11 @@ pub fn name(code: u16) -> Option<String> {
         "down",
         "printscreen",
         "capslock",
+        "plus",
+        "comma",
+        "minus",
+        "period",
+        "slash",
         "volume_mute",
         "volume_down",
         "volume_up",
@@ -263,6 +273,8 @@ mod tests {
         assert_eq!(parse_combo("f11"), Ok(vec![0x7A]));
         assert_eq!(parse_combo("ctrl+1"), Ok(vec![0x11, 0x31]));
         assert_eq!(parse_combo("media_play_pause"), Ok(vec![0xB3]));
+        assert_eq!(parse_combo("ctrl+plus"), Ok(vec![0x11, 0xBB]));
+        assert_eq!(parse_combo("Shift+Period"), Ok(vec![0x10, 0xBE]));
         assert!(parse_combo("ctrl+щ").is_err());
         assert!(parse_combo("f25").is_err());
         assert!(is_extended(0x25) && !is_extended(0x41));
@@ -272,6 +284,7 @@ mod tests {
             (0x74, "F5"),
             (0x0D, "Enter"),
             (0x5C, "Win"),
+            (0xBD, "Minus"),
         ] {
             assert_eq!(name(code).as_deref(), Some(n));
         }

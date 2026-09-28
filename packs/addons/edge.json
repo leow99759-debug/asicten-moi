@@ -1,0 +1,1211 @@
+{
+ "id": "edge",
+ "name": "Microsoft Edge",
+ "description": "Вкладки, InPrivate, избранное, чтение вслух, режим чтения, коллекции — горячими клавишами Edge.",
+ "category": "Браузеры",
+ "version": "1.0.0",
+ "icon": "edge",
+ "commands": [
+  {
+   "id": "edge.open",
+   "folder": [
+    "Microsoft Edge",
+    "Запуск"
+   ],
+   "name": "Открыть Microsoft Edge",
+   "phrases": [
+    "эдж",
+    "майкрософт эдж",
+    "edge"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.File",
+     "path": "%EDGE%"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "edge.close",
+   "folder": [
+    "Microsoft Edge",
+    "Запуск"
+   ],
+   "name": "Закрыть Microsoft Edge",
+   "phrases": [
+    "закрой эдж",
+    "закрой майкрософт эдж",
+    "закрой edge",
+    "выключи эдж"
+   ],
+   "actions": [
+    {
+     "type": "Run.Command.Hidden",
+     "cmd": "taskkill /IM msedge.exe",
+     "trusted": true
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "edge.search",
+   "folder": [
+    "Microsoft Edge",
+    "Запуск"
+   ],
+   "name": "Найти в Microsoft Edge",
+   "phrases": [
+    "найди в эдже {текст}",
+    "поищи в эдже {текст}"
+   ],
+   "actions": [
+    {
+     "type": "Launch.File",
+     "path": "%EDGE%",
+     "args": "\"https://www.bing.com/search?q={текст}\""
+    }
+   ],
+   "reply": {
+    "clips": [
+     "loading"
+    ]
+   }
+  },
+  {
+   "id": "edge.tab_new",
+   "folder": [
+    "Microsoft Edge",
+    "Вкладки"
+   ],
+   "name": "Новая вкладка",
+   "phrases": [
+    "новая вкладка",
+    "открой новую вкладку"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+T"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.tab_close",
+   "folder": [
+    "Microsoft Edge",
+    "Вкладки"
+   ],
+   "name": "Закрыть вкладку",
+   "phrases": [
+    "закрой вкладку"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+W"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.tab_reopen",
+   "folder": [
+    "Microsoft Edge",
+    "Вкладки"
+   ],
+   "name": "Вернуть закрытую вкладку",
+   "phrases": [
+    "верни вкладку",
+    "восстанови вкладку",
+    "открой закрытую вкладку"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+T"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.tab_next",
+   "folder": [
+    "Microsoft Edge",
+    "Вкладки"
+   ],
+   "name": "Следующая вкладка",
+   "phrases": [
+    "следующая вкладка"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Tab"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.tab_prev",
+   "folder": [
+    "Microsoft Edge",
+    "Вкладки"
+   ],
+   "name": "Предыдущая вкладка",
+   "phrases": [
+    "предыдущая вкладка"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+Tab"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.tab_first",
+   "folder": [
+    "Microsoft Edge",
+    "Вкладки"
+   ],
+   "name": "Первая вкладка",
+   "phrases": [
+    "первая вкладка"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+1"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.tab_last",
+   "folder": [
+    "Microsoft Edge",
+    "Вкладки"
+   ],
+   "name": "Последняя вкладка",
+   "phrases": [
+    "последняя вкладка"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+9"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.window_new",
+   "folder": [
+    "Microsoft Edge",
+    "Вкладки"
+   ],
+   "name": "Новое окно",
+   "phrases": [
+    "новое окно"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+N"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.incognito",
+   "folder": [
+    "Microsoft Edge",
+    "Вкладки"
+   ],
+   "name": "Окно InPrivate",
+   "phrases": [
+    "режим инкогнито",
+    "инкогнито",
+    "приватное окно"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+N"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.back",
+   "folder": [
+    "Microsoft Edge",
+    "Навигация"
+   ],
+   "name": "Назад",
+   "phrases": [
+    "назад",
+    "вернись назад",
+    "предыдущая страница"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+Left"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.forward",
+   "folder": [
+    "Microsoft Edge",
+    "Навигация"
+   ],
+   "name": "Вперёд",
+   "phrases": [
+    "вперед",
+    "следующая страница"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+Right"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.reload",
+   "folder": [
+    "Microsoft Edge",
+    "Навигация"
+   ],
+   "name": "Обновить страницу",
+   "phrases": [
+    "обнови",
+    "обнови страницу",
+    "перезагрузи страницу"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "F5"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.reload_hard",
+   "folder": [
+    "Microsoft Edge",
+    "Навигация"
+   ],
+   "name": "Обновить без кэша",
+   "phrases": [
+    "обнови без кэша",
+    "полное обновление"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+F5"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.stop",
+   "folder": [
+    "Microsoft Edge",
+    "Навигация"
+   ],
+   "name": "Остановить загрузку",
+   "phrases": [
+    "останови загрузку"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Esc"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.home",
+   "folder": [
+    "Microsoft Edge",
+    "Навигация"
+   ],
+   "name": "Домашняя страница",
+   "phrases": [
+    "домашняя страница"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+Home"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.address",
+   "folder": [
+    "Microsoft Edge",
+    "Навигация"
+   ],
+   "name": "Адресная строка",
+   "phrases": [
+    "адресная строка"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+L"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.find",
+   "folder": [
+    "Microsoft Edge",
+    "Навигация"
+   ],
+   "name": "Поиск на странице",
+   "phrases": [
+    "найди на странице",
+    "поиск по странице"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+F"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.top",
+   "folder": [
+    "Microsoft Edge",
+    "Навигация"
+   ],
+   "name": "В начало страницы",
+   "phrases": [
+    "в начало страницы",
+    "наверх"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Home"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.bottom",
+   "folder": [
+    "Microsoft Edge",
+    "Навигация"
+   ],
+   "name": "В конец страницы",
+   "phrases": [
+    "в конец страницы",
+    "в самый низ"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "End"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.page_down",
+   "folder": [
+    "Microsoft Edge",
+    "Навигация"
+   ],
+   "name": "Прокрутить вниз",
+   "phrases": [
+    "прокрути вниз",
+    "листай вниз"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "PageDown"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.page_up",
+   "folder": [
+    "Microsoft Edge",
+    "Навигация"
+   ],
+   "name": "Прокрутить вверх",
+   "phrases": [
+    "прокрути вверх",
+    "листай вверх"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "PageUp"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.web_search",
+   "folder": [
+    "Microsoft Edge",
+    "Навигация"
+   ],
+   "name": "Поиск в интернете",
+   "phrases": [
+    "загугли {текст}",
+    "найди в интернете {текст}"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+L"
+    },
+    {
+     "type": "Lux.PauseMS",
+     "ms": 150
+    },
+    {
+     "type": "Keys.Type",
+     "text": "{текст}"
+    },
+    {
+     "type": "Keys.Press",
+     "keys": "Enter"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "loading"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.zoom_in",
+   "folder": [
+    "Microsoft Edge",
+    "Страница"
+   ],
+   "name": "Увеличить масштаб",
+   "phrases": [
+    "увеличь масштаб",
+    "крупнее"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Plus"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.zoom_out",
+   "folder": [
+    "Microsoft Edge",
+    "Страница"
+   ],
+   "name": "Уменьшить масштаб",
+   "phrases": [
+    "уменьши масштаб",
+    "мельче"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Minus"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.zoom_reset",
+   "folder": [
+    "Microsoft Edge",
+    "Страница"
+   ],
+   "name": "Обычный масштаб",
+   "phrases": [
+    "обычный масштаб",
+    "сбрось масштаб"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+0"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.bookmark",
+   "folder": [
+    "Microsoft Edge",
+    "Страница"
+   ],
+   "name": "В закладки",
+   "phrases": [
+    "добавь в закладки",
+    "в закладки"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+D"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.print",
+   "folder": [
+    "Microsoft Edge",
+    "Страница"
+   ],
+   "name": "Печать",
+   "phrases": [
+    "распечатай",
+    "печать"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+P"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.save",
+   "folder": [
+    "Microsoft Edge",
+    "Страница"
+   ],
+   "name": "Сохранить страницу",
+   "phrases": [
+    "сохрани страницу"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+S"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.devtools",
+   "folder": [
+    "Microsoft Edge",
+    "Страница"
+   ],
+   "name": "Инструменты разработчика",
+   "phrases": [
+    "инструменты разработчика",
+    "консоль разработчика"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "F12"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.history",
+   "folder": [
+    "Microsoft Edge",
+    "Браузер"
+   ],
+   "name": "История",
+   "phrases": [
+    "история",
+    "история браузера"
+   ],
+   "optional": [
+    "открой",
+    "покажи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+H"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.downloads",
+   "folder": [
+    "Microsoft Edge",
+    "Браузер"
+   ],
+   "name": "Загрузки",
+   "phrases": [
+    "загрузки",
+    "скачанные файлы"
+   ],
+   "optional": [
+    "открой",
+    "покажи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+J"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.bookmarks",
+   "folder": [
+    "Microsoft Edge",
+    "Браузер"
+   ],
+   "name": "Закладки",
+   "phrases": [
+    "закладки",
+    "все закладки"
+   ],
+   "optional": [
+    "открой",
+    "покажи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+O"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.clear",
+   "folder": [
+    "Microsoft Edge",
+    "Браузер"
+   ],
+   "name": "Очистить историю",
+   "phrases": [
+    "очисти историю",
+    "удали историю",
+    "очисти кэш"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+Delete"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.settings",
+   "folder": [
+    "Microsoft Edge",
+    "Браузер"
+   ],
+   "name": "Настройки браузера",
+   "phrases": [
+    "настройки браузера"
+   ],
+   "optional": [
+    "открой"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+L"
+    },
+    {
+     "type": "Lux.PauseMS",
+     "ms": 150
+    },
+    {
+     "type": "Keys.Type",
+     "text": "edge://settings"
+    },
+    {
+     "type": "Keys.Press",
+     "keys": "Enter"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.extensions",
+   "folder": [
+    "Microsoft Edge",
+    "Браузер"
+   ],
+   "name": "Расширения",
+   "phrases": [
+    "расширения",
+    "дополнения браузера"
+   ],
+   "optional": [
+    "открой",
+    "покажи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+L"
+    },
+    {
+     "type": "Lux.PauseMS",
+     "ms": 150
+    },
+    {
+     "type": "Keys.Type",
+     "text": "edge://extensions"
+    },
+    {
+     "type": "Keys.Press",
+     "keys": "Enter"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.read_aloud",
+   "folder": [
+    "Microsoft Edge",
+    "Браузер"
+   ],
+   "name": "Читать вслух",
+   "phrases": [
+    "читай вслух",
+    "прочитай страницу"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+U"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.reader",
+   "folder": [
+    "Microsoft Edge",
+    "Браузер"
+   ],
+   "name": "Иммерсивное средство чтения",
+   "phrases": [
+    "режим чтения"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "F9"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.collections",
+   "folder": [
+    "Microsoft Edge",
+    "Браузер"
+   ],
+   "name": "Коллекции",
+   "phrases": [
+    "коллекции"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+Y"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.vertical_tabs",
+   "folder": [
+    "Microsoft Edge",
+    "Браузер"
+   ],
+   "name": "Вертикальные вкладки",
+   "phrases": [
+    "вертикальные вкладки"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+Comma"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  },
+  {
+   "id": "edge.task_manager",
+   "folder": [
+    "Microsoft Edge",
+    "Браузер"
+   ],
+   "name": "Диспетчер задач Edge",
+   "phrases": [
+    "диспетчер задач браузера"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Shift+Esc"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "msedge.exe"
+   }
+  }
+ ]
+}

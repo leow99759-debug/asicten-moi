@@ -1,0 +1,1108 @@
+{
+ "id": "yandex",
+ "name": "Яндекс Браузер",
+ "description": "Вкладки, инкогнито, закладки, загрузки, дополнения и поиск в Яндексе — горячими клавишами.",
+ "category": "Браузеры",
+ "version": "1.0.0",
+ "icon": "yandex",
+ "commands": [
+  {
+   "id": "yandex.open",
+   "folder": [
+    "Яндекс Браузер",
+    "Запуск"
+   ],
+   "name": "Открыть Яндекс Браузер",
+   "phrases": [
+    "яндекс браузер",
+    "браузер яндекс"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.File",
+     "path": "%YANDEX%"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "yandex.close",
+   "folder": [
+    "Яндекс Браузер",
+    "Запуск"
+   ],
+   "name": "Закрыть Яндекс Браузер",
+   "phrases": [
+    "закрой яндекс браузер",
+    "закрой браузер яндекс",
+    "выключи яндекс браузер"
+   ],
+   "actions": [
+    {
+     "type": "Run.Command.Hidden",
+     "cmd": "taskkill /IM browser.exe",
+     "trusted": true
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "yandex.search",
+   "folder": [
+    "Яндекс Браузер",
+    "Запуск"
+   ],
+   "name": "Найти в Яндекс Браузер",
+   "phrases": [
+    "найди в яндекс браузере {текст}",
+    "поищи в яндекс браузере {текст}"
+   ],
+   "actions": [
+    {
+     "type": "Launch.File",
+     "path": "%YANDEX%",
+     "args": "\"https://ya.ru/search/?text={текст}\""
+    }
+   ],
+   "reply": {
+    "clips": [
+     "loading"
+    ]
+   }
+  },
+  {
+   "id": "yandex.tab_new",
+   "folder": [
+    "Яндекс Браузер",
+    "Вкладки"
+   ],
+   "name": "Новая вкладка",
+   "phrases": [
+    "новая вкладка",
+    "открой новую вкладку"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+T"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.tab_close",
+   "folder": [
+    "Яндекс Браузер",
+    "Вкладки"
+   ],
+   "name": "Закрыть вкладку",
+   "phrases": [
+    "закрой вкладку"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+W"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.tab_reopen",
+   "folder": [
+    "Яндекс Браузер",
+    "Вкладки"
+   ],
+   "name": "Вернуть закрытую вкладку",
+   "phrases": [
+    "верни вкладку",
+    "восстанови вкладку",
+    "открой закрытую вкладку"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+T"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.tab_next",
+   "folder": [
+    "Яндекс Браузер",
+    "Вкладки"
+   ],
+   "name": "Следующая вкладка",
+   "phrases": [
+    "следующая вкладка"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Tab"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.tab_prev",
+   "folder": [
+    "Яндекс Браузер",
+    "Вкладки"
+   ],
+   "name": "Предыдущая вкладка",
+   "phrases": [
+    "предыдущая вкладка"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+Tab"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.tab_first",
+   "folder": [
+    "Яндекс Браузер",
+    "Вкладки"
+   ],
+   "name": "Первая вкладка",
+   "phrases": [
+    "первая вкладка"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+1"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.tab_last",
+   "folder": [
+    "Яндекс Браузер",
+    "Вкладки"
+   ],
+   "name": "Последняя вкладка",
+   "phrases": [
+    "последняя вкладка"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+9"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.window_new",
+   "folder": [
+    "Яндекс Браузер",
+    "Вкладки"
+   ],
+   "name": "Новое окно",
+   "phrases": [
+    "новое окно"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+N"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.incognito",
+   "folder": [
+    "Яндекс Браузер",
+    "Вкладки"
+   ],
+   "name": "Режим инкогнито",
+   "phrases": [
+    "режим инкогнито",
+    "инкогнито",
+    "приватное окно"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+N"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.back",
+   "folder": [
+    "Яндекс Браузер",
+    "Навигация"
+   ],
+   "name": "Назад",
+   "phrases": [
+    "назад",
+    "вернись назад",
+    "предыдущая страница"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+Left"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.forward",
+   "folder": [
+    "Яндекс Браузер",
+    "Навигация"
+   ],
+   "name": "Вперёд",
+   "phrases": [
+    "вперед",
+    "следующая страница"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+Right"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.reload",
+   "folder": [
+    "Яндекс Браузер",
+    "Навигация"
+   ],
+   "name": "Обновить страницу",
+   "phrases": [
+    "обнови",
+    "обнови страницу",
+    "перезагрузи страницу"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "F5"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.reload_hard",
+   "folder": [
+    "Яндекс Браузер",
+    "Навигация"
+   ],
+   "name": "Обновить без кэша",
+   "phrases": [
+    "обнови без кэша",
+    "полное обновление"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+F5"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.stop",
+   "folder": [
+    "Яндекс Браузер",
+    "Навигация"
+   ],
+   "name": "Остановить загрузку",
+   "phrases": [
+    "останови загрузку"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Esc"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.home",
+   "folder": [
+    "Яндекс Браузер",
+    "Навигация"
+   ],
+   "name": "Домашняя страница",
+   "phrases": [
+    "домашняя страница"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+Home"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.address",
+   "folder": [
+    "Яндекс Браузер",
+    "Навигация"
+   ],
+   "name": "Адресная строка",
+   "phrases": [
+    "адресная строка"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+L"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.find",
+   "folder": [
+    "Яндекс Браузер",
+    "Навигация"
+   ],
+   "name": "Поиск на странице",
+   "phrases": [
+    "найди на странице",
+    "поиск по странице"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+F"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.top",
+   "folder": [
+    "Яндекс Браузер",
+    "Навигация"
+   ],
+   "name": "В начало страницы",
+   "phrases": [
+    "в начало страницы",
+    "наверх"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Home"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.bottom",
+   "folder": [
+    "Яндекс Браузер",
+    "Навигация"
+   ],
+   "name": "В конец страницы",
+   "phrases": [
+    "в конец страницы",
+    "в самый низ"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "End"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.page_down",
+   "folder": [
+    "Яндекс Браузер",
+    "Навигация"
+   ],
+   "name": "Прокрутить вниз",
+   "phrases": [
+    "прокрути вниз",
+    "листай вниз"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "PageDown"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.page_up",
+   "folder": [
+    "Яндекс Браузер",
+    "Навигация"
+   ],
+   "name": "Прокрутить вверх",
+   "phrases": [
+    "прокрути вверх",
+    "листай вверх"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "PageUp"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.web_search",
+   "folder": [
+    "Яндекс Браузер",
+    "Навигация"
+   ],
+   "name": "Поиск в интернете",
+   "phrases": [
+    "загугли {текст}",
+    "найди в интернете {текст}"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+L"
+    },
+    {
+     "type": "Lux.PauseMS",
+     "ms": 150
+    },
+    {
+     "type": "Keys.Type",
+     "text": "{текст}"
+    },
+    {
+     "type": "Keys.Press",
+     "keys": "Enter"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "loading"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.zoom_in",
+   "folder": [
+    "Яндекс Браузер",
+    "Страница"
+   ],
+   "name": "Увеличить масштаб",
+   "phrases": [
+    "увеличь масштаб",
+    "крупнее"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Plus"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.zoom_out",
+   "folder": [
+    "Яндекс Браузер",
+    "Страница"
+   ],
+   "name": "Уменьшить масштаб",
+   "phrases": [
+    "уменьши масштаб",
+    "мельче"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Minus"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.zoom_reset",
+   "folder": [
+    "Яндекс Браузер",
+    "Страница"
+   ],
+   "name": "Обычный масштаб",
+   "phrases": [
+    "обычный масштаб",
+    "сбрось масштаб"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+0"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.bookmark",
+   "folder": [
+    "Яндекс Браузер",
+    "Страница"
+   ],
+   "name": "В закладки",
+   "phrases": [
+    "добавь в закладки",
+    "в закладки"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+D"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.print",
+   "folder": [
+    "Яндекс Браузер",
+    "Страница"
+   ],
+   "name": "Печать",
+   "phrases": [
+    "распечатай",
+    "печать"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+P"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.save",
+   "folder": [
+    "Яндекс Браузер",
+    "Страница"
+   ],
+   "name": "Сохранить страницу",
+   "phrases": [
+    "сохрани страницу"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+S"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.devtools",
+   "folder": [
+    "Яндекс Браузер",
+    "Страница"
+   ],
+   "name": "Инструменты разработчика",
+   "phrases": [
+    "инструменты разработчика",
+    "консоль разработчика"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "F12"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.history",
+   "folder": [
+    "Яндекс Браузер",
+    "Браузер"
+   ],
+   "name": "История",
+   "phrases": [
+    "история",
+    "история браузера"
+   ],
+   "optional": [
+    "открой",
+    "покажи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+H"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.downloads",
+   "folder": [
+    "Яндекс Браузер",
+    "Браузер"
+   ],
+   "name": "Загрузки",
+   "phrases": [
+    "загрузки",
+    "скачанные файлы"
+   ],
+   "optional": [
+    "открой",
+    "покажи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+J"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.bookmarks",
+   "folder": [
+    "Яндекс Браузер",
+    "Браузер"
+   ],
+   "name": "Закладки",
+   "phrases": [
+    "закладки",
+    "все закладки"
+   ],
+   "optional": [
+    "открой",
+    "покажи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+O"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.clear",
+   "folder": [
+    "Яндекс Браузер",
+    "Браузер"
+   ],
+   "name": "Очистить историю",
+   "phrases": [
+    "очисти историю",
+    "удали историю",
+    "очисти кэш"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+Delete"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.settings",
+   "folder": [
+    "Яндекс Браузер",
+    "Браузер"
+   ],
+   "name": "Настройки браузера",
+   "phrases": [
+    "настройки браузера"
+   ],
+   "optional": [
+    "открой"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+L"
+    },
+    {
+     "type": "Lux.PauseMS",
+     "ms": 150
+    },
+    {
+     "type": "Keys.Type",
+     "text": "browser://settings"
+    },
+    {
+     "type": "Keys.Press",
+     "keys": "Enter"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.extensions",
+   "folder": [
+    "Яндекс Браузер",
+    "Браузер"
+   ],
+   "name": "Расширения",
+   "phrases": [
+    "расширения",
+    "дополнения браузера"
+   ],
+   "optional": [
+    "открой",
+    "покажи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+L"
+    },
+    {
+     "type": "Lux.PauseMS",
+     "ms": 150
+    },
+    {
+     "type": "Keys.Type",
+     "text": "browser://tune"
+    },
+    {
+     "type": "Keys.Press",
+     "keys": "Enter"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  },
+  {
+   "id": "yandex.task_manager",
+   "folder": [
+    "Яндекс Браузер",
+    "Браузер"
+   ],
+   "name": "Диспетчер задач браузера",
+   "phrases": [
+    "диспетчер задач браузера"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Shift+Esc"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "browser.exe"
+   }
+  }
+ ]
+}

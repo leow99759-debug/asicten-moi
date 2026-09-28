@@ -1,0 +1,1111 @@
+{
+ "id": "chrome",
+ "name": "Google Chrome",
+ "description": "Вкладки, навигация, масштаб, закладки, загрузки, инкогнито и поиск — горячими клавишами Chrome.",
+ "category": "Браузеры",
+ "version": "1.0.0",
+ "icon": "chrome",
+ "popular": true,
+ "commands": [
+  {
+   "id": "chrome.open",
+   "folder": [
+    "Google Chrome",
+    "Запуск"
+   ],
+   "name": "Открыть Google Chrome",
+   "phrases": [
+    "хром",
+    "гугл хром",
+    "chrome"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.File",
+     "path": "%CHROME%"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "chrome.close",
+   "folder": [
+    "Google Chrome",
+    "Запуск"
+   ],
+   "name": "Закрыть Google Chrome",
+   "phrases": [
+    "закрой хром",
+    "закрой гугл хром",
+    "закрой chrome",
+    "выключи хром"
+   ],
+   "actions": [
+    {
+     "type": "Run.Command.Hidden",
+     "cmd": "taskkill /IM chrome.exe",
+     "trusted": true
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "chrome.search",
+   "folder": [
+    "Google Chrome",
+    "Запуск"
+   ],
+   "name": "Найти в Google Chrome",
+   "phrases": [
+    "найди в хроме {текст}",
+    "поищи в хроме {текст}"
+   ],
+   "actions": [
+    {
+     "type": "Launch.File",
+     "path": "%CHROME%",
+     "args": "\"https://www.google.com/search?q={текст}\""
+    }
+   ],
+   "reply": {
+    "clips": [
+     "loading"
+    ]
+   }
+  },
+  {
+   "id": "chrome.tab_new",
+   "folder": [
+    "Google Chrome",
+    "Вкладки"
+   ],
+   "name": "Новая вкладка",
+   "phrases": [
+    "новая вкладка",
+    "открой новую вкладку"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+T"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.tab_close",
+   "folder": [
+    "Google Chrome",
+    "Вкладки"
+   ],
+   "name": "Закрыть вкладку",
+   "phrases": [
+    "закрой вкладку"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+W"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.tab_reopen",
+   "folder": [
+    "Google Chrome",
+    "Вкладки"
+   ],
+   "name": "Вернуть закрытую вкладку",
+   "phrases": [
+    "верни вкладку",
+    "восстанови вкладку",
+    "открой закрытую вкладку"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+T"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.tab_next",
+   "folder": [
+    "Google Chrome",
+    "Вкладки"
+   ],
+   "name": "Следующая вкладка",
+   "phrases": [
+    "следующая вкладка"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Tab"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.tab_prev",
+   "folder": [
+    "Google Chrome",
+    "Вкладки"
+   ],
+   "name": "Предыдущая вкладка",
+   "phrases": [
+    "предыдущая вкладка"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+Tab"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.tab_first",
+   "folder": [
+    "Google Chrome",
+    "Вкладки"
+   ],
+   "name": "Первая вкладка",
+   "phrases": [
+    "первая вкладка"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+1"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.tab_last",
+   "folder": [
+    "Google Chrome",
+    "Вкладки"
+   ],
+   "name": "Последняя вкладка",
+   "phrases": [
+    "последняя вкладка"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+9"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.window_new",
+   "folder": [
+    "Google Chrome",
+    "Вкладки"
+   ],
+   "name": "Новое окно",
+   "phrases": [
+    "новое окно"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+N"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.incognito",
+   "folder": [
+    "Google Chrome",
+    "Вкладки"
+   ],
+   "name": "Окно инкогнито",
+   "phrases": [
+    "режим инкогнито",
+    "инкогнито",
+    "приватное окно"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+N"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.back",
+   "folder": [
+    "Google Chrome",
+    "Навигация"
+   ],
+   "name": "Назад",
+   "phrases": [
+    "назад",
+    "вернись назад",
+    "предыдущая страница"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+Left"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.forward",
+   "folder": [
+    "Google Chrome",
+    "Навигация"
+   ],
+   "name": "Вперёд",
+   "phrases": [
+    "вперед",
+    "следующая страница"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+Right"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.reload",
+   "folder": [
+    "Google Chrome",
+    "Навигация"
+   ],
+   "name": "Обновить страницу",
+   "phrases": [
+    "обнови",
+    "обнови страницу",
+    "перезагрузи страницу"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "F5"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.reload_hard",
+   "folder": [
+    "Google Chrome",
+    "Навигация"
+   ],
+   "name": "Обновить без кэша",
+   "phrases": [
+    "обнови без кэша",
+    "полное обновление"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+F5"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.stop",
+   "folder": [
+    "Google Chrome",
+    "Навигация"
+   ],
+   "name": "Остановить загрузку",
+   "phrases": [
+    "останови загрузку"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Esc"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.home",
+   "folder": [
+    "Google Chrome",
+    "Навигация"
+   ],
+   "name": "Домашняя страница",
+   "phrases": [
+    "домашняя страница"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+Home"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.address",
+   "folder": [
+    "Google Chrome",
+    "Навигация"
+   ],
+   "name": "Адресная строка",
+   "phrases": [
+    "адресная строка"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+L"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.find",
+   "folder": [
+    "Google Chrome",
+    "Навигация"
+   ],
+   "name": "Поиск на странице",
+   "phrases": [
+    "найди на странице",
+    "поиск по странице"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+F"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.top",
+   "folder": [
+    "Google Chrome",
+    "Навигация"
+   ],
+   "name": "В начало страницы",
+   "phrases": [
+    "в начало страницы",
+    "наверх"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Home"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.bottom",
+   "folder": [
+    "Google Chrome",
+    "Навигация"
+   ],
+   "name": "В конец страницы",
+   "phrases": [
+    "в конец страницы",
+    "в самый низ"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "End"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.page_down",
+   "folder": [
+    "Google Chrome",
+    "Навигация"
+   ],
+   "name": "Прокрутить вниз",
+   "phrases": [
+    "прокрути вниз",
+    "листай вниз"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "PageDown"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.page_up",
+   "folder": [
+    "Google Chrome",
+    "Навигация"
+   ],
+   "name": "Прокрутить вверх",
+   "phrases": [
+    "прокрути вверх",
+    "листай вверх"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "PageUp"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.web_search",
+   "folder": [
+    "Google Chrome",
+    "Навигация"
+   ],
+   "name": "Поиск в интернете",
+   "phrases": [
+    "загугли {текст}",
+    "найди в интернете {текст}"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+L"
+    },
+    {
+     "type": "Lux.PauseMS",
+     "ms": 150
+    },
+    {
+     "type": "Keys.Type",
+     "text": "{текст}"
+    },
+    {
+     "type": "Keys.Press",
+     "keys": "Enter"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "loading"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.zoom_in",
+   "folder": [
+    "Google Chrome",
+    "Страница"
+   ],
+   "name": "Увеличить масштаб",
+   "phrases": [
+    "увеличь масштаб",
+    "крупнее"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Plus"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.zoom_out",
+   "folder": [
+    "Google Chrome",
+    "Страница"
+   ],
+   "name": "Уменьшить масштаб",
+   "phrases": [
+    "уменьши масштаб",
+    "мельче"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Minus"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.zoom_reset",
+   "folder": [
+    "Google Chrome",
+    "Страница"
+   ],
+   "name": "Обычный масштаб",
+   "phrases": [
+    "обычный масштаб",
+    "сбрось масштаб"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+0"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.bookmark",
+   "folder": [
+    "Google Chrome",
+    "Страница"
+   ],
+   "name": "В закладки",
+   "phrases": [
+    "добавь в закладки",
+    "в закладки"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+D"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.print",
+   "folder": [
+    "Google Chrome",
+    "Страница"
+   ],
+   "name": "Печать",
+   "phrases": [
+    "распечатай",
+    "печать"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+P"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.save",
+   "folder": [
+    "Google Chrome",
+    "Страница"
+   ],
+   "name": "Сохранить страницу",
+   "phrases": [
+    "сохрани страницу"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+S"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.devtools",
+   "folder": [
+    "Google Chrome",
+    "Страница"
+   ],
+   "name": "Инструменты разработчика",
+   "phrases": [
+    "инструменты разработчика",
+    "консоль разработчика"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "F12"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.history",
+   "folder": [
+    "Google Chrome",
+    "Браузер"
+   ],
+   "name": "История",
+   "phrases": [
+    "история",
+    "история браузера"
+   ],
+   "optional": [
+    "открой",
+    "покажи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+H"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.downloads",
+   "folder": [
+    "Google Chrome",
+    "Браузер"
+   ],
+   "name": "Загрузки",
+   "phrases": [
+    "загрузки",
+    "скачанные файлы"
+   ],
+   "optional": [
+    "открой",
+    "покажи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+J"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.bookmarks",
+   "folder": [
+    "Google Chrome",
+    "Браузер"
+   ],
+   "name": "Закладки",
+   "phrases": [
+    "закладки",
+    "все закладки"
+   ],
+   "optional": [
+    "открой",
+    "покажи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+O"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.clear",
+   "folder": [
+    "Google Chrome",
+    "Браузер"
+   ],
+   "name": "Очистить историю",
+   "phrases": [
+    "очисти историю",
+    "удали историю",
+    "очисти кэш"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+Delete"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.settings",
+   "folder": [
+    "Google Chrome",
+    "Браузер"
+   ],
+   "name": "Настройки браузера",
+   "phrases": [
+    "настройки браузера"
+   ],
+   "optional": [
+    "открой"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+L"
+    },
+    {
+     "type": "Lux.PauseMS",
+     "ms": 150
+    },
+    {
+     "type": "Keys.Type",
+     "text": "chrome://settings"
+    },
+    {
+     "type": "Keys.Press",
+     "keys": "Enter"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.extensions",
+   "folder": [
+    "Google Chrome",
+    "Браузер"
+   ],
+   "name": "Расширения",
+   "phrases": [
+    "расширения",
+    "дополнения браузера"
+   ],
+   "optional": [
+    "открой",
+    "покажи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+L"
+    },
+    {
+     "type": "Lux.PauseMS",
+     "ms": 150
+    },
+    {
+     "type": "Keys.Type",
+     "text": "chrome://extensions"
+    },
+    {
+     "type": "Keys.Press",
+     "keys": "Enter"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  },
+  {
+   "id": "chrome.task_manager",
+   "folder": [
+    "Google Chrome",
+    "Браузер"
+   ],
+   "name": "Диспетчер задач Chrome",
+   "phrases": [
+    "диспетчер задач браузера"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Shift+Esc"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe"
+   }
+  }
+ ]
+}

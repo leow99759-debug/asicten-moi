@@ -1,0 +1,654 @@
+{
+ "id": "youtube",
+ "name": "YouTube",
+ "description": "Поиск видео голосом, подписки, «Смотреть позже», Shorts и плеер: перемотка, скорость, субтитры, театральный режим.",
+ "category": "Видео, музыка и стриминг",
+ "version": "1.0.0",
+ "icon": "youtube",
+ "popular": true,
+ "commands": [
+  {
+   "id": "youtube.open",
+   "folder": [
+    "YouTube",
+    "Открыть"
+   ],
+   "name": "Открыть YouTube",
+   "phrases": [
+    "ютуб"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.Url",
+     "url": "https://www.youtube.com"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "loading"
+    ]
+   }
+  },
+  {
+   "id": "youtube.search",
+   "folder": [
+    "YouTube",
+    "Открыть"
+   ],
+   "name": "Найти на YouTube",
+   "phrases": [
+    "найди на ютубе {текст}",
+    "поищи на ютубе {текст}",
+    "включи на ютубе {текст}"
+   ],
+   "actions": [
+    {
+     "type": "Launch.Url",
+     "url": "https://www.youtube.com/results?search_query={текст}"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "loading"
+    ]
+   }
+  },
+  {
+   "id": "youtube.subs",
+   "folder": [
+    "YouTube",
+    "Открыть"
+   ],
+   "name": "Подписки",
+   "phrases": [
+    "подписки на ютубе",
+    "мои подписки"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.Url",
+     "url": "https://www.youtube.com/feed/subscriptions"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "loading"
+    ]
+   }
+  },
+  {
+   "id": "youtube.history",
+   "folder": [
+    "YouTube",
+    "Открыть"
+   ],
+   "name": "История просмотров",
+   "phrases": [
+    "история ютуба",
+    "история просмотров"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.Url",
+     "url": "https://www.youtube.com/feed/history"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "loading"
+    ]
+   }
+  },
+  {
+   "id": "youtube.later",
+   "folder": [
+    "YouTube",
+    "Открыть"
+   ],
+   "name": "Смотреть позже",
+   "phrases": [
+    "смотреть позже",
+    "отложенные видео"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.Url",
+     "url": "https://www.youtube.com/playlist?list=WL"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "loading"
+    ]
+   }
+  },
+  {
+   "id": "youtube.liked",
+   "folder": [
+    "YouTube",
+    "Открыть"
+   ],
+   "name": "Понравившиеся",
+   "phrases": [
+    "понравившиеся видео",
+    "мои лайки"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.Url",
+     "url": "https://www.youtube.com/playlist?list=LL"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "loading"
+    ]
+   }
+  },
+  {
+   "id": "youtube.shorts",
+   "folder": [
+    "YouTube",
+    "Открыть"
+   ],
+   "name": "Shorts",
+   "phrases": [
+    "шортс",
+    "ютуб шортс"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.Url",
+     "url": "https://www.youtube.com/shorts"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "loading"
+    ]
+   }
+  },
+  {
+   "id": "youtube.music",
+   "folder": [
+    "YouTube",
+    "Открыть"
+   ],
+   "name": "YouTube Music",
+   "phrases": [
+    "ютуб музыка",
+    "ютуб мьюзик"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.Url",
+     "url": "https://music.youtube.com"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "loading"
+    ]
+   }
+  },
+  {
+   "id": "youtube.studio",
+   "folder": [
+    "YouTube",
+    "Открыть"
+   ],
+   "name": "Творческая студия",
+   "phrases": [
+    "творческая студия",
+    "ютуб студия"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.Url",
+     "url": "https://studio.youtube.com"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "loading"
+    ]
+   }
+  },
+  {
+   "id": "youtube.fwd10",
+   "folder": [
+    "YouTube",
+    "Плеер"
+   ],
+   "name": "Вперёд на 10 с",
+   "phrases": [
+    "перемотай вперед",
+    "вперед на 10 секунд"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "L"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe|msedge.exe|firefox.exe|browser.exe|opera.exe"
+   }
+  },
+  {
+   "id": "youtube.back10",
+   "folder": [
+    "YouTube",
+    "Плеер"
+   ],
+   "name": "Назад на 10 с",
+   "phrases": [
+    "перемотай назад",
+    "назад на 10 секунд"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "J"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe|msedge.exe|firefox.exe|browser.exe|opera.exe"
+   }
+  },
+  {
+   "id": "youtube.fwd5",
+   "folder": [
+    "YouTube",
+    "Плеер"
+   ],
+   "name": "Вперёд на 5 с",
+   "phrases": [
+    "чуть вперед",
+    "вперед на 5 секунд"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Right"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe|msedge.exe|firefox.exe|browser.exe|opera.exe"
+   }
+  },
+  {
+   "id": "youtube.back5",
+   "folder": [
+    "YouTube",
+    "Плеер"
+   ],
+   "name": "Назад на 5 с",
+   "phrases": [
+    "чуть назад",
+    "назад на 5 секунд"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Left"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe|msedge.exe|firefox.exe|browser.exe|opera.exe"
+   }
+  },
+  {
+   "id": "youtube.start",
+   "folder": [
+    "YouTube",
+    "Плеер"
+   ],
+   "name": "Видео сначала",
+   "phrases": [
+    "видео сначала",
+    "с начала видео"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "0"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe|msedge.exe|firefox.exe|browser.exe|opera.exe"
+   }
+  },
+  {
+   "id": "youtube.full",
+   "folder": [
+    "YouTube",
+    "Плеер"
+   ],
+   "name": "Видео на весь экран",
+   "phrases": [
+    "видео на весь экран",
+    "полноэкранное видео"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "F"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe|msedge.exe|firefox.exe|browser.exe|opera.exe"
+   }
+  },
+  {
+   "id": "youtube.theater",
+   "folder": [
+    "YouTube",
+    "Плеер"
+   ],
+   "name": "Театральный режим",
+   "phrases": [
+    "театральный режим",
+    "кинотеатр"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "T"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe|msedge.exe|firefox.exe|browser.exe|opera.exe"
+   }
+  },
+  {
+   "id": "youtube.mini",
+   "folder": [
+    "YouTube",
+    "Плеер"
+   ],
+   "name": "Мини-проигрыватель",
+   "phrases": [
+    "мини плеер",
+    "мини проигрыватель"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "I"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe|msedge.exe|firefox.exe|browser.exe|opera.exe"
+   }
+  },
+  {
+   "id": "youtube.captions",
+   "folder": [
+    "YouTube",
+    "Плеер"
+   ],
+   "name": "Субтитры",
+   "phrases": [
+    "субтитры",
+    "включи субтитры",
+    "выключи субтитры"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "C"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe|msedge.exe|firefox.exe|browser.exe|opera.exe"
+   }
+  },
+  {
+   "id": "youtube.next",
+   "folder": [
+    "YouTube",
+    "Плеер"
+   ],
+   "name": "Следующее видео",
+   "phrases": [
+    "следующее видео"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Shift+N"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe|msedge.exe|firefox.exe|browser.exe|opera.exe"
+   }
+  },
+  {
+   "id": "youtube.prev",
+   "folder": [
+    "YouTube",
+    "Плеер"
+   ],
+   "name": "Предыдущее видео",
+   "phrases": [
+    "предыдущее видео"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Shift+P"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe|msedge.exe|firefox.exe|browser.exe|opera.exe"
+   }
+  },
+  {
+   "id": "youtube.faster",
+   "folder": [
+    "YouTube",
+    "Плеер"
+   ],
+   "name": "Быстрее",
+   "phrases": [
+    "ускорь видео",
+    "быстрее"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Shift+Period"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe|msedge.exe|firefox.exe|browser.exe|opera.exe"
+   }
+  },
+  {
+   "id": "youtube.slower",
+   "folder": [
+    "YouTube",
+    "Плеер"
+   ],
+   "name": "Медленнее",
+   "phrases": [
+    "замедли видео",
+    "медленнее"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Shift+Comma"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe|msedge.exe|firefox.exe|browser.exe|opera.exe"
+   }
+  },
+  {
+   "id": "youtube.mute",
+   "folder": [
+    "YouTube",
+    "Плеер"
+   ],
+   "name": "Звук видео",
+   "phrases": [
+    "выключи звук на ютубе",
+    "звук видео"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "M"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe|msedge.exe|firefox.exe|browser.exe|opera.exe"
+   }
+  },
+  {
+   "id": "youtube.find",
+   "folder": [
+    "YouTube",
+    "Плеер"
+   ],
+   "name": "Поиск на YouTube",
+   "phrases": [
+    "поиск на ютубе"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Slash"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "chrome.exe|msedge.exe|firefox.exe|browser.exe|opera.exe"
+   }
+  }
+ ]
+}

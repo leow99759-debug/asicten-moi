@@ -202,7 +202,7 @@ impl Executor {
                     continue;
                 }
                 if let Value::String(s) = val {
-                    *val = fill(s, slots, self.apps.as_ref());
+                    *val = fill(s, slots, self.apps.as_ref(), k == "url");
                 }
             }
         }
@@ -262,8 +262,9 @@ impl Executor {
 }
 
 /// A whole-string slot becomes a typed JSON value (number for `{число}`/`{время}`);
-/// slots inside longer strings are substituted as text. Then `%VARS%` are expanded.
-fn fill(s: &str, slots: &BTreeMap<String, SlotValue>, apps: &dyn AppLocator) -> Value {
+/// slots inside longer strings are substituted as text (percent-encoded inside a `url`).
+/// Then `%VARS%` are expanded.
+fn fill(s: &str, slots: &BTreeMap<String, SlotValue>, apps: &dyn AppLocator, url: bool) -> Value {
     if let Some(v) = slots.get(s.trim()) {
         return match v {
             SlotValue::Number(n) | SlotValue::Duration(n) => serde_json::json!(n),
@@ -274,11 +275,25 @@ fn fill(s: &str, slots: &BTreeMap<String, SlotValue>, apps: &dyn AppLocator) -> 
     for (k, v) in slots {
         let rep = match v {
             SlotValue::Number(n) | SlotValue::Duration(n) => format!("{n}"),
+            SlotValue::Text(t) if url => url_encode(t),
             SlotValue::Text(t) => t.clone(),
         };
         text = text.replace(k, &rep);
     }
     Value::String(expand(&text, apps))
+}
+
+/// Query-string encoding: unreserved bytes stay, space → `+`, the rest → `%XX`.
+fn url_encode(s: &str) -> String {
+    s.bytes()
+        .map(|b| match b {
+            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' => {
+                char::from(b).to_string()
+            }
+            b' ' => "+".to_owned(),
+            _ => format!("%{b:02X}"),
+        })
+        .collect()
 }
 
 #[cfg(test)]
@@ -350,6 +365,25 @@ mod tests {
                     level: Num::Value(50.0)
                 },
             ]
+        );
+    }
+
+    #[test]
+    fn url_slots_are_percent_encoded() {
+        let dry = Arc::new(DryRun::default());
+        let e = exec(dry.clone());
+        let c = cmd(
+            r#"{"type":"Launch.Url","url":"https://www.youtube.com/results?search_query={текст}"}"#,
+            "найди на ютубе {текст}",
+        );
+        let slots = BTreeMap::from([("{текст}".to_owned(), SlotValue::Text("кот & ёж".into()))]);
+        assert!(e.run(&c, &slots)[0].ok);
+        assert_eq!(
+            dry.actions(),
+            vec![Action::LaunchUrl {
+                url: "https://www.youtube.com/results?search_query=%D0%BA%D0%BE%D1%82+%26+%D1%91%D0%B6"
+                    .into()
+            }]
         );
     }
 

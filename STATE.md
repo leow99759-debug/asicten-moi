@@ -1,5 +1,5 @@
-last: T070 Addons screen: packs/*.json = defaults (always on), packs/addons/*.json = catalog; installed ids in %APPDATA%/Jarvis/addons.json; IPC addons_list/addon_set (uninstall drops user overrides of that pack, brain hot-reload); UI tabs Паки/Команды/Озвучка, search incl. command phrases, only-installed, sort, categories rail (+«Система»), BrandIcon (Simple Icons CC0 + monograms in lib/brands.ts). Seed pack: addons/media
-next: T071 packs batch 1 (Windows, Explorer, browsers ×5, YouTube). Untested on real Windows: recorder hooks, ▶ Тест, probe, say_reply, dialogs, import/export, addon install
+last: T071 packs batch 1 in packs/addons: windows(106) explorer(36) chrome/edge/firefox/yandex/operagx(~40 each, tab/nav keys scoped by when=exe) youtube(24); url slots percent-encoded; keys plus/minus/comma/period/slash; test: every addon phrase reaches its command in its context. Catalog 450 cmds / 13 packs
+next: T072 packs batch 2 (Spotify, Яндекс Музыка, VK, Telegram, Discord, WhatsApp, Zoom). Untested on real Windows: recorder hooks, ▶ Тест, probe, say_reply, dialogs, import/export, addon install, T071 hotkeys (YouTube keys on RU layout)
 blocked: wake sensitivity 50 needs real-voice tuning
 decisions: dev agent on Linux (no mic/GUI) → windows-latest CI is truth; Windows-only code behind cfg(windows); local win check: clippy --target x86_64-pc-windows-msvc with llvm-rc/lib.exe stubs
 decisions: STT = sherpa-onnx streaming zipformer small-ru int8 (Vosk team) instead of Vosk: +90 MB RAM loaded vs +190 MB, 3x faster decode, no libvosk DLLs, better free speech. No grammar mode → no-prefix mode relies on strict NLU match
@@ -13,3 +13,6 @@ decisions: Fish Audio s2.1-pro-free (free, RU) + voice «ДЖАРВИС» 4c3eaa
 decisions: playback via cpal directly (already a dep, rodio 0.22 needs MSRV 1.87 + 2nd cpal); linear resample is fine for speech
 decisions: Fish Audio lines never mix into categories that have originals (user rule: originals win); Priler howdy/remaster skipped (synthetic, speaker sim 0.55–0.79 vs og 0.8–0.94)
 decisions: WinRT (speech/radios) + audio COM → keep_mta() pins process MTA once (CoIncrementMTAUsage), fixes flaky 0xc0000005 in jarvis-win tests
+decisions: same phrase in several packs is OK only with different `when` (browsers share «новая вкладка» per exe); T075 dup check = (phrase, foreground)
+decisions: same phrase in several packs is OK only with different `when` (browsers share «новая вкладка» per exe); T075 dup check = (phrase, foreground)
+decisions: local build needs MSVC 14.44+ (VS 2022 17.14): sherpa-onnx prebuilt static libs → LNK2001 __std_find_first_of_trivial_pos_1 on 14.43

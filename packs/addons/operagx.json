@@ -1,0 +1,1080 @@
+{
+ "id": "operagx",
+ "name": "Opera GX",
+ "description": "Вкладки, приватное окно, закладки, загрузки, расширения и настройки — горячими клавишами Opera GX.",
+ "category": "Браузеры",
+ "version": "1.0.0",
+ "icon": "operagx",
+ "commands": [
+  {
+   "id": "operagx.open",
+   "folder": [
+    "Opera GX",
+    "Запуск"
+   ],
+   "name": "Открыть Opera GX",
+   "phrases": [
+    "опера",
+    "опера джи икс",
+    "опера gx"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.Find",
+     "name": "Opera GX"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "operagx.close",
+   "folder": [
+    "Opera GX",
+    "Запуск"
+   ],
+   "name": "Закрыть Opera GX",
+   "phrases": [
+    "закрой опера",
+    "закрой опера джи икс",
+    "закрой опера gx",
+    "выключи опера"
+   ],
+   "actions": [
+    {
+     "type": "Run.Command.Hidden",
+     "cmd": "taskkill /IM opera.exe",
+     "trusted": true
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "operagx.search",
+   "folder": [
+    "Opera GX",
+    "Запуск"
+   ],
+   "name": "Найти в Opera GX",
+   "phrases": [
+    "найди в опере {текст}",
+    "поищи в опере {текст}"
+   ],
+   "actions": [
+    {
+     "type": "Launch.Find",
+     "name": "Opera GX"
+    },
+    {
+     "type": "Lux.PauseMS",
+     "ms": 1500
+    },
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+L"
+    },
+    {
+     "type": "Lux.PauseMS",
+     "ms": 150
+    },
+    {
+     "type": "Keys.Type",
+     "text": "{текст}"
+    },
+    {
+     "type": "Keys.Press",
+     "keys": "Enter"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "loading"
+    ]
+   }
+  },
+  {
+   "id": "operagx.tab_new",
+   "folder": [
+    "Opera GX",
+    "Вкладки"
+   ],
+   "name": "Новая вкладка",
+   "phrases": [
+    "новая вкладка",
+    "открой новую вкладку"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+T"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.tab_close",
+   "folder": [
+    "Opera GX",
+    "Вкладки"
+   ],
+   "name": "Закрыть вкладку",
+   "phrases": [
+    "закрой вкладку"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+W"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.tab_reopen",
+   "folder": [
+    "Opera GX",
+    "Вкладки"
+   ],
+   "name": "Вернуть закрытую вкладку",
+   "phrases": [
+    "верни вкладку",
+    "восстанови вкладку",
+    "открой закрытую вкладку"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+T"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.tab_next",
+   "folder": [
+    "Opera GX",
+    "Вкладки"
+   ],
+   "name": "Следующая вкладка",
+   "phrases": [
+    "следующая вкладка"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Tab"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.tab_prev",
+   "folder": [
+    "Opera GX",
+    "Вкладки"
+   ],
+   "name": "Предыдущая вкладка",
+   "phrases": [
+    "предыдущая вкладка"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+Tab"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.tab_first",
+   "folder": [
+    "Opera GX",
+    "Вкладки"
+   ],
+   "name": "Первая вкладка",
+   "phrases": [
+    "первая вкладка"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+1"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.tab_last",
+   "folder": [
+    "Opera GX",
+    "Вкладки"
+   ],
+   "name": "Последняя вкладка",
+   "phrases": [
+    "последняя вкладка"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+9"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.window_new",
+   "folder": [
+    "Opera GX",
+    "Вкладки"
+   ],
+   "name": "Новое окно",
+   "phrases": [
+    "новое окно"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+N"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.incognito",
+   "folder": [
+    "Opera GX",
+    "Вкладки"
+   ],
+   "name": "Приватное окно",
+   "phrases": [
+    "режим инкогнито",
+    "инкогнито",
+    "приватное окно"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+N"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.back",
+   "folder": [
+    "Opera GX",
+    "Навигация"
+   ],
+   "name": "Назад",
+   "phrases": [
+    "назад",
+    "вернись назад",
+    "предыдущая страница"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+Left"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.forward",
+   "folder": [
+    "Opera GX",
+    "Навигация"
+   ],
+   "name": "Вперёд",
+   "phrases": [
+    "вперед",
+    "следующая страница"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+Right"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.reload",
+   "folder": [
+    "Opera GX",
+    "Навигация"
+   ],
+   "name": "Обновить страницу",
+   "phrases": [
+    "обнови",
+    "обнови страницу",
+    "перезагрузи страницу"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "F5"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.reload_hard",
+   "folder": [
+    "Opera GX",
+    "Навигация"
+   ],
+   "name": "Обновить без кэша",
+   "phrases": [
+    "обнови без кэша",
+    "полное обновление"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+F5"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.stop",
+   "folder": [
+    "Opera GX",
+    "Навигация"
+   ],
+   "name": "Остановить загрузку",
+   "phrases": [
+    "останови загрузку"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Esc"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.home",
+   "folder": [
+    "Opera GX",
+    "Навигация"
+   ],
+   "name": "Домашняя страница",
+   "phrases": [
+    "домашняя страница"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+Home"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.address",
+   "folder": [
+    "Opera GX",
+    "Навигация"
+   ],
+   "name": "Адресная строка",
+   "phrases": [
+    "адресная строка"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+L"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.find",
+   "folder": [
+    "Opera GX",
+    "Навигация"
+   ],
+   "name": "Поиск на странице",
+   "phrases": [
+    "найди на странице",
+    "поиск по странице"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+F"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.top",
+   "folder": [
+    "Opera GX",
+    "Навигация"
+   ],
+   "name": "В начало страницы",
+   "phrases": [
+    "в начало страницы",
+    "наверх"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Home"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.bottom",
+   "folder": [
+    "Opera GX",
+    "Навигация"
+   ],
+   "name": "В конец страницы",
+   "phrases": [
+    "в конец страницы",
+    "в самый низ"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "End"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.page_down",
+   "folder": [
+    "Opera GX",
+    "Навигация"
+   ],
+   "name": "Прокрутить вниз",
+   "phrases": [
+    "прокрути вниз",
+    "листай вниз"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "PageDown"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.page_up",
+   "folder": [
+    "Opera GX",
+    "Навигация"
+   ],
+   "name": "Прокрутить вверх",
+   "phrases": [
+    "прокрути вверх",
+    "листай вверх"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "PageUp"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.web_search",
+   "folder": [
+    "Opera GX",
+    "Навигация"
+   ],
+   "name": "Поиск в интернете",
+   "phrases": [
+    "загугли {текст}",
+    "найди в интернете {текст}"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+L"
+    },
+    {
+     "type": "Lux.PauseMS",
+     "ms": 150
+    },
+    {
+     "type": "Keys.Type",
+     "text": "{текст}"
+    },
+    {
+     "type": "Keys.Press",
+     "keys": "Enter"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "loading"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.zoom_in",
+   "folder": [
+    "Opera GX",
+    "Страница"
+   ],
+   "name": "Увеличить масштаб",
+   "phrases": [
+    "увеличь масштаб",
+    "крупнее"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Plus"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.zoom_out",
+   "folder": [
+    "Opera GX",
+    "Страница"
+   ],
+   "name": "Уменьшить масштаб",
+   "phrases": [
+    "уменьши масштаб",
+    "мельче"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Minus"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.zoom_reset",
+   "folder": [
+    "Opera GX",
+    "Страница"
+   ],
+   "name": "Обычный масштаб",
+   "phrases": [
+    "обычный масштаб",
+    "сбрось масштаб"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+0"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.bookmark",
+   "folder": [
+    "Opera GX",
+    "Страница"
+   ],
+   "name": "В закладки",
+   "phrases": [
+    "добавь в закладки",
+    "в закладки"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+D"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.print",
+   "folder": [
+    "Opera GX",
+    "Страница"
+   ],
+   "name": "Печать",
+   "phrases": [
+    "распечатай",
+    "печать"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+P"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.save",
+   "folder": [
+    "Opera GX",
+    "Страница"
+   ],
+   "name": "Сохранить страницу",
+   "phrases": [
+    "сохрани страницу"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+S"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.devtools",
+   "folder": [
+    "Opera GX",
+    "Страница"
+   ],
+   "name": "Инструменты разработчика",
+   "phrases": [
+    "инструменты разработчика",
+    "консоль разработчика"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "F12"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.history",
+   "folder": [
+    "Opera GX",
+    "Браузер"
+   ],
+   "name": "История",
+   "phrases": [
+    "история",
+    "история браузера"
+   ],
+   "optional": [
+    "открой",
+    "покажи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+H"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.downloads",
+   "folder": [
+    "Opera GX",
+    "Браузер"
+   ],
+   "name": "Загрузки",
+   "phrases": [
+    "загрузки",
+    "скачанные файлы"
+   ],
+   "optional": [
+    "открой",
+    "покажи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+J"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.bookmarks",
+   "folder": [
+    "Opera GX",
+    "Браузер"
+   ],
+   "name": "Закладки",
+   "phrases": [
+    "закладки",
+    "все закладки"
+   ],
+   "optional": [
+    "открой",
+    "покажи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+B"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.clear",
+   "folder": [
+    "Opera GX",
+    "Браузер"
+   ],
+   "name": "Очистить историю",
+   "phrases": [
+    "очисти историю",
+    "удали историю",
+    "очисти кэш"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+Delete"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.settings",
+   "folder": [
+    "Opera GX",
+    "Браузер"
+   ],
+   "name": "Настройки браузера",
+   "phrases": [
+    "настройки браузера"
+   ],
+   "optional": [
+    "открой"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+P"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  },
+  {
+   "id": "operagx.extensions",
+   "folder": [
+    "Opera GX",
+    "Браузер"
+   ],
+   "name": "Расширения",
+   "phrases": [
+    "расширения",
+    "дополнения браузера"
+   ],
+   "optional": [
+    "открой",
+    "покажи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+E"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "opera.exe"
+   }
+  }
+ ]
+}

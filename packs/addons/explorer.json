@@ -1,0 +1,986 @@
+{
+ "id": "explorer",
+ "name": "Проводник",
+ "description": "Папки голосом (загрузки, документы, диски, корзина) и управление в окне: новая папка, переименовать, вид значков.",
+ "category": "Система",
+ "version": "1.0.0",
+ "icon": "explorer",
+ "popular": true,
+ "commands": [
+  {
+   "id": "explorer.open",
+   "folder": [
+    "Проводник",
+    "Папки"
+   ],
+   "name": "Открыть проводник",
+   "phrases": [
+    "проводник"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Win+E"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "explorer.this_pc",
+   "folder": [
+    "Проводник",
+    "Папки"
+   ],
+   "name": "Этот компьютер",
+   "phrases": [
+    "мой компьютер",
+    "этот компьютер"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.File",
+     "path": "explorer.exe",
+     "args": "shell:MyComputerFolder"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "explorer.downloads",
+   "folder": [
+    "Проводник",
+    "Папки"
+   ],
+   "name": "Загрузки",
+   "phrases": [
+    "папка загрузки",
+    "мои загрузки"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.File",
+     "path": "explorer.exe",
+     "args": "shell:Downloads"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "explorer.documents",
+   "folder": [
+    "Проводник",
+    "Папки"
+   ],
+   "name": "Документы",
+   "phrases": [
+    "документы",
+    "мои документы",
+    "папка документы"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.File",
+     "path": "explorer.exe",
+     "args": "shell:Personal"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "explorer.desktop",
+   "folder": [
+    "Проводник",
+    "Папки"
+   ],
+   "name": "Рабочий стол",
+   "phrases": [
+    "папка рабочий стол"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.File",
+     "path": "explorer.exe",
+     "args": "shell:Desktop"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "explorer.pictures",
+   "folder": [
+    "Проводник",
+    "Папки"
+   ],
+   "name": "Изображения",
+   "phrases": [
+    "изображения",
+    "мои фото",
+    "папка картинки"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.File",
+     "path": "explorer.exe",
+     "args": "shell:My Pictures"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "explorer.videos",
+   "folder": [
+    "Проводник",
+    "Папки"
+   ],
+   "name": "Видео",
+   "phrases": [
+    "папка видео",
+    "мои видео"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.File",
+     "path": "explorer.exe",
+     "args": "shell:My Video"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "explorer.music",
+   "folder": [
+    "Проводник",
+    "Папки"
+   ],
+   "name": "Музыка",
+   "phrases": [
+    "папка музыка",
+    "моя музыка"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.File",
+     "path": "explorer.exe",
+     "args": "shell:My Music"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "explorer.recycle",
+   "folder": [
+    "Проводник",
+    "Папки"
+   ],
+   "name": "Корзина",
+   "phrases": [
+    "корзина",
+    "открой корзину"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.File",
+     "path": "explorer.exe",
+     "args": "shell:RecycleBinFolder"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "explorer.startup",
+   "folder": [
+    "Проводник",
+    "Папки"
+   ],
+   "name": "Автозагрузка",
+   "phrases": [
+    "папка автозагрузки"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.File",
+     "path": "explorer.exe",
+     "args": "shell:Startup"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "explorer.appdata",
+   "folder": [
+    "Проводник",
+    "Папки"
+   ],
+   "name": "AppData",
+   "phrases": [
+    "папка аппдата",
+    "аппдата"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.File",
+     "path": "explorer.exe",
+     "args": "shell:AppData"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "explorer.drive_c",
+   "folder": [
+    "Проводник",
+    "Папки"
+   ],
+   "name": "Диск C",
+   "phrases": [
+    "диск це",
+    "диск си",
+    "диск с"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.File",
+     "path": "explorer.exe",
+     "args": "C:\\"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "explorer.drive_d",
+   "folder": [
+    "Проводник",
+    "Папки"
+   ],
+   "name": "Диск D",
+   "phrases": [
+    "диск де",
+    "диск ди",
+    "диск д"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.File",
+     "path": "explorer.exe",
+     "args": "D:\\"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "explorer.new_folder",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Новая папка",
+   "phrases": [
+    "новая папка",
+    "создай папку"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+N"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.rename",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Переименовать",
+   "phrases": [
+    "переименуй",
+    "переименовать"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "F2"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.delete",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Удалить в корзину",
+   "phrases": [
+    "удали",
+    "в корзину"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Delete"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.props",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Свойства",
+   "phrases": [
+    "свойства"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+Enter"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.back",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Назад",
+   "phrases": [
+    "назад"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+Left"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.forward",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Вперёд",
+   "phrases": [
+    "вперед"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+Right"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.up",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "На уровень выше",
+   "phrases": [
+    "на уровень выше",
+    "папка выше",
+    "наверх"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+Up"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.refresh",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Обновить",
+   "phrases": [
+    "обнови"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "F5"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.new_window",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Новое окно",
+   "phrases": [
+    "новое окно"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+N"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.new_tab",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Новая вкладка",
+   "phrases": [
+    "новая вкладка"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+T"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.close_tab",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Закрыть вкладку",
+   "phrases": [
+    "закрой вкладку"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+W"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.search",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Поиск в папке",
+   "phrases": [
+    "поиск в папке",
+    "найди в папке"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+E"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.address",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Адресная строка",
+   "phrases": [
+    "адресная строка"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+D"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.preview",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Область просмотра",
+   "phrases": [
+    "область просмотра"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+P"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.details_pane",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Область сведений",
+   "phrases": [
+    "область сведений"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+Shift+P"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.open_sel",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Открыть выделенное",
+   "phrases": [
+    "открой выделенное",
+    "открой файл"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Enter"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.view_xl",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Огромные значки",
+   "phrases": [
+    "огромные значки"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+1"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.view_l",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Крупные значки",
+   "phrases": [
+    "крупные значки",
+    "большие значки"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+2"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.view_m",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Обычные значки",
+   "phrases": [
+    "обычные значки",
+    "средние значки"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+3"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.view_s",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Мелкие значки",
+   "phrases": [
+    "мелкие значки",
+    "маленькие значки"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+4"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.view_list",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Список",
+   "phrases": [
+    "вид список"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+5"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.view_details",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Таблица",
+   "phrases": [
+    "вид таблица"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+6"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  },
+  {
+   "id": "explorer.view_tiles",
+   "folder": [
+    "Проводник",
+    "В проводнике"
+   ],
+   "name": "Плитка",
+   "phrases": [
+    "вид плитка"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+7"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "explorer.exe"
+   }
+  }
+ ]
+}

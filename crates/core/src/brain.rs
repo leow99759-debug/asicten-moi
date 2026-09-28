@@ -428,4 +428,60 @@ mod tests {
             vec!["office.ppt_theme".to_owned()]
         );
     }
+
+    #[test]
+    fn addon_phrases_reach_their_command_in_context() {
+        let dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../packs");
+        let cmds: Vec<Command> = crate::commands::addons(&dir, &[])
+            .into_iter()
+            .flat_map(|a| a.pack.commands)
+            .collect();
+        let dry = Arc::new(DryRun::default());
+        let mut ex = Executor::new(dry.clone(), dry.clone(), Arc::new(NoApps));
+        ex.pauses = false;
+        let b = Brain::new(cmds, ex, dry.clone());
+        let mut clashes = Vec::new();
+        for c in b.commands() {
+            let fg = c.when.as_ref().and_then(|w| w.foreground.as_deref());
+            *dry.foreground.lock().expect("lock") =
+                fg.and_then(|f| f.split('|').next()).map(str::to_owned);
+            for p in c.phrases.iter().filter(|p| !p.contains('{')) {
+                let got: Vec<String> = b.handle(p).commands.into_iter().map(|o| o.id).collect();
+                if got != vec![c.id.clone()] {
+                    clashes.push(format!("«{p}» ({fg:?}) → {got:?}, want {}", c.id));
+                }
+            }
+        }
+        assert!(clashes.is_empty(), "{clashes:#?}");
+
+        for (fg, u, id) in [
+            (None, "найди на ютубе смешных котов", "youtube.search"),
+            (
+                Some("chrome.exe"),
+                "найди на ютубе смешных котов",
+                "youtube.search",
+            ),
+            (
+                Some("chrome.exe"),
+                "загугли курс биткоина",
+                "chrome.web_search",
+            ),
+            (
+                Some("opera.exe"),
+                "загугли курс биткоина",
+                "operagx.web_search",
+            ),
+            (None, "найди в хроме рецепт борща", "chrome.search"),
+            (None, "яркость на 40", "windows.bright_set"),
+            (None, "окно на монитор 2", "windows.win_monitor_n"),
+            (Some("chrome.exe"), "назад на 10 секунд", "youtube.back10"),
+            (Some("chrome.exe"), "назад", "chrome.back"),
+            (Some("explorer.exe"), "назад", "explorer.back"),
+            (None, "дальше", "basic.next"),
+        ] {
+            *dry.foreground.lock().expect("lock") = fg.map(str::to_owned);
+            let got: Vec<String> = b.handle(u).commands.into_iter().map(|o| o.id).collect();
+            assert_eq!(got, vec![id.to_owned()], "{u} ({fg:?})");
+        }
+    }
 }

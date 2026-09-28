@@ -1,0 +1,1100 @@
+{
+ "id": "firefox",
+ "name": "Mozilla Firefox",
+ "description": "Вкладки, приватное окно, библиотека закладок, загрузки, режим чтения — горячими клавишами Firefox.",
+ "category": "Браузеры",
+ "version": "1.0.0",
+ "icon": "firefox",
+ "commands": [
+  {
+   "id": "firefox.open",
+   "folder": [
+    "Mozilla Firefox",
+    "Запуск"
+   ],
+   "name": "Открыть Mozilla Firefox",
+   "phrases": [
+    "файрфокс",
+    "фаерфокс",
+    "мозилла",
+    "firefox"
+   ],
+   "optional": [
+    "открой",
+    "запусти",
+    "включи",
+    "мне"
+   ],
+   "actions": [
+    {
+     "type": "Launch.File",
+     "path": "%FIREFOX%"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "firefox.close",
+   "folder": [
+    "Mozilla Firefox",
+    "Запуск"
+   ],
+   "name": "Закрыть Mozilla Firefox",
+   "phrases": [
+    "закрой файрфокс",
+    "закрой фаерфокс",
+    "закрой мозилла",
+    "закрой firefox",
+    "выключи файрфокс"
+   ],
+   "actions": [
+    {
+     "type": "Run.Command.Hidden",
+     "cmd": "taskkill /IM firefox.exe",
+     "trusted": true
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   }
+  },
+  {
+   "id": "firefox.search",
+   "folder": [
+    "Mozilla Firefox",
+    "Запуск"
+   ],
+   "name": "Найти в Mozilla Firefox",
+   "phrases": [
+    "найди в файрфоксе {текст}",
+    "поищи в файрфоксе {текст}"
+   ],
+   "actions": [
+    {
+     "type": "Launch.File",
+     "path": "%FIREFOX%",
+     "args": "\"https://www.google.com/search?q={текст}\""
+    }
+   ],
+   "reply": {
+    "clips": [
+     "loading"
+    ]
+   }
+  },
+  {
+   "id": "firefox.tab_new",
+   "folder": [
+    "Mozilla Firefox",
+    "Вкладки"
+   ],
+   "name": "Новая вкладка",
+   "phrases": [
+    "новая вкладка",
+    "открой новую вкладку"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+T"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.tab_close",
+   "folder": [
+    "Mozilla Firefox",
+    "Вкладки"
+   ],
+   "name": "Закрыть вкладку",
+   "phrases": [
+    "закрой вкладку"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+W"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.tab_reopen",
+   "folder": [
+    "Mozilla Firefox",
+    "Вкладки"
+   ],
+   "name": "Вернуть закрытую вкладку",
+   "phrases": [
+    "верни вкладку",
+    "восстанови вкладку",
+    "открой закрытую вкладку"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+T"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.tab_next",
+   "folder": [
+    "Mozilla Firefox",
+    "Вкладки"
+   ],
+   "name": "Следующая вкладка",
+   "phrases": [
+    "следующая вкладка"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Tab"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.tab_prev",
+   "folder": [
+    "Mozilla Firefox",
+    "Вкладки"
+   ],
+   "name": "Предыдущая вкладка",
+   "phrases": [
+    "предыдущая вкладка"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+Tab"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.tab_first",
+   "folder": [
+    "Mozilla Firefox",
+    "Вкладки"
+   ],
+   "name": "Первая вкладка",
+   "phrases": [
+    "первая вкладка"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+1"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.tab_last",
+   "folder": [
+    "Mozilla Firefox",
+    "Вкладки"
+   ],
+   "name": "Последняя вкладка",
+   "phrases": [
+    "последняя вкладка"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+9"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.window_new",
+   "folder": [
+    "Mozilla Firefox",
+    "Вкладки"
+   ],
+   "name": "Новое окно",
+   "phrases": [
+    "новое окно"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+N"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.incognito",
+   "folder": [
+    "Mozilla Firefox",
+    "Вкладки"
+   ],
+   "name": "Приватное окно",
+   "phrases": [
+    "режим инкогнито",
+    "инкогнито",
+    "приватное окно"
+   ],
+   "optional": [
+    "открой",
+    "включи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+P"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.back",
+   "folder": [
+    "Mozilla Firefox",
+    "Навигация"
+   ],
+   "name": "Назад",
+   "phrases": [
+    "назад",
+    "вернись назад",
+    "предыдущая страница"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+Left"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.forward",
+   "folder": [
+    "Mozilla Firefox",
+    "Навигация"
+   ],
+   "name": "Вперёд",
+   "phrases": [
+    "вперед",
+    "следующая страница"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+Right"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.reload",
+   "folder": [
+    "Mozilla Firefox",
+    "Навигация"
+   ],
+   "name": "Обновить страницу",
+   "phrases": [
+    "обнови",
+    "обнови страницу",
+    "перезагрузи страницу"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "F5"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.reload_hard",
+   "folder": [
+    "Mozilla Firefox",
+    "Навигация"
+   ],
+   "name": "Обновить без кэша",
+   "phrases": [
+    "обнови без кэша",
+    "полное обновление"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+F5"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.stop",
+   "folder": [
+    "Mozilla Firefox",
+    "Навигация"
+   ],
+   "name": "Остановить загрузку",
+   "phrases": [
+    "останови загрузку"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Esc"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.home",
+   "folder": [
+    "Mozilla Firefox",
+    "Навигация"
+   ],
+   "name": "Домашняя страница",
+   "phrases": [
+    "домашняя страница"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Alt+Home"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.address",
+   "folder": [
+    "Mozilla Firefox",
+    "Навигация"
+   ],
+   "name": "Адресная строка",
+   "phrases": [
+    "адресная строка"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+L"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.find",
+   "folder": [
+    "Mozilla Firefox",
+    "Навигация"
+   ],
+   "name": "Поиск на странице",
+   "phrases": [
+    "найди на странице",
+    "поиск по странице"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+F"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.top",
+   "folder": [
+    "Mozilla Firefox",
+    "Навигация"
+   ],
+   "name": "В начало страницы",
+   "phrases": [
+    "в начало страницы",
+    "наверх"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Home"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.bottom",
+   "folder": [
+    "Mozilla Firefox",
+    "Навигация"
+   ],
+   "name": "В конец страницы",
+   "phrases": [
+    "в конец страницы",
+    "в самый низ"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "End"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.page_down",
+   "folder": [
+    "Mozilla Firefox",
+    "Навигация"
+   ],
+   "name": "Прокрутить вниз",
+   "phrases": [
+    "прокрути вниз",
+    "листай вниз"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "PageDown"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.page_up",
+   "folder": [
+    "Mozilla Firefox",
+    "Навигация"
+   ],
+   "name": "Прокрутить вверх",
+   "phrases": [
+    "прокрути вверх",
+    "листай вверх"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "PageUp"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.web_search",
+   "folder": [
+    "Mozilla Firefox",
+    "Навигация"
+   ],
+   "name": "Поиск в интернете",
+   "phrases": [
+    "загугли {текст}",
+    "найди в интернете {текст}"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+L"
+    },
+    {
+     "type": "Lux.PauseMS",
+     "ms": 150
+    },
+    {
+     "type": "Keys.Type",
+     "text": "{текст}"
+    },
+    {
+     "type": "Keys.Press",
+     "keys": "Enter"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "loading"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.zoom_in",
+   "folder": [
+    "Mozilla Firefox",
+    "Страница"
+   ],
+   "name": "Увеличить масштаб",
+   "phrases": [
+    "увеличь масштаб",
+    "крупнее"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Plus"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.zoom_out",
+   "folder": [
+    "Mozilla Firefox",
+    "Страница"
+   ],
+   "name": "Уменьшить масштаб",
+   "phrases": [
+    "уменьши масштаб",
+    "мельче"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Minus"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.zoom_reset",
+   "folder": [
+    "Mozilla Firefox",
+    "Страница"
+   ],
+   "name": "Обычный масштаб",
+   "phrases": [
+    "обычный масштаб",
+    "сбрось масштаб"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+0"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.bookmark",
+   "folder": [
+    "Mozilla Firefox",
+    "Страница"
+   ],
+   "name": "В закладки",
+   "phrases": [
+    "добавь в закладки",
+    "в закладки"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+D"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.print",
+   "folder": [
+    "Mozilla Firefox",
+    "Страница"
+   ],
+   "name": "Печать",
+   "phrases": [
+    "распечатай",
+    "печать"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+P"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.save",
+   "folder": [
+    "Mozilla Firefox",
+    "Страница"
+   ],
+   "name": "Сохранить страницу",
+   "phrases": [
+    "сохрани страницу"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+S"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.devtools",
+   "folder": [
+    "Mozilla Firefox",
+    "Страница"
+   ],
+   "name": "Инструменты разработчика",
+   "phrases": [
+    "инструменты разработчика",
+    "консоль разработчика"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "F12"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.history",
+   "folder": [
+    "Mozilla Firefox",
+    "Браузер"
+   ],
+   "name": "История",
+   "phrases": [
+    "история",
+    "история браузера"
+   ],
+   "optional": [
+    "открой",
+    "покажи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+H"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.downloads",
+   "folder": [
+    "Mozilla Firefox",
+    "Браузер"
+   ],
+   "name": "Загрузки",
+   "phrases": [
+    "загрузки",
+    "скачанные файлы"
+   ],
+   "optional": [
+    "открой",
+    "покажи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+Y"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.bookmarks",
+   "folder": [
+    "Mozilla Firefox",
+    "Браузер"
+   ],
+   "name": "Закладки",
+   "phrases": [
+    "закладки",
+    "все закладки"
+   ],
+   "optional": [
+    "открой",
+    "покажи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+O"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.clear",
+   "folder": [
+    "Mozilla Firefox",
+    "Браузер"
+   ],
+   "name": "Очистить историю",
+   "phrases": [
+    "очисти историю",
+    "удали историю",
+    "очисти кэш"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+Delete"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.settings",
+   "folder": [
+    "Mozilla Firefox",
+    "Браузер"
+   ],
+   "name": "Настройки браузера",
+   "phrases": [
+    "настройки браузера"
+   ],
+   "optional": [
+    "открой"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+L"
+    },
+    {
+     "type": "Lux.PauseMS",
+     "ms": 150
+    },
+    {
+     "type": "Keys.Type",
+     "text": "about:preferences"
+    },
+    {
+     "type": "Keys.Press",
+     "keys": "Enter"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.extensions",
+   "folder": [
+    "Mozilla Firefox",
+    "Браузер"
+   ],
+   "name": "Расширения",
+   "phrases": [
+    "расширения",
+    "дополнения браузера"
+   ],
+   "optional": [
+    "открой",
+    "покажи"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Shift+A"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  },
+  {
+   "id": "firefox.reader",
+   "folder": [
+    "Mozilla Firefox",
+    "Браузер"
+   ],
+   "name": "Режим чтения",
+   "phrases": [
+    "режим чтения"
+   ],
+   "actions": [
+    {
+     "type": "Keys.Press",
+     "keys": "Ctrl+Alt+R"
+    }
+   ],
+   "reply": {
+    "clips": [
+     "ok"
+    ]
+   },
+   "when": {
+    "foreground": "firefox.exe"
+   }
+  }
+ ]
+}
