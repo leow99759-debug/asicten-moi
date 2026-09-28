@@ -21,14 +21,14 @@ use crate::brain_worker::{Confirm, Work};
 
 /// Level events at most this often (orb/listening bar).
 const LEVEL_EVERY: Duration = Duration::from_millis(66);
+/// Speakers count as busy this long after the queue drains (device buffer + room echo).
+const PLAY_TAIL: Duration = Duration::from_millis(400);
 
 pub enum Msg {
     Audio(Vec<i16>),
     /// Push-to-talk / mic button.
     Activate,
     Mode(ModeCommand),
-    /// TTS started/stopped (from the voice output, M3).
-    Speaking(bool),
     /// Settings saved: re-read wake sensitivity, mic device, prefix/memory options.
     Reconfigure,
 }
@@ -127,6 +127,9 @@ fn run(
     mic.set(cfg.mic_enabled, cfg.mic_device.as_deref());
     let mut state = AssistantState::Idle;
     let mut last_level = Instant::now();
+    // speakers busy (echo tracking); None = quiet, Some(t) = drained at t (tail running)
+    let mut playing = false;
+    let mut drained: Option<Instant> = None;
     let set_state = |s: AssistantState, state: &mut AssistantState| {
         if *state != s {
             *state = s;
@@ -161,22 +164,28 @@ fn run(
                         tts: route.speaker.level(),
                     }));
                 }
+                // tell the listener what Jarvis says, so the mic doesn't take it as a command
+                if route.speaker.is_playing() {
+                    drained = None;
+                    listener.set_speaking(true, &route.speaker.said(), now);
+                    if !playing {
+                        playing = true;
+                        if !listener.is_listening() {
+                            set_state(AssistantState::Speaking, &mut state);
+                        }
+                    }
+                } else if playing && now >= *drained.get_or_insert(now) + PLAY_TAIL {
+                    playing = false;
+                    drained = None;
+                    listener.set_speaking(false, "", now);
+                    if state == AssistantState::Speaking {
+                        set_state(AssistantState::Listening, &mut state);
+                    }
+                }
                 listener.push(&chunk, now)?
             }
             Msg::Activate => {
                 listener.activate(now);
-                vec![]
-            }
-            Msg::Speaking(on) => {
-                listener.set_speaking(on, now);
-                set_state(
-                    if on {
-                        AssistantState::Speaking
-                    } else {
-                        AssistantState::Listening
-                    },
-                    &mut state,
-                );
                 vec![]
             }
             Msg::Reconfigure => {

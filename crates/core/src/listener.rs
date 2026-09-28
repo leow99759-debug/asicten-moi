@@ -6,12 +6,15 @@ use std::time::{Duration, Instant};
 
 use crate::audio::{Ring, SAMPLE_RATE};
 use crate::stt::LazyStt;
+use crate::text;
 use crate::vad::Vad;
 use crate::wake::WakeWord;
 use crate::Result;
 
 /// Audio before the wake detection fed to STT, so the first command word isn't clipped.
 const PRE_ROLL_SEC: f32 = 0.3;
+/// Jarvis's last line still counts as echo this long after playback ended (room reverb, late STT).
+const ECHO_KEEP: Duration = Duration::from_secs(4);
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Output {
@@ -22,7 +25,7 @@ pub enum Output {
     Final(String),
     /// Listening window passed with nothing said.
     Timeout,
-    /// User interrupted Jarvis speaking («Джарвис» / «стоп»).
+    /// User interrupted Jarvis speaking («стоп»).
     BargeIn,
 }
 
@@ -47,6 +50,10 @@ pub struct Listener {
     ring: Ring,
     state: State,
     prefix: bool,
+    /// What Jarvis is saying / just said (normalized), stripped from what the mic hears.
+    echo: String,
+    /// None while he is still speaking.
+    echo_until: Option<Instant>,
 }
 
 impl Listener {
@@ -59,6 +66,8 @@ impl Listener {
             ring: Ring::with_seconds(PRE_ROLL_SEC),
             state: State::Idle,
             prefix: true,
+            echo: String::new(),
+            echo_until: None,
         }
     }
 
@@ -87,14 +96,40 @@ impl Listener {
         self.start_listening(now, false);
     }
 
-    /// TTS started/stopped. Stopping opens the follow-up window.
-    pub fn set_speaking(&mut self, speaking: bool, now: Instant) {
+    /// Playback started (`said` = its words) or stopped. A reply after a command mutes the
+    /// command path (only barge-in is heard); the «Да, сэр?» cue after the wake word keeps
+    /// listening, so «Джарвис, включи музыку» in one breath still works. Either way the
+    /// played words are stripped from what the mic hears. Stopping opens the follow-up window.
+    pub fn set_speaking(&mut self, speaking: bool, said: &str, now: Instant) {
         if speaking {
-            self.state = State::Speaking;
-            self.stt.begin();
-            self.stt.reset();
-        } else if self.state == State::Speaking {
-            self.start_listening(now, true);
+            self.echo = text::normalize(said);
+            self.echo_until = None;
+            if self.state == State::Idle {
+                self.state = State::Speaking;
+                self.stt.begin();
+                self.stt.reset();
+            }
+        } else {
+            self.echo_until = Some(now + ECHO_KEEP);
+            if self.state == State::Speaking {
+                self.start_listening(now, true);
+            }
+        }
+    }
+
+    /// STT text minus Jarvis's own echo and a lone wake word; empty = nothing for the NLU.
+    fn clean(&self, heard: &str, now: Instant) -> String {
+        let echo_on = self.echo_until.is_none_or(|t| now < t);
+        let norm = text::normalize(heard);
+        let norm = if echo_on {
+            text::strip_echo(&norm, &self.echo)
+        } else {
+            norm
+        };
+        if text::strip_wake(&norm).is_empty() {
+            String::new()
+        } else {
+            norm
         }
     }
 
@@ -105,6 +140,7 @@ impl Listener {
             State::Idle if !self.prefix => {
                 if self.feed(samples, &mut out)? {
                     let text = self.stt.finish()?;
+                    let text = self.clean(&text, now);
                     if !text.is_empty() {
                         out.push(Output::Final(text));
                     }
@@ -120,12 +156,13 @@ impl Listener {
                 }
             }
             State::Speaking => {
-                let wake = self.wake.push(samples).is_some();
+                // Only «стоп» interrupts: the wake model scores his own voice from the
+                // speakers as high as a real «Джарвис» (0.57–0.62 on voice-jarvis clips).
                 let stop = self
                     .stt
                     .push(samples)?
                     .is_some_and(|p| p.split_whitespace().any(|w| w == "стоп"));
-                if wake || stop {
+                if stop {
                     out.push(Output::BargeIn);
                     self.start_listening(now, false);
                 }
@@ -133,7 +170,14 @@ impl Listener {
             State::Listening { until, followup } => {
                 let ended = self.feed(samples, &mut out)?;
                 if ended || now >= until {
-                    let text = self.stt.finish()?;
+                    let heard = self.stt.finish()?;
+                    let text = self.clean(&heard, now);
+                    if text.is_empty() && now < until {
+                        // only his echo, the wake word or a cough: keep waiting for the command
+                        self.stt.begin();
+                        self.stt.reset();
+                        return Ok(out);
+                    }
                     self.vad.flush();
                     self.state = State::Idle;
                     self.wake.reset();
@@ -267,17 +311,17 @@ mod tests {
 
         // Jarvis answers, then follow-up without wake word
         let now = r.now();
-        r.l.set_speaking(true, now);
+        r.l.set_speaking(true, "", now);
         r.silence(1);
         let now = r.now();
-        r.l.set_speaking(false, now);
+        r.l.set_speaking(false, "", now);
         assert_eq!(finals(&r.say("neg_browser")), vec!["открой браузер"]);
 
         // follow-up window expires silently
         let now = r.now();
-        r.l.set_speaking(true, now);
+        r.l.set_speaking(true, "", now);
         let now = r.now();
-        r.l.set_speaking(false, now);
+        r.l.set_speaking(false, "", now);
         let out = r.silence(6);
         assert!(
             !out.contains(&Output::Timeout) && finals(&out).is_empty(),
@@ -285,11 +329,35 @@ mod tests {
         );
         assert!(finals(&r.say("neg_hello")).is_empty());
 
-        // barge-in with the wake word while speaking
+        // the wake word doesn't cut him off: his own voice would trigger it too
         let now = r.now();
-        r.l.set_speaking(true, now);
+        r.l.set_speaking(true, "", now);
         let out = r.say("jarvis");
-        assert!(out.contains(&Output::BargeIn), "{out:?}");
+        assert!(!out.contains(&Output::BargeIn), "{out:?}");
+    }
+
+    /// Real bug: his «Да, сэр» cue came back through the mic, became a command («да сэр» →
+    /// «Чего вы пытаетесь добиться?») and closed the listening window.
+    #[test]
+    fn own_voice_is_not_a_command() {
+        let Some(mut r) = Rig::new() else { return };
+        let Some(cue) = asset("voice-jarvis/ru/reply/js_33.wav") else {
+            return;
+        };
+        let cue = read_wav_16k(&cue);
+        let out = r.say("jarvis");
+        assert!(matches!(out.first(), Some(Output::Wake(_))), "{out:?}");
+        // «Да, сэр» plays while listening; the mic hears it
+        let now = r.now();
+        r.l.set_speaking(true, "Да, сэр", now);
+        let mut out = r.feed(&cue);
+        let now = r.now();
+        r.l.set_speaking(false, "", now);
+        out.extend(r.silence(1));
+        assert!(finals(&out).is_empty(), "echo became a command: {out:?}");
+        assert!(r.l.is_listening(), "window closed on echo");
+        // the real command still lands in the same window
+        assert_eq!(finals(&r.say("neg_browser")), vec!["открой браузер"]);
     }
 
     #[test]

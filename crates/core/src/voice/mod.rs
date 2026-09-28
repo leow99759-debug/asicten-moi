@@ -31,6 +31,8 @@ pub struct VoiceMeta {
 
 pub struct VoicePack {
     pub meta: VoiceMeta,
+    /// `<root>/<lang>`, the base of `meta.texts` keys.
+    dir: PathBuf,
     clips: BTreeMap<String, Vec<PathBuf>>,
     /// Normalized spoken text → clip (from `voice.json` texts).
     by_text: BTreeMap<String, PathBuf>,
@@ -101,6 +103,7 @@ impl VoicePack {
             .unwrap_or(0x9E37_79B9);
         Ok(Self {
             meta,
+            dir: root.join(lang),
             clips,
             by_text,
             last: Mutex::default(),
@@ -115,6 +118,16 @@ impl VoicePack {
     /// Recording of exactly this text (pre-generated replies, §6.1), punctuation/case-insensitive.
     pub fn by_text(&self, text: &str) -> Option<&Path> {
         self.by_text.get(&norm_text(text)).map(PathBuf::as_path)
+    }
+
+    /// Spoken words of a clip (from `voice.json`), e.g. `reply/js_33.wav` → «Да, сэр».
+    pub fn text_of(&self, clip: &Path) -> Option<&str> {
+        let rel = clip.strip_prefix(&self.dir).ok()?;
+        self.meta
+            .texts
+            .iter()
+            .find(|(f, _)| Path::new(f.as_str()) == rel)
+            .map(|(_, t)| t.as_str())
     }
 
     pub fn has(&self, category: &str) -> bool {
@@ -303,6 +316,11 @@ mod tests {
             .expect("text")
             .ends_with("x.wav"));
         assert!(p.by_text("нет файла").is_none());
+        assert_eq!(
+            p.text_of(&ru.join("done/x.wav")),
+            Some("Запрос выполнен, сэр!")
+        );
+        assert_eq!(p.text_of(&ru.join("ok/a.wav")), None);
         assert!(VoicePack::load(dir.path(), "en").is_err());
     }
 

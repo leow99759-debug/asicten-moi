@@ -24,8 +24,8 @@
    ],
    "actions": [
     {
-     "type": "Launch.Url",
-     "url": "https://ya.ru"
+     "type": "Launch.File",
+     "path": "%CHROME%"
     }
    ],
    "reply": {

@@ -19,6 +19,8 @@ pub struct Speaker {
     tts: Option<Arc<Tts>>,
     sink: Arc<dyn EventSink>,
     config: Arc<Mutex<Config>>,
+    /// Words of the last line sent to the speakers (echo filter in the listener).
+    said: Mutex<String>,
 }
 
 /// Preferred voice pack under assets: our curated Jarvis pack, else Priler's original.
@@ -61,6 +63,7 @@ impl Speaker {
             tts,
             sink,
             config,
+            said: Mutex::default(),
         }
     }
 
@@ -102,6 +105,12 @@ impl Speaker {
         let Some(player) = self.player.as_ref().filter(|_| !silent) else {
             return;
         };
+        let spoken = clip
+            .and_then(|c| self.pack.as_ref().and_then(|p| p.text_of(c)))
+            .map(str::to_owned)
+            .or_else(|| text.clone())
+            .unwrap_or_default();
+        *self.said.lock().unwrap_or_else(|e| e.into_inner()) = spoken;
         player.set_volume(f32::from(volume) / 100.0);
         if let Some(clip) = clip {
             if let Err(e) = player.play_wav(clip) {
@@ -151,6 +160,16 @@ impl Speaker {
         if let Some(p) = &self.player {
             p.stop();
         }
+    }
+
+    /// Audio is queued for the speakers.
+    pub fn is_playing(&self) -> bool {
+        self.player.as_ref().is_some_and(Player::is_playing)
+    }
+
+    /// Words of the last line played.
+    pub fn said(&self) -> String {
+        self.said.lock().unwrap_or_else(|e| e.into_inner()).clone()
     }
 
     /// Output level 0..1 for the orb.

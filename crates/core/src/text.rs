@@ -33,6 +33,37 @@ pub fn strip_wake(norm: &str) -> String {
     words.join(" ")
 }
 
+/// Remove Jarvis's own words that the mic picked up from the speakers («да сэр открой
+/// браузер» after he said «Да, сэр» → «открой браузер»). `heard` and `said` are normalized;
+/// `said` words are matched in order (fuzzy); at least 60% of them must be found.
+pub fn strip_echo(heard: &str, said: &str) -> String {
+    let said: Vec<&str> = said.split_whitespace().collect();
+    let heard: Vec<&str> = heard.split_whitespace().collect();
+    let mut hit = vec![false; heard.len()];
+    let mut j = 0;
+    for (i, w) in heard.iter().enumerate() {
+        if j < said.len() && same_word(w, said[j]) {
+            hit[i] = true;
+            j += 1;
+        }
+    }
+    if said.is_empty() || j * 5 < said.len() * 3 {
+        return heard.join(" ");
+    }
+    heard
+        .iter()
+        .zip(hit)
+        .filter(|(_, h)| !h)
+        .map(|(w, _)| *w)
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+fn same_word(a: &str, b: &str) -> bool {
+    let (a, b) = (a.replace('э', "е"), b.replace('э', "е"));
+    a == b || strsim::jaro_winkler(&a, &b) >= 0.88
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -57,6 +88,21 @@ mod tests {
             ("джарвис", ""),
         ] {
             assert_eq!(strip_wake(inp), out, "{inp}");
+        }
+    }
+
+    #[test]
+    fn strips_own_echo() {
+        for (heard, said, out) in [
+            ("да сэр", "да сэр", ""),
+            ("да сер", "да сэр", ""),
+            ("да сэр открой браузер", "да сэр", "открой браузер"),
+            ("чего вы пытаетесь", "чего вы пытаетесь добиться сэр", ""),
+            ("открой браузер", "да сэр", "открой браузер"),
+            ("да", "да сэр", "да"),
+            ("открой браузер", "", "открой браузер"),
+        ] {
+            assert_eq!(strip_echo(heard, said), out, "{heard} / {said}");
         }
     }
 }
