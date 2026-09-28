@@ -16,6 +16,8 @@ cargo install tauri-cli --version "^2" --locked   # once
 cargo tauri dev        # dev (run from repo root)
 cargo tauri build      # installer
 ```
-Models/voices are not in git: `pwsh tools/fetch-assets.ps1` (Release `assets-v1`).
+Models/voices are not in git: `pwsh tools/fetch-assets.ps1` (Release `assets-v1`); release builds find them via `JARVIS_ASSETS`.
+Built-in command packs (`packs/`) are bundled as resources and copied next to `target/release/jarvis.exe`.
+Update: `git pull` → `cargo tauri build`. Clean rebuild: delete `$CARGO_TARGET_DIR` (or `cargo clean`); settings/commands live in `%APPDATA%/Jarvis` and survive.
 
 CI: GitHub Actions on `windows-latest` (fmt, clippy, tests, frontend build).
