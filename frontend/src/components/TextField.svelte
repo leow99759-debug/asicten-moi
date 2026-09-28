@@ -3,11 +3,12 @@
     value,
     label,
     placeholder = "",
+    secret = false,
     onchange,
-  }: { value: string; label: string; placeholder?: string; onchange?: (v: string) => void } = $props();
+  }: { value: string; label: string; placeholder?: string; secret?: boolean; onchange?: (v: string) => void } = $props();
 </script>
 
-<input type="text" aria-label={label} {placeholder} {value} onchange={(e) => onchange?.(e.currentTarget.value.trim())} />
+<input type={secret ? "password" : "text"} autocomplete="off" aria-label={label} {placeholder} {value} onchange={(e) => onchange?.(e.currentTarget.value.trim())} />
 
 <style>
   /* Fluent text box: accent underline on focus */

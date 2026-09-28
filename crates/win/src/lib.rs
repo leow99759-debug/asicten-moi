@@ -8,6 +8,7 @@ pub mod audio;
 pub mod autostart;
 pub mod backend;
 pub mod keys;
+pub mod online;
 pub mod recorder;
 #[cfg(windows)]
 pub mod speech;

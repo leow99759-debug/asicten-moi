@@ -29,6 +29,7 @@ export const DEFAULTS: Config = {
     silent_off: "выключи тихий режим",
     mic_off: "хватит слушать",
   },
+  online: { gemini_keys: ["", ""], gemini_model: "gemini-2.5-flash-lite", fish_key: "", fish_voice: "4c3eaacc1a0545cdb0295bfddf3e3785" },
 };
 
 export const cfg = $state<{ value: Config }>({ value: structuredClone(DEFAULTS) });

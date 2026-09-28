@@ -2247,6 +2247,7 @@ name = "jarvis-win"
 version = "0.1.0"
 dependencies = [
  "jarvis-core",
+ "serde_json",
  "strsim",
  "tempfile",
  "tracing",

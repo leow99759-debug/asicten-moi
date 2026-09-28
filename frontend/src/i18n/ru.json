@@ -346,5 +346,19 @@
   "addons.voice.active": "Используется",
   "addons.voice.pick": "Выбрать",
   "addons.voice.soon": "Появится позже",
-  "addons.voice.settings": "Настройки голоса"
+  "addons.voice.settings": "Настройки голоса",
+  "set.tab.ai": "ИИ",
+  "ai.news": "Сводка «Что нового сегодня»",
+  "ai.gemini1": "Ключ Gemini",
+  "ai.gemini2": "Запасной ключ Gemini",
+  "ai.gemini.sub": "aistudio.google.com → Get API key. Без ключа Джарвис читает заголовки",
+  "ai.gemini2.sub": "Используется, когда у первого закончился лимит",
+  "ai.model": "Модель Gemini",
+  "ai.model.sub": "Бесплатная: gemini-2.5-flash-lite",
+  "ai.voice": "Голос онлайн",
+  "ai.fish": "Ключ Fish Audio",
+  "ai.fish.sub": "fish.audio → API Keys. Ответы без записи звучат голосом Джарвиса",
+  "ai.fish.voice": "ID голоса Fish Audio",
+  "ai.note": "Ключи хранятся только на этом компьютере (config.json). Без сети Джарвис скажет, что интернета нет",
+  "voice.fish.sub": "Онлайн, ключ во вкладке «ИИ»"
 }

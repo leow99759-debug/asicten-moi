@@ -12,7 +12,7 @@ use jarvis_core::executor::{Assistant, Executor};
 use jarvis_core::ipc::{ConfirmRequest, CoreEvent, EventSink, UiCommand};
 use jarvis_core::modes::ModeCommand;
 use jarvis_core::scheduler::{Job, Scheduler};
-use jarvis_core::Db;
+use jarvis_core::{Config, Db};
 use jarvis_win::apps::SystemApps;
 use jarvis_win::backend::WinBackend;
 
@@ -180,6 +180,7 @@ pub struct Deps {
     pub confirm: Arc<Confirm>,
     pub engine: Engine,
     pub quit: Quit,
+    pub config: Arc<Mutex<Config>>,
 }
 
 pub fn spawn(
@@ -195,6 +196,7 @@ pub fn spawn(
         confirm,
         engine,
         quit,
+        config,
     } = deps;
     let (scheduler, fired) = Scheduler::start();
     let fwd = work_tx.clone();
@@ -219,7 +221,9 @@ pub fn spawn(
         .spawn(move || {
             let executor = || {
                 Executor::new(
-                    Arc::new(WinBackend),
+                    Arc::new(WinBackend {
+                        config: Some(config.clone()),
+                    }),
                     assistant.clone(),
                     Arc::new(SystemApps),
                 )

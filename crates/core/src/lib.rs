@@ -13,6 +13,7 @@ pub mod listener;
 pub mod logging;
 pub mod modes;
 mod msvc_compat;
+pub mod news;
 pub mod nlu;
 pub mod paths;
 #[cfg(test)]

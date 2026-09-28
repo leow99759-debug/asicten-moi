@@ -30,6 +30,7 @@
     { id: "general", label: t("set.tab.general") },
     { id: "ui", label: t("set.tab.ui") },
     { id: "voice", label: t("set.tab.voice") },
+    { id: "ai", label: t("set.tab.ai") },
     { id: "hotkeys", label: t("set.tab.hotkeys") },
     { id: "about", label: t("set.tab.about") },
   ];
@@ -37,9 +38,18 @@
   const engines: { id: VoiceEngine | "fish" | "openai"; icon: IconName; title: string; sub: string; soon?: boolean }[] = [
     { id: "jarvis", icon: "sparkles", title: t("voice.jarvis"), sub: t("voice.jarvis.sub") },
     { id: "windows", icon: "monitor", title: t("voice.windows"), sub: t("voice.windows.sub") },
-    { id: "fish", icon: "globe", title: "Fish Audio", sub: t("voice.online.sub"), soon: true },
+    { id: "fish", icon: "globe", title: "Fish Audio", sub: t("voice.fish.sub") },
     { id: "openai", icon: "globe", title: "OpenAI", sub: t("voice.online.sub"), soon: true },
   ];
+
+  function setKey(i: number, v: string) {
+    set(() => {
+      const keys = [...c.online.gemini_keys];
+      while (keys.length < 2) keys.push("");
+      keys[i] = v;
+      c.online.gemini_keys = keys;
+    });
+  }
 
   function set(fn: () => void) {
     fn();
@@ -159,7 +169,7 @@
               disabled={e.soon}
               class="engine card"
               class:on={c.voice_engine === e.id}
-              onclick={() => set(() => (c.voice_engine = e.id as VoiceEngine))}>
+              onclick={() => (e.id === "fish" ? (tab = "ai") : set(() => (c.voice_engine = e.id as VoiceEngine)))}>
               <span class="eic"><Icon name={e.icon} size={18} /></span>
               <span class="etx">
                 <span class="et">{e.title}{#if e.soon}<span class="soon">{t("soon.badge")}</span>{/if}</span>
@@ -207,6 +217,26 @@
         {#if c.voice_engine === "windows"}
           <p class="note"><Icon name="info" size={14} /> {t("voice.windows.note")}</p>
         {/if}
+      {:else if tab === "ai"}
+        <Group title={t("ai.news")}>
+          {#each [0, 1] as i (i)}
+            <SettingRow icon="sparkles" label={t(`ai.gemini${i + 1}`)} desc={i === 0 ? t("ai.gemini.sub") : t("ai.gemini2.sub")} wide>
+              <TextField secret label={t(`ai.gemini${i + 1}`)} placeholder="AIza…" value={c.online.gemini_keys[i] ?? ""} onchange={(v) => setKey(i, v)} />
+            </SettingRow>
+          {/each}
+          <SettingRow icon="settings" label={t("ai.model")} desc={t("ai.model.sub")} wide>
+            <TextField label={t("ai.model")} value={c.online.gemini_model} onchange={(v) => set(() => (c.online.gemini_model = v))} />
+          </SettingRow>
+        </Group>
+        <Group title={t("ai.voice")}>
+          <SettingRow icon="volume" label={t("ai.fish")} desc={t("ai.fish.sub")} wide>
+            <TextField secret label={t("ai.fish")} value={c.online.fish_key} onchange={(v) => set(() => (c.online.fish_key = v))} />
+          </SettingRow>
+          <SettingRow icon="person" label={t("ai.fish.voice")} wide>
+            <TextField label={t("ai.fish.voice")} value={c.online.fish_voice} onchange={(v) => set(() => (c.online.fish_voice = v))} />
+          </SettingRow>
+        </Group>
+        <p class="note"><Icon name="info" size={14} /> {t("ai.note")}</p>
       {:else if tab === "hotkeys"}
         <Group title={t("set.hotkeys.sub")}>
           {#each ["push_to_talk", "toggle_window", "toggle_mic"] as const as k (k)}

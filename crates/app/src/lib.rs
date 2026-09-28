@@ -346,6 +346,7 @@ pub fn run() -> anyhow::Result<()> {
                         let h = handle.clone();
                         Arc::new(move || h.exit(0))
                     },
+                    config: state.config.clone(),
                 },
                 state.work.clone(),
                 work_rx,

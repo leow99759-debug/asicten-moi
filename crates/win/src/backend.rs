@@ -3,9 +3,17 @@
 use jarvis_core::commands::{Action, Num, Side};
 use jarvis_core::executor::Backend;
 
-use crate::{apps, system};
+use std::sync::{Arc, Mutex};
 
-pub struct WinBackend;
+use jarvis_core::Config;
+
+use crate::{apps, online, system};
+
+#[derive(Default)]
+pub struct WinBackend {
+    /// Live config for online keys; `None` = defaults (tests).
+    pub config: Option<Arc<Mutex<Config>>>,
+}
 
 impl Backend for WinBackend {
     fn foreground_exe(&self) -> Option<String> {
@@ -20,6 +28,14 @@ impl Backend for WinBackend {
     }
 
     fn perform(&self, action: &Action) -> Result<Option<String>, String> {
+        if matches!(action, Action::Info { what } if what == "news") {
+            let keys = self
+                .config
+                .as_ref()
+                .map(|c| c.lock().unwrap_or_else(|e| e.into_inner()).online.clone())
+                .unwrap_or_default();
+            return online::digest(&keys).map(Some);
+        }
         if let Some(r) = system::perform(action) {
             return r;
         }
@@ -247,7 +263,7 @@ mod tests {
 
     #[test]
     fn kill_missing_process_reports_error() {
-        let err = WinBackend
+        let err = WinBackend::default()
             .perform(&Action::ProcessKill {
                 name: "definitely-not-running-jarvis-test".into(),
             })

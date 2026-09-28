@@ -47,6 +47,46 @@ pub struct Config {
     pub ui: UiPrefs,
     /// Voice phrases that switch modes (§2.2), editable in settings.
     pub mode_phrases: ModePhrases,
+    /// Online keys (Settings → ИИ): stay in this PC's config.json, never in git.
+    pub online: Online,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
+#[serde(default)]
+#[ts(export)]
+pub struct Online {
+    /// Google AI Studio keys for the news digest; the second is used when the first hits its quota.
+    pub gemini_keys: Vec<String>,
+    pub gemini_model: String,
+    /// Fish Audio key: any text without a recording is spoken in the Jarvis voice online.
+    pub fish_key: String,
+    pub fish_voice: String,
+}
+
+impl Default for Online {
+    fn default() -> Self {
+        Self {
+            gemini_keys: vec![String::new(), String::new()],
+            gemini_model: "gemini-2.5-flash-lite".into(),
+            fish_key: String::new(),
+            // «ДЖАРВИС» (ru) on fish.audio, same voice as the recorded extra phrases
+            fish_voice: "4c3eaacc1a0545cdb0295bfddf3e3785".into(),
+        }
+    }
+}
+
+impl Online {
+    pub fn gemini_keys(&self) -> impl Iterator<Item = &str> {
+        self.gemini_keys
+            .iter()
+            .map(|k| k.trim())
+            .filter(|k| !k.is_empty())
+    }
+
+    pub fn fish(&self) -> Option<(&str, &str)> {
+        let k = self.fish_key.trim();
+        (!k.is_empty()).then_some((k, self.fish_voice.trim()))
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize, TS)]
@@ -90,6 +130,7 @@ impl Default for Config {
             hotkeys: Hotkeys::default(),
             ui: UiPrefs::default(),
             mode_phrases: ModePhrases::default(),
+            online: Online::default(),
         }
     }
 }
