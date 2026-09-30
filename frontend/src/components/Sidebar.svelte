@@ -2,6 +2,7 @@
   // Navigation rail (video26/video30, Luxify tour): logo on top, icon buttons; the selected
   // frame slides to the new button instead of jumping. Mic + profile at the bottom, labels
   // in tooltips that slide out to the right.
+  import { untrack } from "svelte";
   import Icon, { type IconName } from "./Icon.svelte";
   import Logo from "./Logo.svelte";
   import { app, toggleMic, type Page } from "../lib/app.svelte";
@@ -21,8 +22,10 @@
   $effect(() => {
     void vh;
     const b = btns[app.page];
+    // read the old flag untracked: this effect writes `ind`, tracking it would loop forever
+    const was = untrack(() => ind.on);
     if (!b) return void (ind.on = false);
-    ind = { y: b.offsetTop, on: true, moved: ind.on };
+    ind = { y: b.offsetTop, on: true, moved: was };
   });
 
   const micOff = $derived(app.state === "mic_off");

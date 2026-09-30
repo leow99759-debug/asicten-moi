@@ -1,13 +1,6 @@
 /* Design tokens v3 — see docs/design/SYSTEM.md (the rules) before changing anything here.
    Luxify reference videos 1:1 (docs/design/video26, video30). Motion: .claude/skills/emil-design-eng. */
-@font-face {
-  font-family: "Inter";
-  src: url("../assets/fonts/InterVariable.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: block;
-}
-
+/* Inter if installed, else Windows 11 Segoe UI Variable (the woff2 was never in the repo) */
 :root {
   /* layers */
   --bg-base: #16171b;
