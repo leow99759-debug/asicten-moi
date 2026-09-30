@@ -77,4 +77,8 @@ mode_phrases: ModePhrases,
 /**
  * Online keys (Settings → ИИ): stay in this PC's config.json, never in git.
  */
-online: Online, };
+online: Online, 
+/**
+ * The first-run greeting («первичная настройка… калибровка… все системы штатно») played.
+ */
+introduced: boolean, };

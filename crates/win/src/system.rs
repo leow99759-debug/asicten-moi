@@ -52,6 +52,11 @@ pub fn perform(action: &Action) -> Option<Out> {
     })
 }
 
+/// Local clock hour (startup greeting by time of day); `None` off Windows.
+pub fn local_hour() -> Option<u32> {
+    win::local_hour()
+}
+
 #[cfg(windows)]
 fn shot() -> Out {
     crate::screenshot::take().map(|_| None)
@@ -285,6 +290,11 @@ mod win {
         (100 - (i1.saturating_sub(i0) * 100 / total).min(100)) as u8
     }
 
+    pub fn local_hour() -> Option<u32> {
+        // SAFETY: GetLocalTime has no failure mode.
+        Some(u32::from(unsafe { GetLocalTime() }.wHour))
+    }
+
     pub fn info(what: &str) -> Result<String, String> {
         // SAFETY: GetLocalTime has no failure mode.
         let t = unsafe { GetLocalTime() };
@@ -343,6 +353,9 @@ mod win {
     }
     pub fn info(_: &str) -> Result<String, String> {
         Err(NO.into())
+    }
+    pub fn local_hour() -> Option<u32> {
+        None
     }
 }
 

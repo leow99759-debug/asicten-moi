@@ -49,6 +49,8 @@ pub struct Config {
     pub mode_phrases: ModePhrases,
     /// Online keys (Settings → ИИ): stay in this PC's config.json, never in git.
     pub online: Online,
+    /// The first-run greeting («первичная настройка… калибровка… все системы штатно») played.
+    pub introduced: bool,
 }
 
 /// Who voices dynamic text online (see [`Online::cloud_voice`]).
@@ -184,6 +186,7 @@ impl Default for Config {
             ui: UiPrefs::default(),
             mode_phrases: ModePhrases::default(),
             online: Online::default(),
+            introduced: false,
         }
     }
 }

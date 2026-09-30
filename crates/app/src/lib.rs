@@ -124,6 +124,7 @@ fn set_config(
         config.ui.avatar_pos = cur.ui.avatar_pos;
         // set only by classroom_connect / classroom_disconnect
         config.online.classroom_token = cur.online.classroom_token.clone();
+        config.introduced = cur.introduced;
         config
             .save(&state.paths.config())
             .map_err(|e| e.to_string())?;
@@ -239,6 +240,35 @@ fn activate(state: tauri::State<'_, AppState>) {
     }
 }
 
+/// Startup line: the first-run intro once, then a time-of-day or plain greeting.
+fn greet(speaker: &speaker::Speaker, state: &AppState) {
+    let line = |c: &[&str]| jarvis_core::brain::Line {
+        clips: c.iter().map(|c| (*c).to_owned()).collect(),
+        text: None,
+    };
+    let mut cfg = state.config.lock().unwrap_or_else(|e| e.into_inner());
+    if !cfg.introduced {
+        for c in ["first_run", "diagnostics", "calibration", "first_run_done"] {
+            speaker.say(&line(&[c]));
+        }
+        cfg.introduced = true;
+        if let Err(e) = cfg.save(&state.paths.config()) {
+            tracing::warn!("config save: {e}");
+        }
+        return;
+    }
+    let coin = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .is_ok_and(|d| d.subsec_nanos() % 2 == 0);
+    let tod = jarvis_win::system::local_hour()
+        .filter(|_| coin)
+        .map(jarvis_core::info::greet_category);
+    // Priler's pack calls the startup line `run`
+    let mut clips: Vec<&str> = tod.into_iter().collect();
+    clips.extend(["greet", "run"]);
+    speaker.say(&line(&clips));
+}
+
 /// Start the Tauri application and block until exit.
 pub fn run() -> anyhow::Result<()> {
     let paths = Paths::from_env().context("data dir")?;
@@ -335,11 +365,7 @@ pub fn run() -> anyhow::Result<()> {
                 state.config.clone(),
             ));
             let _ = state.speaker.set(speaker.clone());
-            // Priler's pack calls the startup line `run`
-            speaker.say(&jarvis_core::brain::Line {
-                clips: vec!["greet".into(), "run".into()],
-                text: None,
-            });
+            greet(&speaker, &state);
             let engine = engine::spawn(
                 assets.clone(),
                 state.config.clone(),

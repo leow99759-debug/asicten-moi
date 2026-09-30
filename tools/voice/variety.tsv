@@ -1,0 +1,78 @@
+# More variants per category (SPEC §6.1), Fish Audio via clone_pack.py.
+# New voice (voice-jarvis-v2): every row. Film pack: only categories without originals (originals win).
+# category<TAB>file_stem<TAB>text
+reply	v_reply1	Слушаю, сэр.
+reply	v_reply2	Я здесь, сэр.
+reply	v_reply3	Чем могу помочь, сэр?
+reply	v_reply4	Слушаю вас.
+reply	v_reply5	Да, сэр?
+reply	v_reply6	Весь внимание, сэр.
+ok	v_ok1	Сию минуту, сэр.
+ok	v_ok2	Выполняю.
+ok	v_ok3	Как скажете, сэр.
+ok	v_ok4	Будет сделано.
+ok	v_ok5	Слушаюсь, сэр.
+ok	v_ok6	Уже делаю.
+ok	v_ok7	Хорошо, сэр.
+ok	v_ok8	Принято.
+done	v_done1	Готово, сэр.
+done	v_done2	Сделано.
+done	v_done3	Выполнено, сэр.
+done	v_done4	Всё готово.
+loading	v_loading1	Открываю, сэр.
+loading	v_loading2	Секунду, сэр.
+loading	v_loading3	Уже открываю.
+loading	v_loading4	Сейчас всё будет, сэр.
+loading	v_loading5	Запускаю.
+ready	v_ready1	Всегда на связи, сэр.
+ready	v_ready2	Готов к работе, сэр.
+ready	v_ready3	Я здесь, сэр. Жду указаний.
+thanks	v_thanks1	Не за что, сэр.
+thanks	v_thanks2	Рад помочь, сэр.
+thanks	v_thanks3	Обращайтесь, сэр.
+thanks	v_thanks4	Это моя работа, сэр.
+greet	v_greet1	Джарвис к вашим услугам, сэр.
+greet	v_greet2	Системы запущены. Я на связи, сэр.
+greet	v_greet3	Здравствуйте, сэр. Все системы в норме.
+greet	v_greet4	Приветствую, сэр. Готов к работе.
+greet	v_greet5	Джарвис онлайн. Жду ваших указаний.
+greet_morning	v_morning1	Доброе утро, сэр. Все системы работают в штатном режиме.
+greet_morning	v_morning2	Доброе утро, сэр. Надеюсь, вы хорошо выспались.
+greet_morning	v_morning3	С добрым утром, сэр. Готов к новому дню.
+greet_morning	v_morning4	Доброе утро, сэр. Кофе, к сожалению, пока на вас.
+greet_day	v_day1	Добрый день, сэр. Все системы в норме.
+greet_day	v_day2	Добрый день, сэр. Чем займёмся?
+greet_day	v_day3	Рад вас слышать, сэр. Добрый день.
+greet_evening	v_evening1	Добрый вечер, сэр. Все системы работают штатно.
+greet_evening	v_evening2	Добрый вечер, сэр. Как прошёл день?
+greet_evening	v_evening3	Добрый вечер, сэр. Я на связи.
+greet_night	v_night1	Доброй ночи, сэр. Не спится?
+greet_night	v_night2	Доброй ночи, сэр. Снова работаем допоздна?
+greet_night	v_night3	Сэр, уже поздно. Но я, как всегда, на связи.
+welcome	v_welcome1	Рад снова вас видеть, сэр.
+welcome	v_welcome2	Добро пожаловать обратно, сэр.
+not_found	v_nf1	Простите, сэр, не понял команду.
+not_found	v_nf2	Повторите, пожалуйста, сэр.
+not_found	v_nf3	Боюсь, я не расслышал, сэр.
+not_found	v_nf4	Не совсем понял вас, сэр.
+not_found	v_nf5	Сэр, такой команды я пока не знаю.
+cancel	v_cancel1	Отменяю, сэр.
+cancel	v_cancel2	Хорошо, не буду.
+cancel	v_cancel3	Отмена принята, сэр.
+error	v_error1	Сэр, возникла ошибка.
+error	v_error2	Боюсь, не получилось, сэр.
+error	v_error3	Сэр, система вернула ошибку. Подробности в журнале.
+no_internet	v_net1	Сэр, связь с сетью потеряна. Эта функция недоступна без интернета.
+no_internet	v_net2	Похоже, интернета нет, сэр. Проверьте подключение.
+status	v_status1	Все системы в норме, сэр.
+status	v_status2	Работаю на полную мощность, сэр.
+status	v_status3	Всё штатно, сэр. Отклонений не обнаружено.
+confirm	v_confirm1	Сэр, вы уверены?
+confirm	v_confirm2	Подтвердите, сэр: да или нет?
+remind	v_remind1	Сэр, вы просили напомнить.
+remind	v_remind2	Напоминание, сэр.
+off	v_off1	До свидания, сэр.
+off	v_off2	Отключаюсь. До встречи, сэр.
+first_run	v_first1	Здравствуйте, сэр. Я Джарвис, ваш голосовой ассистент. Это наш первый запуск, выполняю начальную настройку.
+first_run_done	v_first_done1	Калибровка завершена. Все системы работают в штатном режиме. Скажите «Джарвис», и я к вашим услугам, сэр.
+phrases	v_timer	Время вышло.

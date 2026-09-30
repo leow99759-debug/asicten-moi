@@ -60,6 +60,16 @@ pub fn greeting_phrase(hour: u32) -> &'static str {
     }
 }
 
+/// Voice category for the time-of-day greeting (`greet_morning` … `greet_night`).
+pub fn greet_category(hour: u32) -> &'static str {
+    match hour {
+        5..=11 => "greet_morning",
+        12..=17 => "greet_day",
+        18..=22 => "greet_evening",
+        _ => "greet_night",
+    }
+}
+
 pub fn date_phrase(day: u32, month: u32, weekday: u32) -> String {
     let m = MONTHS
         .get(month.saturating_sub(1) as usize)
@@ -159,6 +169,8 @@ mod tests {
     #[test]
     fn greetings_by_hour() {
         assert_eq!(greeting_phrase(7), "Доброе утро, сэр");
+        assert_eq!(greet_category(7), "greet_morning");
+        assert_eq!(greet_category(23), "greet_night");
         assert_eq!(greeting_phrase(13), "Добрый день, сэр");
         assert_eq!(greeting_phrase(20), "Добрый вечер, сэр");
         assert_eq!(greeting_phrase(2), "Доброй ночи, сэр");

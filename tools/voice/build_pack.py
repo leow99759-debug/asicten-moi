@@ -19,9 +19,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
 ASSETS = ROOT / "assets"
+# detection=peak: ffmpeg 5.1 rms detection can eat the first word of a clip
 CLEAN = (
     "highpass=f=60,"
-    "silenceremove=start_periods=1:start_threshold=-50dB:stop_periods=-1:"
+    "silenceremove=start_periods=1:start_threshold=-50dB:detection=peak:stop_periods=-1:"
     "stop_threshold=-50dB:stop_duration=0.3,afade=t=in:d=0.01"
 )
 
@@ -65,15 +66,22 @@ def clean(src: Path, dst: Path) -> None:
     )
 
 
+CONFIRM = {"System.Shutdown", "System.Restart", "System.Logoff"}
+
+
 def pack_texts() -> list[tuple[str, str]]:
-    """(category hint, text) for every fixed reply variant in packs/*.json."""
+    """(category hint, text) for every fixed reply variant in packs/*.json (+ add-ons) and the
+    confirm question of dangerous commands (brain.rs: «Сэр, выполнить «name»?»)."""
     out = []
-    for f in sorted((ROOT / "packs").glob("*.json")):
+    files = sorted((ROOT / "packs").glob("*.json")) + sorted((ROOT / "packs" / "addons").glob("*.json"))
+    for f in files:
         for c in json.loads(f.read_text(encoding="utf-8"))["commands"]:
             r = c.get("reply") or {}
             for v in (r.get("text") or "").split("|"):
                 if v.strip():
                     out.append(("phrases", v.strip()))
+            if c.get("confirm") or any(a.get("type") in CONFIRM for a in c.get("actions", [])):
+                out.append(("phrases", f"Сэр, выполнить «{c['name'].lower()}»?"))
     return out
 
 

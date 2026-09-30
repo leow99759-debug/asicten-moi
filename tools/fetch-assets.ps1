@@ -53,6 +53,11 @@ function Build-FromGit([string]$Name, [string]$Spec) {
 
 function Expand-Asset([string]$Name) {
     $file = Join-Path $Cache $Name
+    if ($Name -like 'voice-*.zip') {
+        # voice packs are replaced whole, so clips dropped from a pack don't linger
+        $dir = Join-Path $Out ([IO.Path]::GetFileNameWithoutExtension($Name))
+        if (Test-Path $dir) { Remove-Item $dir -Recurse -Force }
+    }
     if ($Name -like '*.zip') { Expand-Archive $file -DestinationPath $Out -Force }
     elseif ($Name -like '*.tar.bz2') { tar -xjf $file -C $Out; if ($LASTEXITCODE) { throw "tar $Name failed" } }
     else { Copy-Item $file $Out -Force }

@@ -149,6 +149,29 @@ impl VoicePack {
         Some(&files[i])
     }
 
+    /// Clip for a line: an exact recording of `text` wins (specific replies like «Сделал тише»),
+    /// unless the text is the categories' own generic words — then a random category clip
+    /// keeps the variety. Falls back to the other source when one is missing.
+    pub fn choose(&self, categories: &[impl AsRef<str>], text: Option<&str>) -> Option<&Path> {
+        let exact = text.and_then(|t| self.by_text(t));
+        let generic = text.is_some_and(|t| {
+            let t = norm_text(t);
+            categories.iter().any(|c| {
+                let c = c.as_ref();
+                category_text(c).is_some_and(|g| norm_text(g) == t)
+                    || self
+                        .meta
+                        .texts
+                        .iter()
+                        .any(|(f, v)| f.split('/').next() == Some(c) && norm_text(v) == t)
+            })
+        });
+        match exact {
+            Some(e) if !generic => Some(e),
+            _ => self.pick(categories).or(exact),
+        }
+    }
+
     fn next(&self) -> u64 {
         // xorshift64: plenty for picking a phrase
         let mut s = self.rng.lock().unwrap_or_else(|e| e.into_inner());
@@ -230,6 +253,9 @@ pub fn category_text(category: &str) -> Option<&'static str> {
         "error" => "Сэр, не удалось выполнить",
         "off" | "goodbye" => "До свидания, сэр",
         "game_mode" | "calibration" => "Начинаю калибровку, сэр",
+        "diagnostics" => "Начинаю диагностику системы",
+        "first_run" => "Здравствуйте, сэр. Я Джарвис. Первый запуск, выполняю начальную настройку",
+        "first_run_done" => "Калибровка завершена. Все системы работают в штатном режиме",
         _ => return None,
     })
 }
@@ -316,6 +342,25 @@ mod tests {
             .expect("text")
             .ends_with("x.wav"));
         assert!(p.by_text("нет файла").is_none());
+        // exact text beats the category, generic words keep the category's variety
+        let ok = ["ok"];
+        assert!(p
+            .choose(&ok, Some("Запрос выполнен, сэр"))
+            .expect("exact")
+            .ends_with("x.wav"));
+        assert!(p
+            .choose(&ok, Some("Да, сэр"))
+            .expect("generic")
+            .starts_with(ru.join("ok")));
+        assert!(p
+            .choose(&ok, Some("без записи"))
+            .expect("cat")
+            .starts_with(ru.join("ok")));
+        assert!(p
+            .choose(&["done"], Some("Запрос выполнен"))
+            .expect("own")
+            .ends_with("x.wav"));
+        assert!(p.choose(&["missing"], Some("без записи")).is_none());
         assert_eq!(
             p.text_of(&ru.join("done/x.wav")),
             Some("Запрос выполнен, сэр!")
@@ -353,13 +398,19 @@ mod tests {
         assert!(rate >= 16_000 && !s.is_empty());
     }
 
-    /// Every fixed reply in the repo packs has a recording: category clip or exact text (T044).
+    /// Every fixed reply text in the repo packs has its own recording in both voice cards,
+    /// clip-only replies have their category (T044).
     #[test]
-    fn curated_pack_covers_repo_replies() {
-        let Some(root) = crate::test_util::asset("voice-jarvis") else {
-            return;
-        };
-        let p = VoicePack::load(&root, "ru").expect("load");
+    fn curated_packs_cover_repo_replies() {
+        for name in ["voice-jarvis", "voice-jarvis-v2"] {
+            if let Some(root) = crate::test_util::asset(name) {
+                covers_repo_replies(&root);
+            }
+        }
+    }
+
+    fn covers_repo_replies(root: &Path) {
+        let p = VoicePack::load(root, "ru").expect("load");
         let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../packs");
         let mut missing = Vec::new();
         for pack in crate::commands::addons(&dir, &[])
@@ -368,8 +419,8 @@ mod tests {
         {
             for c in pack.commands {
                 let r = &c.reply;
-                if r.clips.iter().any(|k| p.has(k)) {
-                    continue;
+                if r.text.is_none() && !r.clips.is_empty() && !r.clips.iter().any(|k| p.has(k)) {
+                    missing.push(format!("{}: {:?}", c.id, r.clips));
                 }
                 for t in r.text.iter().flat_map(|t| t.split('|')) {
                     if p.by_text(t).is_none() {
@@ -392,8 +443,16 @@ mod tests {
             "no_internet",
             "greet",
             "calibration",
+            "first_run",
+            "first_run_done",
+            "greet_morning",
+            "greet_day",
+            "greet_evening",
+            "greet_night",
+            "remind",
+            "confirm",
         ] {
-            assert!(p.has(cat), "{cat}");
+            assert!(p.has(cat), "{} {cat}", root.display());
         }
     }
 }

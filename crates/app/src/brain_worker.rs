@@ -59,6 +59,7 @@ impl Confirm {
             question: question.to_owned(),
             timeout_sec: CONFIRM_TIMEOUT.as_secs() as u32,
         }));
+        // pre-recorded question when the pack has it, else the generic «подтвердите»
         speaker.say_text(&["confirm"], question);
         let yes = rx.recv_timeout(CONFIRM_TIMEOUT).unwrap_or(false);
         if let Ok(mut p) = self.pending.lock() {
@@ -282,7 +283,11 @@ pub fn spawn(
                     }
                     Work::Reload(cmds) => brain = Brain::new(cmds, executor(), assistant.clone()),
                     Work::Job(Job::Remind(text)) => {
-                        speaker.say_text(&["remind"], &format!("Сэр, напоминаю: {text}"));
+                        // «Сэр, напоминаю» clip, then the reminder itself (online voice / Piper)
+                        speaker.say_text(&["remind"], "Сэр, напоминаю");
+                        if !text.trim().is_empty() {
+                            speaker.say_text(&[], &text);
+                        }
                     }
                 }
             }

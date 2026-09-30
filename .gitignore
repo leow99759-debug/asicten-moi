@@ -12,3 +12,4 @@ voices/**/*.wav
 *.log
 crates/app/gen/
 .sherpa/
+__pycache__/

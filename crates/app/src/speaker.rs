@@ -98,16 +98,12 @@ impl Speaker {
                     .find_map(|c| voice::category_text(c))
                     .map(str::to_owned)
             });
-        // category recording first (variety), then a recording of this exact text
         let pack = self
             .packs
             .iter()
             .find(|(e, _)| *e == engine)
             .map(|(_, p)| p);
-        let clip = pack.and_then(|p| {
-            p.pick(&line.clips)
-                .or_else(|| text.as_deref().and_then(|t| p.by_text(t)))
-        });
+        let clip = pack.and_then(|p| p.choose(&line.clips, text.as_deref()));
         if let Some(t) = text.clone().or_else(|| {
             clip.and_then(|c| c.file_stem())
                 .map(|s| s.to_string_lossy().into_owned())

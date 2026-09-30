@@ -29,6 +29,7 @@ export const DEFAULTS: Config = {
     silent_off: "выключи тихий режим",
     mic_off: "хватит слушать",
   },
+  introduced: true,
   online: { gemini_keys: ["", ""], gemini_model: "gemini-2.5-flash-lite", fish_key: "", fish_voice: "", eleven_key: "", eleven_voice: "onwK4e9ZLuTAKqWW03F9", classroom_id: "", classroom_secret: "", classroom_token: "" },
 };
 
