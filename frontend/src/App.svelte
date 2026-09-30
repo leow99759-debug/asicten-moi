@@ -39,7 +39,8 @@
       );
     const q = new URLSearchParams(location.search);
     settingsTab = q.get("tab") ?? "general";
-    const p = q.get("page");
+    // «открой настройки» with the window closed: the core recreates it with this global
+    const p = q.get("page") ?? (window as { __JARVIS_PAGE?: string }).__JARVIS_PAGE;
     if (p) app.page = p as typeof app.page;
     connect();
     // Windows 11 Mica behind the webview → let it show through (§3.2)

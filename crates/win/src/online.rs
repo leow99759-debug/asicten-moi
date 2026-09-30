@@ -137,7 +137,8 @@ pub fn cloud_tts(voice: &CloudVoice, text: &str) -> Result<Vec<f32>, String> {
             .to_string(),
             Some(&out),
         ),
-    }?;
+    }
+    .map_err(|e| explain(&e))?;
     let pcm = std::fs::read(&out.0).map_err(|e| e.to_string())?;
     if pcm.len() < 2 {
         return Err("голос: пустой ответ".into());
@@ -146,4 +147,34 @@ pub fn cloud_tts(voice: &CloudVoice, text: &str) -> Result<Vec<f32>, String> {
         .chunks_exact(2)
         .map(|b| f32::from(i16::from_le_bytes([b[0], b[1]])) / 32768.0)
         .collect())
+}
+
+/// curl's error for a voice request → what the user should fix.
+fn explain(e: &str) -> String {
+    let why = if e.contains("error: 401") || e.contains("error: 403") {
+        "ключ не подходит — проверьте его в Настройки → ИИ"
+    } else if e.contains("error: 402") {
+        "на аккаунте закончились кредиты (баланс API)"
+    } else if e.contains("error: 429") {
+        "слишком много запросов, лимит"
+    } else if e.contains("(28)") {
+        "сервер не ответил за 15 с"
+    } else if e.contains("(6)") || e.contains("(7)") {
+        "нет интернета"
+    } else {
+        return format!("голос онлайн: {e}");
+    };
+    format!("голос онлайн: {why} [{e}]")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::explain;
+
+    #[test]
+    fn voice_errors_are_readable() {
+        assert!(explain("curl: (22) The requested URL returned error: 402").contains("кредиты"));
+        assert!(explain("curl: (22) The requested URL returned error: 401").contains("ключ"));
+        assert!(explain("curl: (6) Could not resolve host").contains("интернета"));
+    }
 }

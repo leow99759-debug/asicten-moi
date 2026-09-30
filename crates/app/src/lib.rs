@@ -33,6 +33,8 @@ pub struct AppState {
     pub commands: std::sync::atomic::AtomicUsize,
     /// Mica applied to the main window (UI then drops its opaque background).
     pub mica: std::sync::atomic::AtomicBool,
+    /// Hotkeys that failed to register: `[config key, why]` (Settings → Горячие клавиши).
+    pub hotkey_errors: Mutex<Vec<[String; 2]>>,
     /// Voice output, for «▶ Прослушать» on the voice page.
     pub speaker: std::sync::OnceLock<Arc<speaker::Speaker>>,
     /// Desktop avatar + HUD windows (§3.6, §3.7).
@@ -112,8 +114,10 @@ fn set_config(
     state: tauri::State<'_, AppState>,
     mut config: Config,
 ) -> Result<(), String> {
+    let hotkeys_changed;
     {
         let mut cur = state.config.lock().unwrap_or_else(|e| e.into_inner());
+        hotkeys_changed = cur.hotkeys != config.hotkeys;
         config.prefix_mode = cur.prefix_mode;
         config.silent_mode = cur.silent_mode;
         config.mic_enabled = cur.mic_enabled;
@@ -135,6 +139,9 @@ fn set_config(
         jarvis_win::autostart::set(config.autostart, &exe)?;
     }
     if let Some(e) = state.engine() {
+        if hotkeys_changed {
+            hotkeys::register(&app, e.clone());
+        }
         e.send(Msg::Reconfigure);
     }
     if let Some(o) = state.overlay.get() {
@@ -184,6 +191,27 @@ fn preview_voice(state: tauri::State<'_, AppState>) {
             s.say_text(&["status"], "Все системы работают в штатном режиме, сэр.");
         });
     }
+}
+
+/// Settings → Горячие клавиши: combos that did not register, `[config key, why]`.
+#[tauri::command]
+fn hotkey_errors(state: tauri::State<'_, AppState>) -> Vec<[String; 2]> {
+    state
+        .hotkey_errors
+        .lock()
+        .unwrap_or_else(|e| e.into_inner())
+        .clone()
+}
+
+/// Settings → ИИ «Проверить голос»: one line through the online voice, the real error back.
+#[tauri::command]
+async fn test_cloud_voice(app: tauri::AppHandle) -> Result<(), String> {
+    let Some(s) = app.state::<AppState>().speaker.get().cloned() else {
+        return Err("голос не загружен".into());
+    };
+    tauri::async_runtime::spawn_blocking(move || s.test_cloud())
+        .await
+        .map_err(|e| e.to_string())?
 }
 
 /// Settings → ИИ «Подключить»: Google consent in the browser, then keep the refresh token.
@@ -298,6 +326,7 @@ pub fn run() -> anyhow::Result<()> {
             work: work_tx,
             commands: Default::default(),
             mica: Default::default(),
+            hotkey_errors: Default::default(),
             speaker: Default::default(),
             overlay: Default::default(),
             packs: Default::default(),
@@ -316,6 +345,8 @@ pub fn run() -> anyhow::Result<()> {
             set_config,
             mic_devices,
             preview_voice,
+            hotkey_errors,
+            test_cloud_voice,
             classroom_connect,
             classroom_disconnect,
             avatar_edit,
@@ -414,9 +445,7 @@ pub fn run() -> anyhow::Result<()> {
                 state.work.clone(),
                 work_rx,
             );
-            if let Err(err) = hotkeys::register(&handle, engine.clone()) {
-                tracing::warn!("hotkeys: {err:#}");
-            }
+            hotkeys::register(&handle, engine.clone());
             *state.engine.lock().unwrap_or_else(|e| e.into_inner()) = Some(engine);
             Ok(())
         })

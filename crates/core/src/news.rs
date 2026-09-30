@@ -20,8 +20,9 @@ pub const TOPICS: [(&str, Option<&str>); 4] = [
 const GNEWS: &str = "https://news.google.com/rss";
 const EDITION: &str = "hl=ru&gl=UA&ceid=UA:ru";
 
-/// Bitcoin, Ether and gold (tether-gold ≈ 1 troy ounce) in $, € and ₴ with 24 h change.
-pub const PRICES_URL: &str = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,tether-gold&vs_currencies=usd,eur,uah&include_24hr_change=true";
+/// Bitcoin, Ether and gold (tether-gold ≈ 1 troy ounce) in dollars only (user: no €/₴
+/// conversions) with 24 h change.
+pub const PRICES_URL: &str = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,tether-gold&vs_currencies=usd&include_24hr_change=true";
 
 /// Feed URL for a topic (percent-encoded: curl.exe args are not UTF-8 safe on Windows).
 pub fn feed_url(query: Option<&str>) -> String {
@@ -114,13 +115,10 @@ pub fn prices(json: &str) -> Vec<String> {
         let c = &v[*id];
         let usd = c["usd"].as_f64()?;
         let change = c["usd_24h_change"].as_f64().unwrap_or(0.0);
-        let (eur, uah) = (c["eur"].as_f64()?, c["uah"].as_f64()?);
         let dollars = usd.round() as i64;
         Some(format!(
-            "{name} — {dollars} {} ({:.0} евро, {:.0} гривен), {} за сутки",
+            "{name} — {dollars} {}, {} за сутки",
             plural(dollars, "доллар", "доллара", "долларов"),
-            eur,
-            uah,
             change_phrase(change)
         ))
     })
@@ -147,7 +145,8 @@ pub fn prompt(sections: &[(String, Vec<String>)], prices: &[String]) -> String {
          около 800 символов. Порядок: мировая политика, криптовалюта, фондовый рынок и золото, \
          технологии и ИИ. Связывай причины и следствия, если они видны из данных. Используй \
          только факты из данных ниже, ничего не выдумывай, пропусти пустые разделы. \
-         Суммы называй в долларах, где уместно добавь гривны или евро. Без markdown, списков, \
+         Все суммы и цены называй только в долларах, не пересчитывай в гривны, евро или \
+         другие валюты. Без markdown, списков, \
          эмодзи и ссылок: текст будет озвучен.\n\nКотировки:\n",
     );
     for l in prices {
@@ -211,8 +210,8 @@ pub fn plain(sections: &[(String, Vec<String>)], prices: &[String]) -> String {
             .map(|h| h.trim_end_matches('.'))
             .collect();
         let nums: Vec<String> = match topic.as_str() {
-            "Криптовалюта" => prices.iter().take(2).map(|s| strip_alt(s)).collect(),
-            "Рынки" => prices.iter().skip(2).map(|s| strip_alt(s)).collect(),
+            "Криптовалюта" => prices.iter().take(2).cloned().collect(),
+            "Рынки" => prices.iter().skip(2).cloned().collect(),
             _ => vec![],
         };
         if heads.is_empty() && nums.is_empty() {
@@ -224,14 +223,6 @@ pub fn plain(sections: &[(String, Vec<String>)], prices: &[String]) -> String {
         out.push('.');
     }
     out
-}
-
-/// «Биткоин — 83497 долларов (… гривен), минус …» → without the bracket (shorter to listen).
-fn strip_alt(s: &str) -> String {
-    match (s.find(" ("), s.find("),")) {
-        (Some(a), Some(b)) if a < b => format!("{}{}", &s[..a], &s[b + 1..]),
-        _ => s.to_owned(),
-    }
 }
 
 #[cfg(test)]
@@ -269,7 +260,7 @@ mod tests {
         let p = prices(PRICES);
         assert_eq!(
             p[0],
-            "Биткоин — 83497 долларов (73489 евро, 3747102 гривен), минус 1,8 процента за сутки"
+            "Биткоин — 83497 долларов, минус 1,8 процента за сутки"
         );
         assert!(
             p[1].starts_with("Золото за унцию — 4148 долларов")

@@ -178,6 +178,29 @@ impl Speaker {
         }
     }
 
+    /// Settings «Проверить голос»: a line through the online voice, else why it can't.
+    pub fn test_cloud(&self) -> Result<(), String> {
+        let (engine, cloud, volume) = {
+            let c = self.config.lock().unwrap_or_else(|e| e.into_inner());
+            (
+                c.voice_engine,
+                c.online.cloud_voice(c.voice_engine),
+                c.voice_volume,
+            )
+        };
+        if engine == VoiceEngine::Windows {
+            return Err("выбран голос Windows — онлайн-голос работает с картами «Джарвис»".into());
+        }
+        let voice =
+            cloud.ok_or("ключ Fish Audio не задан — без него текст читает запасной голос")?;
+        let samples = jarvis_win::online::cloud_tts(&voice, "Проверка связи. Голос в норме, сэр.")?;
+        if let Some(p) = &self.player {
+            p.set_volume(f32::from(volume) / 100.0);
+            p.play_samples(&samples, jarvis_win::online::CLOUD_RATE);
+        }
+        Ok(())
+    }
+
     pub fn say_text(&self, clips: &[&str], text: &str) {
         self.say(&Line {
             clips: clips.iter().map(|c| (*c).to_owned()).collect(),

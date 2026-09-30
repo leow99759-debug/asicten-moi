@@ -21,6 +21,9 @@ impl EventSink for TauriSink {
                 *said = hex;
             }
         }
+        if let CoreEvent::Ui(UiCommand::OpenPage(page)) = &event {
+            crate::shell::open_main(&self.0, Some(page));
+        }
         if let CoreEvent::State(s) = &event {
             crate::shell::tray_state(&self.0, *s);
             if let Some(o) = self.0.state::<crate::AppState>().overlay.get() {

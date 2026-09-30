@@ -12,7 +12,8 @@
   import Icon, { type IconName } from "../components/Icon.svelte";
   import { cfg, loadConfig, pickAccent, saved } from "../lib/settings.svelte";
   import { app, SWATCHES } from "../lib/app.svelte";
-  import { avatarEdit, classroomConnect, classroomDisconnect, hudPreview, micDevices, previewVoice, setConfig } from "../lib/commands";
+  import { avatarEdit, classroomConnect, classroomDisconnect, hotkeyErrors, hudPreview, micDevices, previewVoice, setConfig, testCloudVoice } from "../lib/commands";
+  import HotkeyField from "../components/HotkeyField.svelte";
   import type { VoiceEngine } from "../lib/bindings/VoiceEngine";
   import { t } from "../lib/i18n";
   import { onMount } from "svelte";
@@ -22,9 +23,31 @@
   let mics = $state<string[]>([]);
   let previewing = $state(false);
 
+  let hkErr = $state<Record<string, string>>({});
+  let cloud = $state<{ busy: boolean; msg: string; ok: boolean }>({ busy: false, msg: "", ok: false });
+
   onMount(async () => {
     mics = (await micDevices()) ?? [];
+    hkErr = Object.fromEntries((await hotkeyErrors()) ?? []);
   });
+
+  /** New combo: save now (not debounced) and show at once whether Windows accepted it. */
+  async function setHotkey(k: keyof typeof c.hotkeys, v: string) {
+    c.hotkeys[k] = v;
+    await setConfig($state.snapshot(cfg.value));
+    hkErr = Object.fromEntries((await hotkeyErrors()) ?? []);
+  }
+
+  async function testCloud() {
+    cloud = { busy: true, msg: "", ok: false };
+    try {
+      await setConfig($state.snapshot(cfg.value));
+      await testCloudVoice();
+      cloud = { busy: false, msg: t("ai.test.ok"), ok: true };
+    } catch (e) {
+      cloud = { busy: false, msg: String(e), ok: false };
+    }
+  }
 
   const tabs = [
     { id: "general", label: t("set.tab.general") },
@@ -265,6 +288,9 @@
           <SettingRow icon="person" label={t("ai.fish.voice")} desc={t("ai.fish.voice.sub")} wide>
             <TextField label={t("ai.fish.voice")} placeholder={t("ai.fish.voice.auto")} value={c.online.fish_voice} onchange={(v) => set(() => (c.online.fish_voice = v))} />
           </SettingRow>
+          <SettingRow icon={cloud.ok ? "check" : "play"} label={t("ai.test")} desc={cloud.msg || t("ai.test.sub")}>
+            <button type="button" class="btn primary" disabled={cloud.busy} onclick={testCloud}>{cloud.busy ? t("ai.test.wait") : t("ai.test.btn")}</button>
+          </SettingRow>
         </Group>
         <Group title={t("gc.title")}>
           <SettingRow icon="user" label={t("gc.id")} desc={t("gc.id.sub")} wide>
@@ -292,8 +318,8 @@
       {:else if tab === "hotkeys"}
         <Group title={t("set.hotkeys.sub")}>
           {#each ["push_to_talk", "toggle_window", "toggle_mic"] as const as k (k)}
-            <SettingRow icon="keyboard" label={t(`hk.${k}`)} wide>
-              <TextField label={t(`hk.${k}`)} value={c.hotkeys[k]} onchange={(v) => set(() => (c.hotkeys[k] = v))} />
+            <SettingRow icon="keyboard" label={t(`hk.${k}`)} desc={hkErr[k] ? `⚠ ${hkErr[k]}` : undefined} wide>
+              <HotkeyField label={t(`hk.${k}`)} value={c.hotkeys[k]} onchange={(v) => setHotkey(k, v)} />
             </SettingRow>
           {/each}
         </Group>

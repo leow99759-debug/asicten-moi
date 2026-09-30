@@ -28,6 +28,8 @@ export const getConfig = () => call<Config>("get_config");
 export const setConfig = (config: Config) => call("set_config", { config });
 export const micDevices = () => call<string[]>("mic_devices");
 export const previewVoice = () => call("preview_voice");
+export const hotkeyErrors = () => call<[string, string][]>("hotkey_errors");
+export const testCloudVoice = () => call("test_cloud_voice");
 export const classroomConnect = () => call("classroom_connect");
 export const classroomDisconnect = () => call("classroom_disconnect");
 export const avatarEdit = (on: boolean) => call("avatar_edit", { on });

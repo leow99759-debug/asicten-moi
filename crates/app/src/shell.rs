@@ -45,6 +45,12 @@ pub fn tray_state<R: Runtime>(app: &AppHandle<R>, state: AssistantState) {
 
 /// Show the main window, recreating it if it was closed to tray.
 pub fn show_main<R: Runtime>(app: &AppHandle<R>) {
+    open_main(app, None);
+}
+
+/// Show the main window; a recreated window starts on `page` («открой настройки»),
+/// an open one switches via the `open_page` UI event.
+pub fn open_main<R: Runtime>(app: &AppHandle<R>, page: Option<&str>) {
     if let Some(w) = app.get_webview_window(MAIN) {
         let _ = w.unminimize();
         let _ = w.show();
@@ -54,7 +60,14 @@ pub fn show_main<R: Runtime>(app: &AppHandle<R>) {
     let Some(cfg) = app.config().app.windows.first().cloned() else {
         return;
     };
-    match WebviewWindowBuilder::from_config(app, &cfg).and_then(|b| b.visible(true).build()) {
+    // page ids are plain words; drop anything else before it lands in JS
+    let start = page.map_or(String::new(), |p| {
+        let id: String = p.chars().filter(char::is_ascii_alphanumeric).collect();
+        format!("window.__JARVIS_PAGE = \"{id}\";")
+    });
+    match WebviewWindowBuilder::from_config(app, &cfg)
+        .and_then(|b| b.visible(true).initialization_script(&start).build())
+    {
         Ok(w) => {
             apply_material(&w);
             let _ = w.set_focus();
