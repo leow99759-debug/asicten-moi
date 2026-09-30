@@ -241,19 +241,27 @@ fn activate(state: tauri::State<'_, AppState>) {
 }
 
 /// Startup line: the first-run intro once, then a time-of-day or plain greeting.
-fn greet(speaker: &speaker::Speaker, state: &AppState) {
+/// Runs on its own thread: speech blocks, and `Speaker::say` locks the config itself,
+/// so the lock is released before speaking (holding it deadlocked the UI thread).
+fn greet(speaker: &speaker::Speaker, config: &Mutex<Config>, path: &std::path::Path) {
     let line = |c: &[&str]| jarvis_core::brain::Line {
         clips: c.iter().map(|c| (*c).to_owned()).collect(),
         text: None,
     };
-    let mut cfg = state.config.lock().unwrap_or_else(|e| e.into_inner());
-    if !cfg.introduced {
+    let first_run = {
+        let mut cfg = config.lock().unwrap_or_else(|e| e.into_inner());
+        let first = !cfg.introduced;
+        if first {
+            cfg.introduced = true;
+            if let Err(e) = cfg.save(path) {
+                tracing::warn!("config save: {e}");
+            }
+        }
+        first
+    };
+    if first_run {
         for c in ["first_run", "diagnostics", "calibration", "first_run_done"] {
             speaker.say(&line(&[c]));
-        }
-        cfg.introduced = true;
-        if let Err(e) = cfg.save(&state.paths.config()) {
-            tracing::warn!("config save: {e}");
         }
         return;
     }
@@ -365,7 +373,11 @@ pub fn run() -> anyhow::Result<()> {
                 state.config.clone(),
             ));
             let _ = state.speaker.set(speaker.clone());
-            greet(&speaker, &state);
+            {
+                let (speaker, config, path) =
+                    (speaker.clone(), state.config.clone(), state.paths.config());
+                std::thread::spawn(move || greet(&speaker, &config, &path));
+            }
             let engine = engine::spawn(
                 assets.clone(),
                 state.config.clone(),
