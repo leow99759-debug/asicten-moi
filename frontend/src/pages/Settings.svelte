@@ -12,7 +12,7 @@
   import Icon, { type IconName } from "../components/Icon.svelte";
   import { cfg, loadConfig, pickAccent, saved } from "../lib/settings.svelte";
   import { app, SWATCHES } from "../lib/app.svelte";
-  import { avatarEdit, classroomConnect, classroomDisconnect, hotkeyErrors, hudPreview, micDevices, previewVoice, setConfig, testCloudVoice } from "../lib/commands";
+  import { aiProviders, avatarEdit, classroomConnect, classroomDisconnect, hotkeyErrors, hudPreview, micDevices, previewVoice, setConfig, testAi, testCloudVoice } from "../lib/commands";
   import HotkeyField from "../components/HotkeyField.svelte";
   import type { VoiceEngine } from "../lib/bindings/VoiceEngine";
   import { t } from "../lib/i18n";
@@ -26,8 +26,42 @@
   let hkErr = $state<Record<string, string>>({});
   let cloud = $state<{ busy: boolean; msg: string; ok: boolean }>({ busy: false, msg: "", ok: false });
 
+  // chat models for news + questions: [id, name, default model]
+  let providers = $state<[string, string, string][]>([]);
+  let aiTest = $state<Record<number, { busy: boolean; msg: string; ok: boolean }>>({});
+  const providerName = (id: string) => providers.find((p) => p[0] === id)?.[1] ?? id;
+  const defaultModel = (id: string) => providers.find((p) => p[0] === id)?.[2] ?? "";
+
+  function addAi() {
+    set(() => (c.online.ai = [...c.online.ai, { provider: providers[0]?.[0] ?? "openai", key: "", model: "", url: "" }]));
+  }
+  function editAi(i: number, patch: Partial<(typeof c.online.ai)[number]>) {
+    set(() => (c.online.ai = c.online.ai.map((s, j) => (j === i ? { ...s, ...patch } : s))));
+    aiTest[i] = { busy: false, msg: "", ok: false };
+  }
+  function removeAi(i: number) {
+    set(() => (c.online.ai = c.online.ai.filter((_, j) => j !== i)));
+    aiTest = {};
+  }
+  function raiseAi(i: number) {
+    const list = [...c.online.ai];
+    [list[i - 1], list[i]] = [list[i], list[i - 1]];
+    set(() => (c.online.ai = list));
+    aiTest = {};
+  }
+  async function checkAi(i: number) {
+    aiTest[i] = { busy: true, msg: "", ok: false };
+    try {
+      const reply = await testAi($state.snapshot(c.online.ai[i]));
+      aiTest[i] = { busy: false, msg: reply ? `«${reply}»` : t("ai.test.ok.short"), ok: true };
+    } catch (e) {
+      aiTest[i] = { busy: false, msg: String(e), ok: false };
+    }
+  }
+
   onMount(async () => {
     mics = (await micDevices()) ?? [];
+    providers = (await aiProviders()) ?? [];
     hkErr = Object.fromEntries((await hotkeyErrors()) ?? []);
   });
 
@@ -265,6 +299,34 @@
           <p class="note"><Icon name="info" size={14} /> {t("voice.windows.note")}</p>
         {/if}
       {:else if tab === "ai"}
+        <Group title={t("ai.models")}>
+          {#each c.online.ai as slot, i (i)}
+            <SettingRow icon="sparkles" label={`${i + 1}. ${providerName(slot.provider)}`} desc={i === 0 ? t("ai.models.first") : t("ai.models.backup")} wide>
+              <div class="ai-ctl">
+                <Select label={t("ai.provider")} value={slot.provider} options={providers.map(([id, name]) => ({ value: id, label: name }))} onchange={(v) => editAi(i, { provider: v, model: "" })} />
+                {#if i > 0}<button type="button" class="btn" title={t("ai.up")} onclick={() => raiseAi(i)}>↑</button>{/if}
+                <button type="button" class="btn" title={t("ai.remove")} onclick={() => removeAi(i)}>✕</button>
+              </div>
+            </SettingRow>
+            {#if slot.provider === "custom"}
+              <SettingRow label={t("ai.url")} desc={t("ai.url.sub")} wide>
+                <TextField label={t("ai.url")} placeholder="http://localhost:11434/v1/chat/completions" value={slot.url} onchange={(v) => editAi(i, { url: v })} />
+              </SettingRow>
+            {/if}
+            <SettingRow label={t("ai.key")} wide>
+              <TextField secret label={t("ai.key")} placeholder={slot.provider === "custom" ? t("ai.key.optional") : ""} value={slot.key} onchange={(v) => editAi(i, { key: v })} />
+            </SettingRow>
+            <SettingRow label={t("ai.model.one")} desc={t("ai.model.one.sub")} wide>
+              <TextField label={t("ai.model.one")} placeholder={defaultModel(slot.provider)} value={slot.model} onchange={(v) => editAi(i, { model: v })} />
+            </SettingRow>
+            <SettingRow icon={aiTest[i]?.ok ? "check" : "play"} label={t("ai.check")} desc={aiTest[i]?.msg || t("ai.check.sub")}>
+              <button type="button" class="btn" disabled={aiTest[i]?.busy} onclick={() => checkAi(i)}>{aiTest[i]?.busy ? t("ai.test.wait") : t("ai.test.btn")}</button>
+            </SettingRow>
+          {/each}
+          <SettingRow icon="plus" label={t("ai.add")} desc={t("ai.add.sub")}>
+            <button type="button" class="btn primary" onclick={addAi}>{t("ai.add.btn")}</button>
+          </SettingRow>
+        </Group>
         <Group title={t("ai.news")}>
           {#each [0, 1] as i (i)}
             <SettingRow icon="sparkles" label={t(`ai.gemini${i + 1}`)} desc={i === 0 ? t("ai.gemini.sub") : t("ai.gemini2.sub")} wide>
@@ -343,6 +405,11 @@
 </div>
 
 <style>
+  .ai-ctl {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
   .settings {
     max-width: 820px;
     margin: 0;

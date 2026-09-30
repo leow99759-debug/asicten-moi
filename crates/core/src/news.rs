@@ -161,45 +161,6 @@ pub fn prompt(sections: &[(String, Vec<String>)], prices: &[String]) -> String {
     p
 }
 
-/// generateContent request body.
-pub fn gemini_body(prompt: &str) -> String {
-    serde_json::json!({
-        "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {"temperature": 0.4, "maxOutputTokens": 700}
-    })
-    .to_string()
-}
-
-/// Reply text, or the API error message (quota, bad key, unknown model).
-pub fn gemini_text(json: &str) -> Result<String, String> {
-    let v: serde_json::Value = serde_json::from_str(json).map_err(|e| e.to_string())?;
-    let text: String = v["candidates"][0]["content"]["parts"]
-        .as_array()
-        .map(|ps| ps.iter().filter_map(|p| p["text"].as_str()).collect())
-        .unwrap_or_default();
-    if text.trim().is_empty() {
-        Err(v["error"]["message"]
-            .as_str()
-            .unwrap_or("пустой ответ")
-            .to_owned())
-    } else {
-        Ok(for_voice(&text))
-    }
-}
-
-/// Drop markdown the model may still add.
-fn for_voice(text: &str) -> String {
-    text.lines()
-        .map(|l| {
-            l.trim()
-                .trim_start_matches(['-', '•', '#', ' '])
-                .replace('*', "")
-        })
-        .filter(|l| !l.is_empty())
-        .collect::<Vec<_>>()
-        .join(" ")
-}
-
 /// No LLM key (or every key failed): two headlines per topic + prices.
 pub fn plain(sections: &[(String, Vec<String>)], prices: &[String]) -> String {
     let mut out = String::from("Вот что нового, сэр.");
@@ -281,17 +242,5 @@ mod tests {
         assert!(d.contains("Криптовалюта: Биткоин — 83497 долларов, минус 1,8"));
         assert!(!d.contains("Технологии"));
         assert!(prompt(&s, &prices(PRICES)).contains("- Третья"));
-    }
-
-    #[test]
-    fn gemini_reply_or_error() {
-        let ok = r#"{"candidates":[{"content":{"parts":[{"text":"**Сэр**, биткоин упал.\n- Золото выросло."}]}}]}"#;
-        assert_eq!(
-            gemini_text(ok).expect("text"),
-            "Сэр, биткоин упал. Золото выросло."
-        );
-        let quota = r#"{"error":{"code":429,"message":"Quota exceeded"}}"#;
-        assert_eq!(gemini_text(quota).expect_err("quota"), "Quota exceeded");
-        assert!(gemini_body("x").contains("\"text\":\"x\""));
     }
 }

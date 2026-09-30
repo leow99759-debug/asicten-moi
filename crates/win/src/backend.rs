@@ -29,7 +29,7 @@ impl Backend for WinBackend {
 
     fn perform(&self, action: &Action) -> Result<Option<String>, String> {
         if let Action::Info { what } = action {
-            if what == "news" || what.starts_with("homework") {
+            if what == "news" || what.starts_with("homework") || what.starts_with("ask:") {
                 let keys = self
                     .config
                     .as_ref()
@@ -37,6 +37,8 @@ impl Backend for WinBackend {
                     .unwrap_or_default();
                 return if what == "news" {
                     online::digest(&keys)
+                } else if let Some(q) = what.strip_prefix("ask:") {
+                    online::ask(&keys, q.trim())
                 } else {
                     classroom::homework(&keys, what)
                 }

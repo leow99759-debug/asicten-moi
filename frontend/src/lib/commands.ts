@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import type { Action } from "./bindings/Action";
+import type { AiSlot } from "./bindings/AiSlot";
 import type { Addon } from "./bindings/Addon";
 import type { Config } from "./bindings/Config";
 import type { Command } from "./bindings/Command";
@@ -30,6 +31,8 @@ export const micDevices = () => call<string[]>("mic_devices");
 export const previewVoice = () => call("preview_voice");
 export const hotkeyErrors = () => call<[string, string][]>("hotkey_errors");
 export const testCloudVoice = () => call("test_cloud_voice");
+export const aiProviders = () => call<[string, string, string][]>("ai_providers");
+export const testAi = (slot: AiSlot) => call<string>("test_ai", { slot });
 export const classroomConnect = () => call("classroom_connect");
 export const classroomDisconnect = () => call("classroom_disconnect");
 export const avatarEdit = (on: boolean) => call("avatar_edit", { on });

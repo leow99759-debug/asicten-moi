@@ -214,6 +214,42 @@ async fn test_cloud_voice(app: tauri::AppHandle) -> Result<(), String> {
         .map_err(|e| e.to_string())?
 }
 
+/// Settings → ИИ: `[id, name, default model]` of every supported chat model provider.
+#[tauri::command]
+fn ai_providers() -> Vec<[String; 3]> {
+    jarvis_core::llm::PROVIDERS
+        .iter()
+        .map(|p| {
+            [
+                p.id.to_owned(),
+                p.name.to_owned(),
+                p.models.first().copied().unwrap_or_default().to_owned(),
+            ]
+        })
+        .collect()
+}
+
+/// Settings → ИИ «Проверить»: one short question to this model, its answer or the error.
+#[tauri::command]
+async fn test_ai(slot: jarvis_core::llm::AiSlot) -> Result<String, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        jarvis_win::online::chat(
+            &slot,
+            jarvis_core::llm::ASK_SYSTEM,
+            "Представься одним предложением.",
+        )
+    })
+    .await
+    .map_err(|e| e.to_string())?
+    .map_err(|e| {
+        if e == jarvis_core::NO_INTERNET {
+            "нет интернета".into()
+        } else {
+            e
+        }
+    })
+}
+
 /// Settings → ИИ «Подключить»: Google consent in the browser, then keep the refresh token.
 #[tauri::command]
 async fn classroom_connect(app: tauri::AppHandle) -> Result<(), String> {
@@ -347,6 +383,8 @@ pub fn run() -> anyhow::Result<()> {
             preview_voice,
             hotkey_errors,
             test_cloud_voice,
+            ai_providers,
+            test_ai,
             classroom_connect,
             classroom_disconnect,
             avatar_edit,

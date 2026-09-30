@@ -248,7 +248,21 @@ pub fn spawn(
             for work in work_rx {
                 match work {
                     Work::Utterance(text, unprompted) => {
-                        let outcome = brain.handle(&text);
+                        let mut outcome = brain.handle(&text);
+                        // «Джарвис, <anything>» that is no command: a question for the AI
+                        if outcome.commands.is_empty()
+                            && !unprompted
+                            && text.split_whitespace().count() >= 2
+                            && !config
+                                .lock()
+                                .unwrap_or_else(|e| e.into_inner())
+                                .online
+                                .ai_chain()
+                                .is_empty()
+                        {
+                            outcome = brain.handle(&format!("вопрос {text}"));
+                            outcome.phrase = text.clone();
+                        }
                         // not understood + no «Джарвис» or a long sentence = TV/room talk:
                         // a «не понял» reply would reopen the follow-up window and loop
                         if outcome.commands.is_empty()

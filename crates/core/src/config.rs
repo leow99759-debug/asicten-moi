@@ -74,6 +74,9 @@ pub struct Online {
     pub eleven_key: String,
     /// Voice ID from elevenlabs.io (premade or Voice Library).
     pub eleven_voice: String,
+    /// Chat models for the digest and free questions, in priority order (Settings → ИИ).
+    /// The Gemini keys above are tried after them.
+    pub ai: Vec<crate::llm::AiSlot>,
     /// Google Cloud OAuth «Desktop app» client for Classroom homework.
     pub classroom_id: String,
     pub classroom_secret: String,
@@ -92,6 +95,7 @@ impl Default for Online {
             // «Daniel»: calm British newsreader, the closest premade to Jarvis
             eleven_voice: "onwK4e9ZLuTAKqWW03F9".into(),
             eleven_key: String::new(),
+            ai: Vec::new(),
             classroom_id: String::new(),
             classroom_secret: String::new(),
             classroom_token: String::new(),
@@ -105,6 +109,22 @@ impl Online {
             .iter()
             .map(|k| k.trim())
             .filter(|k| !k.is_empty())
+    }
+
+    /// Models to try, in order: the user's list, then the legacy Gemini keys.
+    pub fn ai_chain(&self) -> Vec<crate::llm::AiSlot> {
+        let gemini = self.gemini_keys().map(|k| crate::llm::AiSlot {
+            provider: "gemini".into(),
+            key: k.to_owned(),
+            model: self.gemini_model.trim().to_owned(),
+            url: String::new(),
+        });
+        self.ai
+            .iter()
+            .filter(|s| s.ready())
+            .cloned()
+            .chain(gemini)
+            .collect()
     }
 
     /// Online voice for text without a recording: ElevenLabs first, then Fish Audio in the

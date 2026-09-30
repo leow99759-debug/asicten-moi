@@ -3,17 +3,18 @@
 
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicU32, Ordering};
+use std::sync::Mutex;
+use std::time::{Duration, Instant};
 
 use jarvis_core::config::{CloudVoice, Online};
+use jarvis_core::llm::{self, AiSlot};
 use jarvis_core::news;
 
 use crate::backend::run_hidden;
 
-/// Feeds and prices: SPEC network timeout. The LLM/TTS reply needs longer (≤15 s).
+/// Feeds and prices: SPEC network timeout. The LLM/TTS reply needs longer.
 const FETCH_SEC: &str = "4";
-const SLOW_SEC: &str = "15";
-/// Tried after the configured model, in case Google retires it.
-const MODEL_ALIAS: &str = "gemini-flash-lite-latest";
+const SLOW_SEC: &str = "25";
 /// Both voices return raw 16-bit mono PCM at this rate.
 pub const CLOUD_RATE: u32 = 24_000;
 
@@ -66,7 +67,7 @@ fn post(url: &str, headers: &str, body: &str, out: Option<&Temp>) -> Result<Stri
     run_hidden("curl", &args)
 }
 
-/// «Что нового сегодня»: all feeds in parallel, then Gemini (keys in turn), else headlines.
+/// «Что нового сегодня»: all feeds in parallel, then the first AI that answers, else headlines.
 pub fn digest(cfg: &Online) -> Result<String, String> {
     let (sections, prices) = std::thread::scope(|s| {
         let feeds: Vec<_> = news::TOPICS
@@ -93,27 +94,86 @@ pub fn digest(cfg: &Online) -> Result<String, String> {
         return Err(jarvis_core::NO_INTERNET.to_owned());
     }
     let prompt = news::prompt(&sections, &prices);
-    for key in cfg.gemini_keys() {
-        for model in [cfg.gemini_model.trim(), MODEL_ALIAS] {
-            match gemini(key, model, &prompt) {
-                Ok(text) => return Ok(text),
-                Err(e) => tracing::warn!(%model, "gemini: {e}"),
+    match chat_chain(&cfg.ai_chain(), "", &prompt) {
+        Ok(text) => Ok(text),
+        Err(e) => {
+            if !e.is_empty() {
+                tracing::warn!("digest ai: {e}");
+            }
+            Ok(news::plain(&sections, &prices))
+        }
+    }
+}
+
+/// First model in the chain that answers; `Err("")` = nothing configured.
+fn chat_chain(chain: &[AiSlot], system: &str, user: &str) -> Result<String, String> {
+    let mut last = String::new();
+    for slot in chain {
+        match chat(slot, system, user) {
+            Ok(t) => return Ok(t),
+            Err(e) => {
+                tracing::warn!(provider = %slot.provider, "ai: {e}");
+                last = e;
             }
         }
     }
-    Ok(news::plain(&sections, &prices))
+    Err(last)
 }
 
-fn gemini(key: &str, model: &str, prompt: &str) -> Result<String, String> {
-    let url =
-        format!("https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent");
-    let reply = post(
-        &url,
-        &format!("x-goog-api-key: {key}"),
-        &news::gemini_body(prompt),
-        None,
-    )?;
-    news::gemini_text(&reply)
+/// One slot: its models in turn (a retired default falls through to the next).
+pub fn chat(slot: &AiSlot, system: &str, user: &str) -> Result<String, String> {
+    let mut last = "модель не указана".to_owned();
+    for model in slot.models() {
+        let Some(r) = slot.request(&model, system, user) else {
+            return Err(format!("неизвестная нейросеть «{}»", slot.provider));
+        };
+        let reply = post(&r.url, &r.headers, &r.body, None).map_err(|e| {
+            if e.contains("(6)") || e.contains("(7)") {
+                jarvis_core::NO_INTERNET.to_owned()
+            } else {
+                e
+            }
+        })?;
+        match llm::reply_text(r.wire, &reply) {
+            Ok(t) => return Ok(t),
+            Err(e) => last = format!("{model}: {e}"),
+        }
+    }
+    Err(last)
+}
+
+/// Last questions and answers, so «а почему?» has context. Forgotten after 10 minutes.
+type Dialog = (Vec<(String, String)>, Option<Instant>);
+static DIALOG: Mutex<Dialog> = Mutex::new((Vec::new(), None));
+
+/// «Джарвис, <любой вопрос>»: the first model that answers, in the Jarvis manner.
+pub fn ask(cfg: &Online, question: &str) -> Result<String, String> {
+    let chain = cfg.ai_chain();
+    if chain.is_empty() {
+        return Err("для ответов на вопросы добавьте нейросеть в Настройки → ИИ".into());
+    }
+    let mut d = DIALOG.lock().unwrap_or_else(|e| e.into_inner());
+    if d.1.is_some_and(|t| t.elapsed() > Duration::from_secs(600)) {
+        d.0.clear();
+    }
+    let mut user = String::new();
+    if !d.0.is_empty() {
+        user.push_str("Предыдущий разговор:\n");
+        for (q, a) in &d.0 {
+            user.push_str(&format!("Сэр: {q}\nДжарвис: {a}\n"));
+        }
+        user.push_str("\nНовый вопрос: ");
+    }
+    user.push_str(question);
+    drop(d);
+    let answer = chat_chain(&chain, llm::ASK_SYSTEM, &user)?;
+    let mut d = DIALOG.lock().unwrap_or_else(|e| e.into_inner());
+    d.0.push((question.to_owned(), answer.clone()));
+    if d.0.len() > 4 {
+        d.0.remove(0);
+    }
+    d.1 = Some(Instant::now());
+    Ok(answer)
 }
 
 /// Text in the online voice: mono samples at [`CLOUD_RATE`].
@@ -158,7 +218,7 @@ fn explain(e: &str) -> String {
     } else if e.contains("error: 429") {
         "слишком много запросов, лимит"
     } else if e.contains("(28)") {
-        "сервер не ответил за 15 с"
+        "сервер не ответил вовремя"
     } else if e.contains("(6)") || e.contains("(7)") {
         "нет интернета"
     } else {

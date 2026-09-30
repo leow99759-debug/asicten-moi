@@ -11,6 +11,7 @@ pub mod executor;
 pub mod info;
 pub mod ipc;
 pub mod listener;
+pub mod llm;
 pub mod logging;
 pub mod modes;
 mod msvc_compat;

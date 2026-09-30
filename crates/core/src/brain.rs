@@ -462,6 +462,23 @@ mod tests {
         }
         assert!(clashes.is_empty(), "{clashes:#?}");
 
+        // free questions (the app prefixes «вопрос» when nothing else matched)
+        for q in [
+            "почему небо голубое",
+            "сколько лет живут черепахи и что они едят",
+            "кто такой илон маск",
+        ] {
+            let o = b.handle(&format!("вопрос {q}"));
+            assert_eq!(
+                o.commands.iter().map(|c| c.id.as_str()).collect::<Vec<_>>(),
+                ["basic.ask"],
+                "{q}"
+            );
+            assert!(dry.actions().contains(&Action::Info {
+                what: format!("ask:{q}")
+            }));
+        }
+
         *dry.foreground.lock().expect("lock") = Some("POWERPNT.EXE".into());
         assert_eq!(ids("дальше"), vec!["office.ppt_next".to_owned()]);
         assert_eq!(
