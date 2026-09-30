@@ -108,6 +108,69 @@ const WEB: &[(&str, &str)] = &[
     ("notion", "https://www.notion.so"),
 ];
 
+/// Exe stems that share nothing with the app's name.
+const EXE_EXACT: &[(&str, &str)] = &[
+    ("powerpoint", "powerpnt"),
+    ("yandex", "browser"),
+    ("word", "winword"),
+    ("paint", "mspaint"),
+];
+
+/// Too generic to identify an app by themselves.
+const GENERIC: &[&str] = &[
+    "microsoft",
+    "google",
+    "studio",
+    "visual",
+    "browser",
+    "launcher",
+    "games",
+    "desktop",
+    "pro",
+];
+
+/// «Закрой {приложение}»: does a running exe (`telegram.exe`) belong to the spoken name?
+/// Alias target words, the joined name and the translit, then a fuzzy fallback.
+pub fn exe_matches(name: &str, exe: &str) -> bool {
+    let norm = |s: &str| -> String {
+        s.to_lowercase()
+            .trim_end_matches(".exe")
+            .chars()
+            .filter(|c| c.is_alphanumeric())
+            .collect()
+    };
+    let stem = norm(exe);
+    if stem.is_empty() {
+        return false;
+    }
+    let spoken = name.to_lowercase().replace('ё', "е");
+    let target = ALIASES
+        .iter()
+        .find(|(k, _)| *k == spoken)
+        .map_or_else(|| spoken.clone(), |(_, v)| (*v).to_owned());
+    let target = target.trim_end_matches(".exe").to_owned();
+    if EXE_EXACT
+        .iter()
+        .any(|(k, v)| (*k == target || *k == norm(&target)) && *v == stem)
+    {
+        return true;
+    }
+    let mut keys: Vec<String> = target
+        .split_whitespace()
+        .filter(|w| !GENERIC.contains(w))
+        .map(norm)
+        .collect();
+    keys.push(norm(&target));
+    keys.push(norm(&translit(&spoken)));
+    if keys
+        .iter()
+        .any(|k| k.chars().count() >= 3 && (stem == *k || stem.contains(k.as_str())))
+    {
+        return true;
+    }
+    strsim::jaro_winkler(&stem, &norm(&translit(&spoken))) >= 0.88
+}
+
 /// Cyrillic → Latin, so «дискорд» still meets «Discord.lnk» without an alias.
 fn translit(s: &str) -> String {
     const MAP: [(char, &str); 33] = [
@@ -267,6 +330,38 @@ mod tests {
             best_by_name(&lnks, &translit("дискорд")),
             Some(PathBuf::from("Discord.lnk"))
         );
+    }
+
+    #[test]
+    fn spoken_names_match_running_exes() {
+        for (name, exe) in [
+            ("телеграм", "Telegram.exe"),
+            ("дискорд", "Discord.exe"),
+            ("хром", "chrome.exe"),
+            ("обс", "obs64.exe"),
+            ("протон", "ProtonVPN.exe"),
+            ("окто браузер", "Octo Browser.exe"),
+            ("эдж", "msedge.exe"),
+            ("вс код", "Code.exe"),
+            ("пауэрпоинт", "POWERPNT.EXE"),
+            ("ворд", "WINWORD.EXE"),
+            ("калькулятор", "CalculatorApp.exe"),
+            ("стим", "steamwebhelper.exe"),
+            ("спотифай", "Spotify.exe"),
+            ("аудасити", "audacity.exe"),
+        ] {
+            assert!(exe_matches(name, exe), "{name} ↔ {exe}");
+        }
+        for (name, exe) in [
+            ("телеграм", "Discord.exe"),
+            ("хром", "explorer.exe"),
+            ("эдж", "chrome.exe"),
+            ("окто браузер", "browser.exe"),
+            ("ворд", "Code.exe"),
+            ("вкладку", "chrome.exe"),
+        ] {
+            assert!(!exe_matches(name, exe), "{name} ↔ {exe}");
+        }
     }
 
     #[test]

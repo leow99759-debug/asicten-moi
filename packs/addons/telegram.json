@@ -1,0 +1,296 @@
+{
+  "id": "telegram",
+  "name": "Telegram",
+  "description": "Запуск, поиск чатов, избранное, папки, переход между чатами — горячими клавишами Telegram Desktop.",
+  "category": "Соцсети и общение",
+  "version": "1.0.0",
+  "icon": "telegram",
+  "popular": true,
+  "commands": [
+    {
+      "id": "telegram.search",
+      "folder": [
+        "Telegram",
+        "Управление"
+      ],
+      "name": "Поиск чатов",
+      "phrases": [
+        "найди чат",
+        "поиск в телеграме",
+        "поиск чата"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+f"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "telegram.exe"
+      }
+    },
+    {
+      "id": "telegram.saved",
+      "folder": [
+        "Telegram",
+        "Управление"
+      ],
+      "name": "Избранное",
+      "phrases": [
+        "избранное",
+        "сохраненные сообщения"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+0"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "telegram.exe"
+      }
+    },
+    {
+      "id": "telegram.next_chat",
+      "folder": [
+        "Telegram",
+        "Управление"
+      ],
+      "name": "Следующий чат",
+      "phrases": [
+        "следующий чат",
+        "чат ниже"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+tab"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "telegram.exe"
+      }
+    },
+    {
+      "id": "telegram.prev_chat",
+      "folder": [
+        "Telegram",
+        "Управление"
+      ],
+      "name": "Предыдущий чат",
+      "phrases": [
+        "предыдущий чат",
+        "чат выше"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+shift+tab"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "telegram.exe"
+      }
+    },
+    {
+      "id": "telegram.folder1",
+      "folder": [
+        "Telegram",
+        "Управление"
+      ],
+      "name": "Папка «Все чаты»",
+      "phrases": [
+        "все чаты",
+        "первая папка"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+1"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "telegram.exe"
+      }
+    },
+    {
+      "id": "telegram.folder2",
+      "folder": [
+        "Telegram",
+        "Управление"
+      ],
+      "name": "Вторая папка",
+      "phrases": [
+        "вторая папка"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+2"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "telegram.exe"
+      }
+    },
+    {
+      "id": "telegram.close_chat",
+      "folder": [
+        "Telegram",
+        "Управление"
+      ],
+      "name": "Закрыть чат",
+      "phrases": [
+        "закрой чат",
+        "выйди из чата"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "esc"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "telegram.exe"
+      }
+    },
+    {
+      "id": "telegram.lock",
+      "folder": [
+        "Telegram",
+        "Управление"
+      ],
+      "name": "Заблокировать Telegram",
+      "phrases": [
+        "заблокируй телеграм",
+        "закрой телеграм на пароль"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+l"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "telegram.exe"
+      }
+    },
+    {
+      "id": "telegram.bold",
+      "folder": [
+        "Telegram",
+        "Управление"
+      ],
+      "name": "Жирный текст",
+      "phrases": [
+        "жирный текст"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+b"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "telegram.exe"
+      }
+    },
+    {
+      "id": "telegram.edit_last",
+      "folder": [
+        "Telegram",
+        "Управление"
+      ],
+      "name": "Изменить последнее сообщение",
+      "phrases": [
+        "измени последнее сообщение",
+        "редактируй сообщение"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "up"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "telegram.exe"
+      }
+    },
+    {
+      "id": "telegram.unread",
+      "folder": [
+        "Telegram",
+        "Управление"
+      ],
+      "name": "К непрочитанным",
+      "phrases": [
+        "непрочитанные",
+        "к непрочитанным"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "alt+down"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "telegram.exe"
+      }
+    }
+  ]
+}

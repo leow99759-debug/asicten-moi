@@ -1,0 +1,220 @@
+{
+  "id": "steam",
+  "name": "Steam",
+  "description": "Библиотека, магазин, друзья, загрузки, скриншоты и Big Picture — через ссылки steam://.",
+  "category": "Игровые сервисы",
+  "version": "1.0.0",
+  "icon": "steam",
+  "popular": true,
+  "commands": [
+    {
+      "id": "steam.library",
+      "folder": [
+        "Steam",
+        "Разделы"
+      ],
+      "name": "Библиотека игр",
+      "phrases": [
+        "библиотека стим",
+        "мои игры",
+        "библиотека игр"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.Url",
+          "url": "steam://open/games"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "steam.store",
+      "folder": [
+        "Steam",
+        "Разделы"
+      ],
+      "name": "Магазин Steam",
+      "phrases": [
+        "магазин стим",
+        "стим магазин"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.Url",
+          "url": "steam://store"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "steam.friends",
+      "folder": [
+        "Steam",
+        "Разделы"
+      ],
+      "name": "Друзья в Steam",
+      "phrases": [
+        "друзья в стиме",
+        "друзья стим"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.Url",
+          "url": "steam://open/friends"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "steam.downloads",
+      "folder": [
+        "Steam",
+        "Разделы"
+      ],
+      "name": "Загрузки Steam",
+      "phrases": [
+        "загрузки стим",
+        "загрузки в стиме"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.Url",
+          "url": "steam://open/downloads"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "steam.screens",
+      "folder": [
+        "Steam",
+        "Разделы"
+      ],
+      "name": "Скриншоты Steam",
+      "phrases": [
+        "скриншоты стим"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.Url",
+          "url": "steam://open/screenshots"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "steam.bigpicture",
+      "folder": [
+        "Steam",
+        "Разделы"
+      ],
+      "name": "Big Picture",
+      "phrases": [
+        "биг пикчер",
+        "режим big picture"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.Url",
+          "url": "steam://open/bigpicture"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "steam.settings",
+      "folder": [
+        "Steam",
+        "Разделы"
+      ],
+      "name": "Настройки Steam",
+      "phrases": [
+        "настройки стима"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.Url",
+          "url": "steam://open/settings"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    }
+  ]
+}

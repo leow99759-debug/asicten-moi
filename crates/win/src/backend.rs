@@ -96,7 +96,11 @@ impl Backend for WinBackend {
 pub(crate) fn n(v: &Num) -> Result<f64, String> {
     match v {
         Num::Value(x) => Ok(*x),
-        Num::Slot(s) => Err(format!("не заполнен слот {s}")),
+        // «-{число}» fills to the string "-20"
+        Num::Slot(s) => s
+            .trim()
+            .parse()
+            .map_err(|_| format!("не заполнен слот {s}")),
     }
 }
 
@@ -128,6 +132,8 @@ fn input_or_window(action: &Action) -> Result<(), String> {
         })?),
         Action::WindowMoveToMonitor { n: m } => window::move_to_monitor(n(m)? as usize),
         Action::WindowFullscreen => keys::press(&keys::parse_combo("f11")?),
+        Action::WindowCloseApp { name } => window::close_app(name).map(|_| ()),
+        Action::WindowTopmost => window::toggle_topmost().map(|_| ()),
         Action::KeysPress { keys: combo } => keys::press(&keys::parse_combo(combo)?),
         Action::KeysType { text } => keys::type_text(text),
         Action::KeysHold { key, ms } => {
@@ -279,5 +285,16 @@ mod tests {
             })
             .expect_err("should fail");
         assert!(err.contains("не найден"));
+    }
+}
+
+#[cfg(test)]
+mod num_tests {
+    use super::*;
+
+    #[test]
+    fn filled_negative_slot_parses() {
+        assert_eq!(n(&Num::Slot("-20".into())), Ok(-20.0));
+        assert!(n(&Num::Slot("{число}".into())).is_err());
     }
 }

@@ -108,6 +108,14 @@ pub enum Action {
     },
     #[serde(rename = "Window.Fullscreen")]
     WindowFullscreen,
+    /// «Закрой телеграм»: WM_CLOSE to every window of that app (spoken name or exe).
+    #[serde(rename = "Window.CloseApp")]
+    WindowCloseApp {
+        name: String,
+    },
+    /// Toggle «поверх всех окон» for the active window.
+    #[serde(rename = "Window.Topmost")]
+    WindowTopmost,
 
     // Input
     #[serde(rename = "Keys.Press")]
@@ -218,6 +226,20 @@ pub enum Action {
     #[serde(rename = "System.Brightness")]
     Brightness {
         level: Num,
+    },
+    /// Relative brightness change; negative = darker.
+    #[serde(rename = "System.BrightnessStep")]
+    BrightnessStep {
+        #[serde(default = "step")]
+        step: Num,
+    },
+    /// Put the displays to sleep (any mouse move/key wakes them).
+    #[serde(rename = "System.MonitorOff")]
+    MonitorOff,
+    /// Windows dark/light app + system theme.
+    #[serde(rename = "System.DarkTheme")]
+    DarkTheme {
+        on: bool,
     },
     #[serde(rename = "System.Screenshot")]
     Screenshot {

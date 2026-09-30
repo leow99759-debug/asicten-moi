@@ -1,0 +1,104 @@
+{
+  "id": "obs",
+  "name": "OBS Studio",
+  "description": "Запуск и закрытие OBS; запись, стрим и повтор — через горячие клавиши Ctrl+Alt+F8/F9/F10 (назначьте их в OBS → Настройки → Горячие клавиши).",
+  "category": "Видео, музыка и стриминг",
+  "version": "1.0.0",
+  "icon": "obs",
+  "commands": [
+    {
+      "id": "obs.close",
+      "folder": [
+        "OBS Studio",
+        "Запуск"
+      ],
+      "name": "Закрыть OBS",
+      "phrases": [
+        "закрой обс",
+        "выключи обс"
+      ],
+      "actions": [
+        {
+          "type": "Window.CloseApp",
+          "name": "обс"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "obs.replay",
+      "folder": [
+        "OBS Studio",
+        "Запись"
+      ],
+      "name": "Сохранить повтор",
+      "phrases": [
+        "сохрани повтор",
+        "сохрани реплей"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+alt+f10"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "obs.rec",
+      "folder": [
+        "OBS Studio",
+        "Запись"
+      ],
+      "name": "Запись вкл/выкл",
+      "phrases": [
+        "начни запись в обс",
+        "останови запись в обс",
+        "запись обс"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+alt+f9"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "obs.stream",
+      "folder": [
+        "OBS Studio",
+        "Запись"
+      ],
+      "name": "Трансляция вкл/выкл",
+      "phrases": [
+        "начни стрим",
+        "останови стрим",
+        "запусти трансляцию"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+alt+f8"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    }
+  ]
+}

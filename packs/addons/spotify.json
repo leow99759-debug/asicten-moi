@@ -1,0 +1,297 @@
+{
+  "id": "spotify",
+  "name": "Spotify",
+  "description": "Пауза, треки, громкость, перемешивание, повтор, лайк и поиск — горячими клавишами Spotify.",
+  "category": "Видео, музыка и стриминг",
+  "version": "1.0.0",
+  "icon": "spotify",
+  "popular": true,
+  "commands": [
+    {
+      "id": "spotify.play",
+      "folder": [
+        "Spotify",
+        "Управление"
+      ],
+      "name": "Пауза / играть",
+      "phrases": [
+        "пауза в спотифай",
+        "играй",
+        "поставь на паузу спотифай"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "space"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "spotify.exe"
+      }
+    },
+    {
+      "id": "spotify.next",
+      "folder": [
+        "Spotify",
+        "Управление"
+      ],
+      "name": "Следующий трек",
+      "phrases": [
+        "следующий трек в спотифай",
+        "некст"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+right"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "spotify.exe"
+      }
+    },
+    {
+      "id": "spotify.prev",
+      "folder": [
+        "Spotify",
+        "Управление"
+      ],
+      "name": "Предыдущий трек",
+      "phrases": [
+        "предыдущий трек в спотифай"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+left"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "spotify.exe"
+      }
+    },
+    {
+      "id": "spotify.louder",
+      "folder": [
+        "Spotify",
+        "Управление"
+      ],
+      "name": "Громче в Spotify",
+      "phrases": [
+        "громче в спотифай"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+up"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "spotify.exe"
+      }
+    },
+    {
+      "id": "spotify.quieter",
+      "folder": [
+        "Spotify",
+        "Управление"
+      ],
+      "name": "Тише в Spotify",
+      "phrases": [
+        "тише в спотифай"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+down"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "spotify.exe"
+      }
+    },
+    {
+      "id": "spotify.shuffle",
+      "folder": [
+        "Spotify",
+        "Управление"
+      ],
+      "name": "Перемешать",
+      "phrases": [
+        "перемешай",
+        "случайный порядок",
+        "шафл"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+s"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "spotify.exe"
+      }
+    },
+    {
+      "id": "spotify.repeat",
+      "folder": [
+        "Spotify",
+        "Управление"
+      ],
+      "name": "Повтор",
+      "phrases": [
+        "повтор трека",
+        "на повтор",
+        "включи повтор"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+r"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "spotify.exe"
+      }
+    },
+    {
+      "id": "spotify.like",
+      "folder": [
+        "Spotify",
+        "Управление"
+      ],
+      "name": "Лайк трека",
+      "phrases": [
+        "лайкни трек",
+        "добавь в любимые",
+        "мне нравится этот трек"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "alt+shift+b"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "spotify.exe"
+      }
+    },
+    {
+      "id": "spotify.search",
+      "folder": [
+        "Spotify",
+        "Управление"
+      ],
+      "name": "Поиск в Spotify",
+      "phrases": [
+        "поиск в спотифай",
+        "найди в спотифай"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+k"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "spotify.exe"
+      }
+    },
+    {
+      "id": "spotify.liked",
+      "folder": [
+        "Spotify",
+        "Управление"
+      ],
+      "name": "Любимые треки",
+      "phrases": [
+        "любимые треки",
+        "мои лайки в спотифай"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "alt+shift+s"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "spotify.exe"
+      }
+    },
+    {
+      "id": "spotify.home",
+      "folder": [
+        "Spotify",
+        "Управление"
+      ],
+      "name": "Главная Spotify",
+      "phrases": [
+        "главная спотифай"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "alt+shift+h"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "spotify.exe"
+      }
+    }
+  ]
+}

@@ -1,2595 +1,6812 @@
 {
- "id": "windows",
- "name": "Windows",
- "description": "Система, окна, звук, питание и настройки: параметры, рабочие столы, яркость, Wi-Fi, запись экрана.",
- "category": "Система",
- "version": "1.0.0",
- "icon": "windows",
- "popular": true,
- "commands": [
-  {
-   "id": "windows.settings",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Параметры Windows",
-   "phrases": [
-    "параметры windows",
-    "настройки windows",
-    "настройки компьютера",
-    "открой параметры"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_sound",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Параметры звука",
-   "phrases": [
-    "настройки звука",
-    "параметры звука"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:sound"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_mixer",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Микшер громкости",
-   "phrases": [
-    "микшер громкости",
-    "громкость приложений"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:apps-volume"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_display",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Параметры экрана",
-   "phrases": [
-    "настройки экрана",
-    "параметры экрана",
-    "настройки дисплея"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:display"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_nightlight",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Ночной свет",
-   "phrases": [
-    "ночной свет",
-    "настройки ночного света"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:nightlight"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_wifi",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Параметры Wi-Fi",
-   "phrases": [
-    "настройки вайфай",
-    "настройки сети",
-    "настройки интернета"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:network-wifi"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_vpn",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Параметры VPN",
-   "phrases": [
-    "настройки впн",
-    "впн"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:network-vpn"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_bluetooth",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Bluetooth и устройства",
-   "phrases": [
-    "настройки блютуз",
-    "устройства блютуз"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:bluetooth"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_update",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Центр обновления",
-   "phrases": [
-    "центр обновления",
-    "обнови windows",
-    "проверь обновления"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:windowsupdate"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_power",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Питание и сон",
-   "phrases": [
-    "настройки питания",
-    "параметры питания"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:powersleep"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_battery",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Экономия заряда",
-   "phrases": [
-    "настройки батареи",
-    "экономия заряда"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:batterysaver"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_wallpaper",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Обои",
-   "phrases": [
-    "смени обои",
-    "настройки обоев",
-    "персонализация"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:personalization-background"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_colors",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Цвета Windows",
-   "phrases": [
-    "цвета windows",
-    "настройки цвета"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:colors"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_apps",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Установленные приложения",
-   "phrases": [
-    "установленные приложения",
-    "удаление программ",
-    "приложения и возможности"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:appsfeatures"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_startup",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Автозагрузка приложений",
-   "phrases": [
-    "автозагрузка приложений",
-    "программы в автозагрузке"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:startupapps"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_default_apps",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Приложения по умолчанию",
-   "phrases": [
-    "приложения по умолчанию"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:defaultapps"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_mouse",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Параметры мыши",
-   "phrases": [
-    "настройки мыши",
-    "настройки тачпада"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:mousetouchpad"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_language",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Язык и раскладка",
-   "phrases": [
-    "настройки языка",
-    "раскладка клавиатуры"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:regionlanguage"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_datetime",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Дата и время",
-   "phrases": [
-    "дата и время",
-    "настройки времени"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:dateandtime"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_notifications",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Уведомления",
-   "phrases": [
-    "настройки уведомлений"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:notifications"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_storage",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Память",
-   "phrases": [
-    "память диска",
-    "настройки памяти",
-    "хранилище"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:storagesense"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_about",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "О системе",
-   "phrases": [
-    "о системе",
-    "характеристики компьютера"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:about"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_accounts",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Учётные записи",
-   "phrases": [
-    "учетная запись",
-    "учетные записи"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:yourinfo"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_privacy",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Конфиденциальность",
-   "phrases": [
-    "конфиденциальность",
-    "настройки конфиденциальности"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:privacy"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_gaming",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Игровой режим Windows",
-   "phrases": [
-    "настройки игрового режима"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:gaming-gamemode"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_printers",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Принтеры",
-   "phrases": [
-    "принтеры",
-    "настройки принтера"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:printers"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.set_access",
-   "folder": [
-    "Windows",
-    "Параметры"
-   ],
-   "name": "Специальные возможности",
-   "phrases": [
-    "специальные возможности"
-   ],
-   "actions": [
-    {
-     "type": "System.OpenSettings",
-     "uri": "ms-settings:easeofaccess"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.control",
-   "folder": [
-    "Windows",
-    "Программы"
-   ],
-   "name": "Панель управления",
-   "phrases": [
-    "панель управления"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Launch.File",
-     "path": "control.exe",
-     "args": ""
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.cmd",
-   "folder": [
-    "Windows",
-    "Программы"
-   ],
-   "name": "Командная строка",
-   "phrases": [
-    "командная строка",
-    "консоль"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Launch.File",
-     "path": "cmd.exe",
-     "args": ""
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.terminal",
-   "folder": [
-    "Windows",
-    "Программы"
-   ],
-   "name": "Терминал",
-   "phrases": [
-    "терминал"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Launch.File",
-     "path": "wt.exe",
-     "args": ""
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.powershell",
-   "folder": [
-    "Windows",
-    "Программы"
-   ],
-   "name": "PowerShell",
-   "phrases": [
-    "powershell",
-    "пауэршелл"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Launch.File",
-     "path": "powershell.exe",
-     "args": ""
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.notepad",
-   "folder": [
-    "Windows",
-    "Программы"
-   ],
-   "name": "Блокнот",
-   "phrases": [
-    "блокнот"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Launch.File",
-     "path": "notepad.exe",
-     "args": ""
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.calc",
-   "folder": [
-    "Windows",
-    "Программы"
-   ],
-   "name": "Калькулятор",
-   "phrases": [
-    "калькулятор"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Launch.File",
-     "path": "calc.exe",
-     "args": ""
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.paint",
-   "folder": [
-    "Windows",
-    "Программы"
-   ],
-   "name": "Paint",
-   "phrases": [
-    "паинт",
-    "пэйнт"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Launch.File",
-     "path": "mspaint.exe",
-     "args": ""
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.devmgmt",
-   "folder": [
-    "Windows",
-    "Программы"
-   ],
-   "name": "Диспетчер устройств",
-   "phrases": [
-    "диспетчер устройств"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Launch.File",
-     "path": "devmgmt.msc",
-     "args": ""
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.diskmgmt",
-   "folder": [
-    "Windows",
-    "Программы"
-   ],
-   "name": "Управление дисками",
-   "phrases": [
-    "управление дисками"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Launch.File",
-     "path": "diskmgmt.msc",
-     "args": ""
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.services",
-   "folder": [
-    "Windows",
-    "Программы"
-   ],
-   "name": "Службы",
-   "phrases": [
-    "службы windows"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Launch.File",
-     "path": "services.msc",
-     "args": ""
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.regedit",
-   "folder": [
-    "Windows",
-    "Программы"
-   ],
-   "name": "Редактор реестра",
-   "phrases": [
-    "редактор реестра"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Launch.File",
-     "path": "regedit.exe",
-     "args": ""
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.resmon",
-   "folder": [
-    "Windows",
-    "Программы"
-   ],
-   "name": "Монитор ресурсов",
-   "phrases": [
-    "монитор ресурсов"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Launch.File",
-     "path": "resmon.exe",
-     "args": ""
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.msinfo",
-   "folder": [
-    "Windows",
-    "Программы"
-   ],
-   "name": "Сведения о системе",
-   "phrases": [
-    "сведения о системе"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Launch.File",
-     "path": "msinfo32.exe",
-     "args": ""
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.cleanmgr",
-   "folder": [
-    "Windows",
-    "Программы"
-   ],
-   "name": "Очистка диска",
-   "phrases": [
-    "очистка диска"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Launch.File",
-     "path": "cleanmgr.exe",
-     "args": ""
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.osk",
-   "folder": [
-    "Windows",
-    "Программы"
-   ],
-   "name": "Экранная клавиатура",
-   "phrases": [
-    "экранная клавиатура"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Launch.File",
-     "path": "osk.exe",
-     "args": ""
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.taskmgr",
-   "folder": [
-    "Windows",
-    "Программы"
-   ],
-   "name": "Диспетчер задач",
-   "phrases": [
-    "диспетчер задач"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Ctrl+Shift+Esc"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.snip",
-   "folder": [
-    "Windows",
-    "Программы"
-   ],
-   "name": "Скриншот области",
-   "phrases": [
-    "скриншот области",
-    "ножницы",
-    "вырежи область экрана"
-   ],
-   "actions": [
-    {
-     "type": "System.Screenshot",
-     "region": true
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.win_max",
-   "folder": [
-    "Windows",
-    "Окна"
-   ],
-   "name": "Развернуть окно",
-   "phrases": [
-    "разверни окно",
-    "окно на весь экран"
-   ],
-   "actions": [
-    {
-     "type": "Window.Maximize"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.win_min",
-   "folder": [
-    "Windows",
-    "Окна"
-   ],
-   "name": "Свернуть окно",
-   "phrases": [
-    "сверни окно",
-    "убери окно"
-   ],
-   "actions": [
-    {
-     "type": "Window.Minimize"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.win_restore",
-   "folder": [
-    "Windows",
-    "Окна"
-   ],
-   "name": "Восстановить окно",
-   "phrases": [
-    "восстанови окно",
-    "верни окно"
-   ],
-   "actions": [
-    {
-     "type": "Window.Restore"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.win_left",
-   "folder": [
-    "Windows",
-    "Окна"
-   ],
-   "name": "Окно влево",
-   "phrases": [
-    "окно влево",
-    "окно налево",
-    "окно слева"
-   ],
-   "actions": [
-    {
-     "type": "Window.Snap",
-     "side": "left"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.win_right",
-   "folder": [
-    "Windows",
-    "Окна"
-   ],
-   "name": "Окно вправо",
-   "phrases": [
-    "окно вправо",
-    "окно направо",
-    "окно справа"
-   ],
-   "actions": [
-    {
-     "type": "Window.Snap",
-     "side": "right"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.win_fullscreen",
-   "folder": [
-    "Windows",
-    "Окна"
-   ],
-   "name": "Полноэкранный режим",
-   "phrases": [
-    "полноэкранный режим",
-    "полный экран"
-   ],
-   "actions": [
-    {
-     "type": "Window.Fullscreen"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.win_switch",
-   "folder": [
-    "Windows",
-    "Окна"
-   ],
-   "name": "Переключить окно",
-   "phrases": [
-    "переключи окно",
-    "следующее окно",
-    "предыдущее окно"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Alt+Tab"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.win_monitor_n",
-   "folder": [
-    "Windows",
-    "Окна"
-   ],
-   "name": "Окно на монитор N",
-   "phrases": [
-    "окно на монитор {число}",
-    "перенеси окно на монитор {число}"
-   ],
-   "actions": [
-    {
-     "type": "Window.MoveToMonitor",
-     "n": "{число}"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.win_other_monitor",
-   "folder": [
-    "Windows",
-    "Окна"
-   ],
-   "name": "Окно на другой монитор",
-   "phrases": [
-    "окно на другой монитор",
-    "перенеси окно на другой экран"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+Shift+Right"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.task_view",
-   "folder": [
-    "Windows",
-    "Окна"
-   ],
-   "name": "Представление задач",
-   "phrases": [
-    "представление задач",
-    "покажи все окна"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+Tab"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.restore_all",
-   "folder": [
-    "Windows",
-    "Окна"
-   ],
-   "name": "Вернуть свёрнутые окна",
-   "phrases": [
-    "разверни все окна",
-    "верни все окна"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+Shift+M"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.desk_new",
-   "folder": [
-    "Windows",
-    "Окна"
-   ],
-   "name": "Новый рабочий стол",
-   "phrases": [
-    "новый рабочий стол",
-    "создай рабочий стол"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+Ctrl+D"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.desk_next",
-   "folder": [
-    "Windows",
-    "Окна"
-   ],
-   "name": "Следующий рабочий стол",
-   "phrases": [
-    "следующий рабочий стол"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+Ctrl+Right"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.desk_prev",
-   "folder": [
-    "Windows",
-    "Окна"
-   ],
-   "name": "Предыдущий рабочий стол",
-   "phrases": [
-    "предыдущий рабочий стол"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+Ctrl+Left"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.desk_close",
-   "folder": [
-    "Windows",
-    "Окна"
-   ],
-   "name": "Закрыть рабочий стол",
-   "phrases": [
-    "закрой рабочий стол",
-    "удали рабочий стол"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+Ctrl+F4"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.start",
-   "folder": [
-    "Windows",
-    "Оболочка"
-   ],
-   "name": "Меню Пуск",
-   "phrases": [
-    "меню пуск",
-    "открой пуск"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.search",
-   "folder": [
-    "Windows",
-    "Оболочка"
-   ],
-   "name": "Поиск Windows",
-   "phrases": [
-    "поиск windows",
-    "открой поиск"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+S"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.run",
-   "folder": [
-    "Windows",
-    "Оболочка"
-   ],
-   "name": "Выполнить",
-   "phrases": [
-    "окно выполнить"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+R"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.quick",
-   "folder": [
-    "Windows",
-    "Оболочка"
-   ],
-   "name": "Быстрые настройки",
-   "phrases": [
-    "быстрые настройки",
-    "центр уведомлений"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+A"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.clip_history",
-   "folder": [
-    "Windows",
-    "Оболочка"
-   ],
-   "name": "Буфер обмена",
-   "phrases": [
-    "буфер обмена",
-    "история буфера обмена"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+V"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.emoji",
-   "folder": [
-    "Windows",
-    "Оболочка"
-   ],
-   "name": "Эмодзи",
-   "phrases": [
-    "эмодзи",
-    "смайлики",
-    "панель эмодзи"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+Period"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.dictation",
-   "folder": [
-    "Windows",
-    "Оболочка"
-   ],
-   "name": "Голосовой ввод Windows",
-   "phrases": [
-    "голосовой ввод",
-    "диктовка"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+H"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.magnifier",
-   "folder": [
-    "Windows",
-    "Оболочка"
-   ],
-   "name": "Экранная лупа",
-   "phrases": [
-    "экранная лупа",
-    "увеличь экран"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+Plus"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.magnifier_off",
-   "folder": [
-    "Windows",
-    "Оболочка"
-   ],
-   "name": "Закрыть лупу",
-   "phrases": [
-    "закрой лупу",
-    "выключи лупу"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+Esc"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.gamebar",
-   "folder": [
-    "Windows",
-    "Оболочка"
-   ],
-   "name": "Игровая панель",
-   "phrases": [
-    "игровая панель",
-    "гейм бар"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+G"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.rec_start",
-   "folder": [
-    "Windows",
-    "Оболочка"
-   ],
-   "name": "Начать запись экрана",
-   "phrases": [
-    "запиши экран",
-    "начни запись экрана"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+Alt+R"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.rec_stop",
-   "folder": [
-    "Windows",
-    "Оболочка"
-   ],
-   "name": "Остановить запись экрана",
-   "phrases": [
-    "останови запись экрана",
-    "закончи запись экрана"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+Alt+R"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.project",
-   "folder": [
-    "Windows",
-    "Оболочка"
-   ],
-   "name": "Проецирование",
-   "phrases": [
-    "режим проецирования",
-    "второй экран"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+P"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.cast",
-   "folder": [
-    "Windows",
-    "Оболочка"
-   ],
-   "name": "Беспроводной дисплей",
-   "phrases": [
-    "трансляция экрана",
-    "подключи беспроводной дисплей"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+K"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.widgets",
-   "folder": [
-    "Windows",
-    "Оболочка"
-   ],
-   "name": "Виджеты",
-   "phrases": [
-    "виджеты",
-    "покажи виджеты"
-   ],
-   "optional": [
-    "открой",
-    "запусти",
-    "включи",
-    "мне"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+W"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.audio_device",
-   "folder": [
-    "Windows",
-    "Оболочка"
-   ],
-   "name": "Звук на устройство",
-   "phrases": [
-    "переключи звук на {текст}",
-    "выведи звук на {текст}"
-   ],
-   "actions": [
-    {
-     "type": "Audio.SwitchDevice",
-     "name": "{текст}"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.recycle_empty",
-   "folder": [
-    "Windows",
-    "Оболочка"
-   ],
-   "name": "Очистить корзину",
-   "phrases": [
-    "очисти корзину",
-    "почисти корзину"
-   ],
-   "actions": [
-    {
-     "type": "System.EmptyRecycleBin"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   },
-   "confirm": true
-  },
-  {
-   "id": "windows.load",
-   "folder": [
-    "Windows",
-    "Оболочка"
-   ],
-   "name": "Загрузка системы",
-   "phrases": [
-    "загрузка процессора",
-    "сколько памяти занято",
-    "загрузка компьютера"
-   ],
-   "actions": [
-    {
-     "type": "System.Info",
-     "what": "load"
-    }
-   ],
-   "reply": {
-    "clips": []
-   }
-  },
-  {
-   "id": "windows.restart",
-   "folder": [
-    "Windows",
-    "Питание"
-   ],
-   "name": "Перезагрузить компьютер",
-   "phrases": [
-    "перезагрузи компьютер",
-    "перезагрузка компьютера"
-   ],
-   "actions": [
-    {
-     "type": "System.Restart",
-     "delay_sec": 30
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.restart_in",
-   "folder": [
-    "Windows",
-    "Питание"
-   ],
-   "name": "Перезагрузка через время",
-   "phrases": [
-    "перезагрузи компьютер через {время}"
-   ],
-   "actions": [
-    {
-     "type": "System.Restart",
-     "delay_sec": "{время}"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.sleep",
-   "folder": [
-    "Windows",
-    "Питание"
-   ],
-   "name": "Спящий режим",
-   "phrases": [
-    "спящий режим",
-    "усыпи компьютер",
-    "переведи компьютер в сон"
-   ],
-   "actions": [
-    {
-     "type": "System.Sleep"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   },
-   "confirm": true
-  },
-  {
-   "id": "windows.hibernate",
-   "folder": [
-    "Windows",
-    "Питание"
-   ],
-   "name": "Гибернация",
-   "phrases": [
-    "гибернация",
-    "режим гибернации"
-   ],
-   "actions": [
-    {
-     "type": "System.Hibernate"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   },
-   "confirm": true
-  },
-  {
-   "id": "windows.logoff",
-   "folder": [
-    "Windows",
-    "Питание"
-   ],
-   "name": "Выйти из системы",
-   "phrases": [
-    "выйди из системы",
-    "выход из учетной записи"
-   ],
-   "actions": [
-    {
-     "type": "System.Logoff"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.plan_saver",
-   "folder": [
-    "Windows",
-    "Питание"
-   ],
-   "name": "Энергосбережение",
-   "phrases": [
-    "режим энергосбережения",
-    "экономия энергии"
-   ],
-   "optional": [
-    "включи"
-   ],
-   "actions": [
-    {
-     "type": "System.PowerPlan",
-     "plan": "saver"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.plan_high",
-   "folder": [
-    "Windows",
-    "Питание"
-   ],
-   "name": "Высокая производительность",
-   "phrases": [
-    "высокая производительность",
-    "максимальная производительность"
-   ],
-   "optional": [
-    "включи"
-   ],
-   "actions": [
-    {
-     "type": "System.PowerPlan",
-     "plan": "high"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.plan_balanced",
-   "folder": [
-    "Windows",
-    "Питание"
-   ],
-   "name": "Сбалансированная схема",
-   "phrases": [
-    "сбалансированная схема питания",
-    "сбалансированный режим"
-   ],
-   "optional": [
-    "включи"
-   ],
-   "actions": [
-    {
-     "type": "System.PowerPlan",
-     "plan": "balanced"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.bright_set",
-   "folder": [
-    "Windows",
-    "Питание"
-   ],
-   "name": "Яркость на N",
-   "phrases": [
-    "яркость на {число}",
-    "яркость {число}"
-   ],
-   "actions": [
-    {
-     "type": "System.Brightness",
-     "level": "{число}"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.bright_max",
-   "folder": [
-    "Windows",
-    "Питание"
-   ],
-   "name": "Яркость на максимум",
-   "phrases": [
-    "яркость на максимум",
-    "максимальная яркость"
-   ],
-   "actions": [
-    {
-     "type": "System.Brightness",
-     "level": 100
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.bright_half",
-   "folder": [
-    "Windows",
-    "Питание"
-   ],
-   "name": "Яркость наполовину",
-   "phrases": [
-    "яркость наполовину",
-    "половина яркости"
-   ],
-   "actions": [
-    {
-     "type": "System.Brightness",
-     "level": 50
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.bright_min",
-   "folder": [
-    "Windows",
-    "Питание"
-   ],
-   "name": "Яркость на минимум",
-   "phrases": [
-    "яркость на минимум",
-    "минимальная яркость"
-   ],
-   "actions": [
-    {
-     "type": "System.Brightness",
-     "level": 10
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.wifi_on",
-   "folder": [
-    "Windows",
-    "Сеть"
-   ],
-   "name": "Включить Wi-Fi",
-   "phrases": [
-    "включи вайфай",
-    "включи вай фай"
-   ],
-   "actions": [
-    {
-     "type": "System.WiFi",
-     "on": true
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.wifi_off",
-   "folder": [
-    "Windows",
-    "Сеть"
-   ],
-   "name": "Выключить Wi-Fi",
-   "phrases": [
-    "выключи вайфай",
-    "выключи вай фай"
-   ],
-   "actions": [
-    {
-     "type": "System.WiFi",
-     "on": false
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.bt_on",
-   "folder": [
-    "Windows",
-    "Сеть"
-   ],
-   "name": "Включить Bluetooth",
-   "phrases": [
-    "включи блютуз"
-   ],
-   "actions": [
-    {
-     "type": "System.Bluetooth",
-     "on": true
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.bt_off",
-   "folder": [
-    "Windows",
-    "Сеть"
-   ],
-   "name": "Выключить Bluetooth",
-   "phrases": [
-    "выключи блютуз"
-   ],
-   "actions": [
-    {
-     "type": "System.Bluetooth",
-     "on": false
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.dnd_on",
-   "folder": [
-    "Windows",
-    "Сеть"
-   ],
-   "name": "Не беспокоить",
-   "phrases": [
-    "не беспокоить",
-    "режим не беспокоить",
-    "включи не беспокоить"
-   ],
-   "actions": [
-    {
-     "type": "System.DND",
-     "on": true
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.dnd_off",
-   "folder": [
-    "Windows",
-    "Сеть"
-   ],
-   "name": "Выключить «Не беспокоить»",
-   "phrases": [
-    "выключи не беспокоить",
-    "можно беспокоить"
-   ],
-   "actions": [
-    {
-     "type": "System.DND",
-     "on": false
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.copy",
-   "folder": [
-    "Windows",
-    "Правка"
-   ],
-   "name": "Копировать",
-   "phrases": [
-    "скопируй",
-    "копировать"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Ctrl+C"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.paste",
-   "folder": [
-    "Windows",
-    "Правка"
-   ],
-   "name": "Вставить",
-   "phrases": [
-    "вставь",
-    "вставить"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Ctrl+V"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.cut",
-   "folder": [
-    "Windows",
-    "Правка"
-   ],
-   "name": "Вырезать",
-   "phrases": [
-    "вырежи",
-    "вырезать"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Ctrl+X"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.select_all",
-   "folder": [
-    "Windows",
-    "Правка"
-   ],
-   "name": "Выделить всё",
-   "phrases": [
-    "выдели все",
-    "выделить все"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Ctrl+A"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.undo",
-   "folder": [
-    "Windows",
-    "Правка"
-   ],
-   "name": "Отменить действие",
-   "phrases": [
-    "отмени действие",
-    "отмени последнее действие"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Ctrl+Z"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.redo",
-   "folder": [
-    "Windows",
-    "Правка"
-   ],
-   "name": "Повторить действие",
-   "phrases": [
-    "верни действие",
-    "повтори действие"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Ctrl+Y"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.key_enter",
-   "folder": [
-    "Windows",
-    "Правка"
-   ],
-   "name": "Нажать Enter",
-   "phrases": [
-    "нажми энтер",
-    "нажми ввод"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Enter"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.key_esc",
-   "folder": [
-    "Windows",
-    "Правка"
-   ],
-   "name": "Нажать Esc",
-   "phrases": [
-    "нажми эскейп",
-    "нажми escape"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Esc"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.key_space",
-   "folder": [
-    "Windows",
-    "Правка"
-   ],
-   "name": "Нажать пробел",
-   "phrases": [
-    "нажми пробел"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Space"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.key_tab",
-   "folder": [
-    "Windows",
-    "Правка"
-   ],
-   "name": "Нажать Tab",
-   "phrases": [
-    "нажми таб"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Tab"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  },
-  {
-   "id": "windows.switch_layout",
-   "folder": [
-    "Windows",
-    "Правка"
-   ],
-   "name": "Сменить раскладку",
-   "phrases": [
-    "смени раскладку",
-    "поменяй язык"
-   ],
-   "actions": [
-    {
-     "type": "Keys.Press",
-     "keys": "Win+Space"
-    }
-   ],
-   "reply": {
-    "clips": [
-     "ok"
-    ]
-   }
-  }
- ]
+  "id": "windows",
+  "name": "Windows",
+  "description": "Система, окна, звук, питание, параметры, программы, горячие клавиши и сведения о ПК: 250+ команд голосом.",
+  "category": "Система",
+  "version": "1.0.0",
+  "icon": "windows",
+  "popular": true,
+  "commands": [
+    {
+      "id": "windows.settings",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Параметры Windows",
+      "phrases": [
+        "параметры windows",
+        "настройки windows",
+        "настройки компьютера",
+        "открой параметры"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_sound",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Параметры звука",
+      "phrases": [
+        "настройки звука",
+        "параметры звука"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:sound"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_mixer",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Микшер громкости",
+      "phrases": [
+        "микшер громкости",
+        "громкость приложений"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:apps-volume"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_display",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Параметры экрана",
+      "phrases": [
+        "настройки экрана",
+        "параметры экрана",
+        "настройки дисплея"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:display"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_nightlight",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Ночной свет",
+      "phrases": [
+        "ночной свет",
+        "настройки ночного света"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:nightlight"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_wifi",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Параметры Wi-Fi",
+      "phrases": [
+        "настройки вайфай",
+        "настройки сети",
+        "настройки интернета"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:network-wifi"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_vpn",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Параметры VPN",
+      "phrases": [
+        "настройки впн",
+        "впн"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:network-vpn"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_bluetooth",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Bluetooth и устройства",
+      "phrases": [
+        "настройки блютуз",
+        "устройства блютуз"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:bluetooth"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_update",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Центр обновления",
+      "phrases": [
+        "центр обновления",
+        "обнови windows",
+        "проверь обновления"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:windowsupdate"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_power",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Питание и сон",
+      "phrases": [
+        "настройки питания",
+        "параметры питания"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:powersleep"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_battery",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Экономия заряда",
+      "phrases": [
+        "настройки батареи",
+        "экономия заряда"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:batterysaver"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_wallpaper",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Обои",
+      "phrases": [
+        "смени обои",
+        "настройки обоев",
+        "персонализация"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:personalization-background"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_colors",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Цвета Windows",
+      "phrases": [
+        "цвета windows",
+        "настройки цвета"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:colors"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_apps",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Установленные приложения",
+      "phrases": [
+        "установленные приложения",
+        "удаление программ",
+        "приложения и возможности"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:appsfeatures"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_startup",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Автозагрузка приложений",
+      "phrases": [
+        "автозагрузка приложений",
+        "программы в автозагрузке"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:startupapps"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_default_apps",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Приложения по умолчанию",
+      "phrases": [
+        "приложения по умолчанию"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:defaultapps"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_mouse",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Параметры мыши",
+      "phrases": [
+        "настройки мыши",
+        "настройки тачпада"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:mousetouchpad"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_language",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Язык и раскладка",
+      "phrases": [
+        "настройки языка",
+        "раскладка клавиатуры"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:regionlanguage"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_datetime",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Дата и время",
+      "phrases": [
+        "дата и время",
+        "настройки времени"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:dateandtime"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_notifications",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Уведомления",
+      "phrases": [
+        "настройки уведомлений"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:notifications"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_storage",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Память",
+      "phrases": [
+        "память диска",
+        "настройки памяти",
+        "хранилище"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:storagesense"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_about",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "О системе",
+      "phrases": [
+        "о системе",
+        "характеристики компьютера"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:about"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_accounts",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Учётные записи",
+      "phrases": [
+        "учетная запись",
+        "учетные записи"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:yourinfo"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_privacy",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Конфиденциальность",
+      "phrases": [
+        "конфиденциальность",
+        "настройки конфиденциальности"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:privacy"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_gaming",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Игровой режим Windows",
+      "phrases": [
+        "настройки игрового режима"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:gaming-gamemode"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_printers",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Принтеры",
+      "phrases": [
+        "принтеры",
+        "настройки принтера"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:printers"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_access",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Специальные возможности",
+      "phrases": [
+        "специальные возможности"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:easeofaccess"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.control",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Панель управления",
+      "phrases": [
+        "панель управления"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "control.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.cmd",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Командная строка",
+      "phrases": [
+        "командная строка",
+        "консоль"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "cmd.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.terminal",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Терминал",
+      "phrases": [
+        "терминал"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "wt.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.powershell",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "PowerShell",
+      "phrases": [
+        "powershell",
+        "пауэршелл"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "powershell.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.notepad",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Блокнот",
+      "phrases": [
+        "блокнот"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "notepad.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.calc",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Калькулятор",
+      "phrases": [
+        "калькулятор"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "calc.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.paint",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Paint",
+      "phrases": [
+        "паинт",
+        "пэйнт"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "mspaint.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.devmgmt",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Диспетчер устройств",
+      "phrases": [
+        "диспетчер устройств"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "devmgmt.msc",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.diskmgmt",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Управление дисками",
+      "phrases": [
+        "управление дисками"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "diskmgmt.msc",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.services",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Службы",
+      "phrases": [
+        "службы windows"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "services.msc",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.regedit",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Редактор реестра",
+      "phrases": [
+        "редактор реестра"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "regedit.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.resmon",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Монитор ресурсов",
+      "phrases": [
+        "монитор ресурсов"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "resmon.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.msinfo",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Сведения о системе",
+      "phrases": [
+        "сведения о системе"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "msinfo32.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.cleanmgr",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Очистка диска",
+      "phrases": [
+        "очистка диска"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "cleanmgr.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.osk",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Экранная клавиатура",
+      "phrases": [
+        "экранная клавиатура"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "osk.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.taskmgr",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Диспетчер задач",
+      "phrases": [
+        "диспетчер задач"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Ctrl+Shift+Esc"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.snip",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Скриншот области",
+      "phrases": [
+        "скриншот области",
+        "ножницы",
+        "вырежи область экрана"
+      ],
+      "actions": [
+        {
+          "type": "System.Screenshot",
+          "region": true
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.win_max",
+      "folder": [
+        "Windows",
+        "Окна"
+      ],
+      "name": "Развернуть окно",
+      "phrases": [
+        "разверни окно",
+        "окно на весь экран"
+      ],
+      "actions": [
+        {
+          "type": "Window.Maximize"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.win_min",
+      "folder": [
+        "Windows",
+        "Окна"
+      ],
+      "name": "Свернуть окно",
+      "phrases": [
+        "сверни окно",
+        "убери окно"
+      ],
+      "actions": [
+        {
+          "type": "Window.Minimize"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.win_restore",
+      "folder": [
+        "Windows",
+        "Окна"
+      ],
+      "name": "Восстановить окно",
+      "phrases": [
+        "восстанови окно",
+        "верни окно"
+      ],
+      "actions": [
+        {
+          "type": "Window.Restore"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.win_left",
+      "folder": [
+        "Windows",
+        "Окна"
+      ],
+      "name": "Окно влево",
+      "phrases": [
+        "окно влево",
+        "окно налево",
+        "окно слева"
+      ],
+      "actions": [
+        {
+          "type": "Window.Snap",
+          "side": "left"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.win_right",
+      "folder": [
+        "Windows",
+        "Окна"
+      ],
+      "name": "Окно вправо",
+      "phrases": [
+        "окно вправо",
+        "окно направо",
+        "окно справа"
+      ],
+      "actions": [
+        {
+          "type": "Window.Snap",
+          "side": "right"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.win_fullscreen",
+      "folder": [
+        "Windows",
+        "Окна"
+      ],
+      "name": "Полноэкранный режим",
+      "phrases": [
+        "полноэкранный режим",
+        "полный экран"
+      ],
+      "actions": [
+        {
+          "type": "Window.Fullscreen"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.win_switch",
+      "folder": [
+        "Windows",
+        "Окна"
+      ],
+      "name": "Переключить окно",
+      "phrases": [
+        "переключи окно",
+        "следующее окно",
+        "предыдущее окно"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Alt+Tab"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.win_monitor_n",
+      "folder": [
+        "Windows",
+        "Окна"
+      ],
+      "name": "Окно на монитор N",
+      "phrases": [
+        "окно на монитор {число}",
+        "перенеси окно на монитор {число}"
+      ],
+      "actions": [
+        {
+          "type": "Window.MoveToMonitor",
+          "n": "{число}"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.win_other_monitor",
+      "folder": [
+        "Windows",
+        "Окна"
+      ],
+      "name": "Окно на другой монитор",
+      "phrases": [
+        "окно на другой монитор",
+        "перенеси окно на другой экран"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+Shift+Right"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.task_view",
+      "folder": [
+        "Windows",
+        "Окна"
+      ],
+      "name": "Представление задач",
+      "phrases": [
+        "представление задач",
+        "покажи все окна"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+Tab"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.restore_all",
+      "folder": [
+        "Windows",
+        "Окна"
+      ],
+      "name": "Вернуть свёрнутые окна",
+      "phrases": [
+        "разверни все окна",
+        "верни все окна"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+Shift+M"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.desk_new",
+      "folder": [
+        "Windows",
+        "Окна"
+      ],
+      "name": "Новый рабочий стол",
+      "phrases": [
+        "новый рабочий стол",
+        "создай рабочий стол"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+Ctrl+D"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.desk_next",
+      "folder": [
+        "Windows",
+        "Окна"
+      ],
+      "name": "Следующий рабочий стол",
+      "phrases": [
+        "следующий рабочий стол"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+Ctrl+Right"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.desk_prev",
+      "folder": [
+        "Windows",
+        "Окна"
+      ],
+      "name": "Предыдущий рабочий стол",
+      "phrases": [
+        "предыдущий рабочий стол"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+Ctrl+Left"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.desk_close",
+      "folder": [
+        "Windows",
+        "Окна"
+      ],
+      "name": "Закрыть рабочий стол",
+      "phrases": [
+        "закрой рабочий стол",
+        "удали рабочий стол"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+Ctrl+F4"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.start",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Меню Пуск",
+      "phrases": [
+        "меню пуск",
+        "открой пуск"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.search",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Поиск Windows",
+      "phrases": [
+        "поиск windows",
+        "открой поиск"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+S"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.run",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Выполнить",
+      "phrases": [
+        "окно выполнить"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+R"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.quick",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Быстрые настройки",
+      "phrases": [
+        "быстрые настройки",
+        "центр уведомлений"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+A"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.clip_history",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Буфер обмена",
+      "phrases": [
+        "буфер обмена",
+        "история буфера обмена"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+V"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.emoji",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Эмодзи",
+      "phrases": [
+        "эмодзи",
+        "смайлики",
+        "панель эмодзи"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+Period"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.dictation",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Голосовой ввод Windows",
+      "phrases": [
+        "голосовой ввод",
+        "диктовка"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+H"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.magnifier",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Экранная лупа",
+      "phrases": [
+        "экранная лупа",
+        "увеличь экран"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+Plus"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.magnifier_off",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Закрыть лупу",
+      "phrases": [
+        "закрой лупу",
+        "выключи лупу"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+Esc"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.gamebar",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Игровая панель",
+      "phrases": [
+        "игровая панель",
+        "гейм бар"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+G"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.rec_start",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Начать запись экрана",
+      "phrases": [
+        "запиши экран",
+        "начни запись экрана"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+Alt+R"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.rec_stop",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Остановить запись экрана",
+      "phrases": [
+        "останови запись экрана",
+        "закончи запись экрана"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+Alt+R"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.project",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Проецирование",
+      "phrases": [
+        "режим проецирования",
+        "второй экран"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+P"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.cast",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Беспроводной дисплей",
+      "phrases": [
+        "трансляция экрана",
+        "подключи беспроводной дисплей"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+K"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.widgets",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Виджеты",
+      "phrases": [
+        "виджеты",
+        "покажи виджеты"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+W"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.audio_device",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Звук на устройство",
+      "phrases": [
+        "переключи звук на {текст}",
+        "выведи звук на {текст}"
+      ],
+      "actions": [
+        {
+          "type": "Audio.SwitchDevice",
+          "name": "{текст}"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.recycle_empty",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Очистить корзину",
+      "phrases": [
+        "очисти корзину",
+        "почисти корзину"
+      ],
+      "actions": [
+        {
+          "type": "System.EmptyRecycleBin"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "confirm": true
+    },
+    {
+      "id": "windows.load",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Загрузка системы",
+      "phrases": [
+        "загрузка процессора",
+        "сколько памяти занято",
+        "загрузка компьютера"
+      ],
+      "actions": [
+        {
+          "type": "System.Info",
+          "what": "load"
+        }
+      ],
+      "reply": {
+        "clips": []
+      }
+    },
+    {
+      "id": "windows.restart",
+      "folder": [
+        "Windows",
+        "Питание"
+      ],
+      "name": "Перезагрузить компьютер",
+      "phrases": [
+        "перезагрузи компьютер",
+        "перезагрузка компьютера"
+      ],
+      "actions": [
+        {
+          "type": "System.Restart",
+          "delay_sec": 30
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.restart_in",
+      "folder": [
+        "Windows",
+        "Питание"
+      ],
+      "name": "Перезагрузка через время",
+      "phrases": [
+        "перезагрузи компьютер через {время}"
+      ],
+      "actions": [
+        {
+          "type": "System.Restart",
+          "delay_sec": "{время}"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.sleep",
+      "folder": [
+        "Windows",
+        "Питание"
+      ],
+      "name": "Спящий режим",
+      "phrases": [
+        "спящий режим",
+        "усыпи компьютер",
+        "переведи компьютер в сон"
+      ],
+      "actions": [
+        {
+          "type": "System.Sleep"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "confirm": true
+    },
+    {
+      "id": "windows.hibernate",
+      "folder": [
+        "Windows",
+        "Питание"
+      ],
+      "name": "Гибернация",
+      "phrases": [
+        "гибернация",
+        "режим гибернации"
+      ],
+      "actions": [
+        {
+          "type": "System.Hibernate"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "confirm": true
+    },
+    {
+      "id": "windows.logoff",
+      "folder": [
+        "Windows",
+        "Питание"
+      ],
+      "name": "Выйти из системы",
+      "phrases": [
+        "выйди из системы",
+        "выход из учетной записи"
+      ],
+      "actions": [
+        {
+          "type": "System.Logoff"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.plan_saver",
+      "folder": [
+        "Windows",
+        "Питание"
+      ],
+      "name": "Энергосбережение",
+      "phrases": [
+        "режим энергосбережения",
+        "экономия энергии"
+      ],
+      "optional": [
+        "включи"
+      ],
+      "actions": [
+        {
+          "type": "System.PowerPlan",
+          "plan": "saver"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.plan_high",
+      "folder": [
+        "Windows",
+        "Питание"
+      ],
+      "name": "Высокая производительность",
+      "phrases": [
+        "высокая производительность",
+        "максимальная производительность"
+      ],
+      "optional": [
+        "включи"
+      ],
+      "actions": [
+        {
+          "type": "System.PowerPlan",
+          "plan": "high"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.plan_balanced",
+      "folder": [
+        "Windows",
+        "Питание"
+      ],
+      "name": "Сбалансированная схема",
+      "phrases": [
+        "сбалансированная схема питания",
+        "сбалансированный режим"
+      ],
+      "optional": [
+        "включи"
+      ],
+      "actions": [
+        {
+          "type": "System.PowerPlan",
+          "plan": "balanced"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.bright_set",
+      "folder": [
+        "Windows",
+        "Питание"
+      ],
+      "name": "Яркость на N",
+      "phrases": [
+        "яркость на {число}",
+        "яркость {число}"
+      ],
+      "actions": [
+        {
+          "type": "System.Brightness",
+          "level": "{число}"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.bright_max",
+      "folder": [
+        "Windows",
+        "Питание"
+      ],
+      "name": "Яркость на максимум",
+      "phrases": [
+        "яркость на максимум",
+        "максимальная яркость"
+      ],
+      "actions": [
+        {
+          "type": "System.Brightness",
+          "level": 100
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.bright_half",
+      "folder": [
+        "Windows",
+        "Питание"
+      ],
+      "name": "Яркость наполовину",
+      "phrases": [
+        "яркость наполовину",
+        "половина яркости"
+      ],
+      "actions": [
+        {
+          "type": "System.Brightness",
+          "level": 50
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.bright_min",
+      "folder": [
+        "Windows",
+        "Питание"
+      ],
+      "name": "Яркость на минимум",
+      "phrases": [
+        "яркость на минимум",
+        "минимальная яркость"
+      ],
+      "actions": [
+        {
+          "type": "System.Brightness",
+          "level": 10
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.wifi_on",
+      "folder": [
+        "Windows",
+        "Сеть"
+      ],
+      "name": "Включить Wi-Fi",
+      "phrases": [
+        "включи вайфай",
+        "включи вай фай"
+      ],
+      "actions": [
+        {
+          "type": "System.WiFi",
+          "on": true
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.wifi_off",
+      "folder": [
+        "Windows",
+        "Сеть"
+      ],
+      "name": "Выключить Wi-Fi",
+      "phrases": [
+        "выключи вайфай",
+        "выключи вай фай"
+      ],
+      "actions": [
+        {
+          "type": "System.WiFi",
+          "on": false
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.bt_on",
+      "folder": [
+        "Windows",
+        "Сеть"
+      ],
+      "name": "Включить Bluetooth",
+      "phrases": [
+        "включи блютуз"
+      ],
+      "actions": [
+        {
+          "type": "System.Bluetooth",
+          "on": true
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.bt_off",
+      "folder": [
+        "Windows",
+        "Сеть"
+      ],
+      "name": "Выключить Bluetooth",
+      "phrases": [
+        "выключи блютуз"
+      ],
+      "actions": [
+        {
+          "type": "System.Bluetooth",
+          "on": false
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.dnd_on",
+      "folder": [
+        "Windows",
+        "Сеть"
+      ],
+      "name": "Не беспокоить",
+      "phrases": [
+        "не беспокоить",
+        "режим не беспокоить",
+        "включи не беспокоить"
+      ],
+      "actions": [
+        {
+          "type": "System.DND",
+          "on": true
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.dnd_off",
+      "folder": [
+        "Windows",
+        "Сеть"
+      ],
+      "name": "Выключить «Не беспокоить»",
+      "phrases": [
+        "выключи не беспокоить",
+        "можно беспокоить"
+      ],
+      "actions": [
+        {
+          "type": "System.DND",
+          "on": false
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.copy",
+      "folder": [
+        "Windows",
+        "Правка"
+      ],
+      "name": "Копировать",
+      "phrases": [
+        "скопируй",
+        "копировать"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Ctrl+C"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.paste",
+      "folder": [
+        "Windows",
+        "Правка"
+      ],
+      "name": "Вставить",
+      "phrases": [
+        "вставь",
+        "вставить"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Ctrl+V"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.cut",
+      "folder": [
+        "Windows",
+        "Правка"
+      ],
+      "name": "Вырезать",
+      "phrases": [
+        "вырежи",
+        "вырезать"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Ctrl+X"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.select_all",
+      "folder": [
+        "Windows",
+        "Правка"
+      ],
+      "name": "Выделить всё",
+      "phrases": [
+        "выдели все",
+        "выделить все"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Ctrl+A"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.undo",
+      "folder": [
+        "Windows",
+        "Правка"
+      ],
+      "name": "Отменить действие",
+      "phrases": [
+        "отмени действие",
+        "отмени последнее действие"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Ctrl+Z"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.redo",
+      "folder": [
+        "Windows",
+        "Правка"
+      ],
+      "name": "Повторить действие",
+      "phrases": [
+        "верни действие",
+        "повтори действие"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Ctrl+Y"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.key_enter",
+      "folder": [
+        "Windows",
+        "Правка"
+      ],
+      "name": "Нажать Enter",
+      "phrases": [
+        "нажми энтер",
+        "нажми ввод"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Enter"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.key_esc",
+      "folder": [
+        "Windows",
+        "Правка"
+      ],
+      "name": "Нажать Esc",
+      "phrases": [
+        "нажми эскейп",
+        "нажми escape"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Esc"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.key_space",
+      "folder": [
+        "Windows",
+        "Правка"
+      ],
+      "name": "Нажать пробел",
+      "phrases": [
+        "нажми пробел"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Space"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.key_tab",
+      "folder": [
+        "Windows",
+        "Правка"
+      ],
+      "name": "Нажать Tab",
+      "phrases": [
+        "нажми таб"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Tab"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.switch_layout",
+      "folder": [
+        "Windows",
+        "Правка"
+      ],
+      "name": "Сменить раскладку",
+      "phrases": [
+        "смени раскладку",
+        "поменяй язык"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "Win+Space"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_hotspot",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Мобильный хот-спот",
+      "phrases": [
+        "мобильный хот спот",
+        "точка доступа",
+        "раздай интернет"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:network-mobilehotspot"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_airplane",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Режим «в самолёте»",
+      "phrases": [
+        "режим в самолете",
+        "авиарежим"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:network-airplanemode"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_ethernet",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Ethernet",
+      "phrases": [
+        "настройки ethernet",
+        "проводная сеть",
+        "настройки кабеля"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:network-ethernet"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_proxy",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Прокси",
+      "phrases": [
+        "настройки прокси",
+        "прокси сервер"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:network-proxy"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_mic",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Доступ к микрофону",
+      "phrases": [
+        "доступ к микрофону",
+        "разрешения микрофона"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:privacy-microphone"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_camera",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Доступ к камере",
+      "phrases": [
+        "доступ к камере",
+        "настройки камеры"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:privacy-webcam"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_scaling",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Масштаб экрана",
+      "phrases": [
+        "масштаб экрана",
+        "размер текста",
+        "масштабирование"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:display"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_graphics",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Настройки графики",
+      "phrases": [
+        "настройки графики",
+        "настройки видеокарты"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:display-advancedgraphics"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_themes",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Темы Windows",
+      "phrases": [
+        "темы windows",
+        "настройки темы"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:themes"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_lockscreen",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Экран блокировки",
+      "phrases": [
+        "экран блокировки",
+        "настройки экрана блокировки"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:lockscreen"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_taskbar",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Панель задач",
+      "phrases": [
+        "настройки панели задач",
+        "панель задач"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:taskbar"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_start",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Меню «Пуск»",
+      "phrases": [
+        "настройки меню пуск",
+        "настройки пуска"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:personalization-start"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_fonts",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Шрифты",
+      "phrases": [
+        "шрифты",
+        "настройки шрифтов"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:fonts"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_keyboard",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Клавиатура",
+      "phrases": [
+        "настройки клавиатуры"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:keyboard"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_typing",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Ввод текста",
+      "phrases": [
+        "настройки ввода",
+        "автоисправление"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:typing"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_region",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Регион",
+      "phrases": [
+        "регион",
+        "региональные настройки",
+        "формат даты"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:regionformatting"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_clipboard",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Буфер обмена",
+      "phrases": [
+        "настройки буфера обмена"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:clipboard"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_multitask",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Многозадачность",
+      "phrases": [
+        "многозадачность",
+        "настройки многозадачности"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:multitasking"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_focus",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Фокусировка",
+      "phrases": [
+        "фокусировка внимания",
+        "режим фокусировки"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:focus"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_storage_sense",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Контроль памяти",
+      "phrases": [
+        "контроль памяти",
+        "автоочистка диска"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:storagepolicies"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_backup",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Резервное копирование",
+      "phrases": [
+        "резервное копирование",
+        "бэкап"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:backup"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_recovery",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Восстановление",
+      "phrases": [
+        "восстановление системы",
+        "сброс windows",
+        "вернуть компьютер в исходное состояние"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:recovery"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_activation",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Активация",
+      "phrases": [
+        "активация windows",
+        "активация"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:activation"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_troubleshoot",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Устранение неполадок",
+      "phrases": [
+        "устранение неполадок",
+        "исправь неполадки"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:troubleshoot"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_security",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Безопасность Windows",
+      "phrases": [
+        "безопасность windows",
+        "защитник windows",
+        "антивирус"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:windowsdefender"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_devices",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Устройства",
+      "phrases": [
+        "устройства",
+        "подключенные устройства"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:connecteddevices"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_pen",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Перо и Windows Ink",
+      "phrases": [
+        "настройки пера"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:pen"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_autoplay",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Автозапуск",
+      "phrases": [
+        "автозапуск",
+        "автозапуск флешки"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:autoplay"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_usb",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "USB",
+      "phrases": [
+        "настройки usb",
+        "настройки юсб"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:usb"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_captures",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Клипы",
+      "phrases": [
+        "настройки клипов",
+        "папка клипов"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:gaming-gamedvr"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_gamebar",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Настройки игровой панели",
+      "phrases": [
+        "настройки игровой панели",
+        "настройки гейм бара"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:gaming-gamebar"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_signin",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Параметры входа",
+      "phrases": [
+        "параметры входа",
+        "пин код",
+        "пароль windows"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:signinoptions"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_family",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Семья",
+      "phrases": [
+        "семья",
+        "родительский контроль"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:family-group"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_optional",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Дополнительные компоненты",
+      "phrases": [
+        "дополнительные компоненты"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:optionalfeatures"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_speech",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Речь",
+      "phrases": [
+        "настройки речи",
+        "голосовые настройки windows"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:speech"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_narrator_s",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Экранный диктор (настройки)",
+      "phrases": [
+        "настройки экранного диктора"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:easeofaccess-narrator"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_colorfilter",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Цветовые фильтры",
+      "phrases": [
+        "цветовые фильтры",
+        "фильтр цвета"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:easeofaccess-colorfilter"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_contrast",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Контрастные темы",
+      "phrases": [
+        "контрастная тема",
+        "высокая контрастность"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:easeofaccess-highcontrast"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_cursor",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Указатель мыши",
+      "phrases": [
+        "размер курсора",
+        "настройки курсора",
+        "указатель мыши"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:easeofaccess-mousepointer"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_winupdate_hist",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Журнал обновлений",
+      "phrases": [
+        "журнал обновлений",
+        "история обновлений"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:windowsupdate-history"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_winupdate_adv",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Дополнительные параметры обновлений",
+      "phrases": [
+        "приостанови обновления",
+        "пауза обновлений"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:windowsupdate-options"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_nearby",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Обмен с устройствами поблизости",
+      "phrases": [
+        "обмен с устройствами",
+        "передача файлов рядом"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:crossdevice"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_sound_devices",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Звуковые устройства",
+      "phrases": [
+        "звуковые устройства",
+        "устройства вывода звука"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:sound-devices"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_volume_apps",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Громкость приложений (параметры)",
+      "phrases": [
+        "громкость каждого приложения"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:apps-volume"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_video",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Воспроизведение видео",
+      "phrases": [
+        "настройки видео",
+        "воспроизведение видео"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:videoplayback"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_location",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Местоположение",
+      "phrases": [
+        "местоположение",
+        "геолокация"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:privacy-location"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.set_notif_apps",
+      "folder": [
+        "Windows",
+        "Параметры"
+      ],
+      "name": "Разрешения приложений",
+      "phrases": [
+        "разрешения приложений",
+        "конфиденциальность приложений"
+      ],
+      "optional": [
+        "открой",
+        "покажи",
+        "мне"
+      ],
+      "actions": [
+        {
+          "type": "System.OpenSettings",
+          "uri": "ms-settings:privacy"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.eventvwr",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Просмотр событий",
+      "phrases": [
+        "просмотр событий",
+        "журнал событий"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "eventvwr.msc",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.taskschd",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Планировщик заданий",
+      "phrases": [
+        "планировщик заданий"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "taskschd.msc",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.compmgmt",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Управление компьютером",
+      "phrases": [
+        "управление компьютером"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "compmgmt.msc",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.firewall",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Брандмауэр",
+      "phrases": [
+        "брандмауэр",
+        "файрвол",
+        "фаервол"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "wf.msc",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.ncpa",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Сетевые подключения",
+      "phrases": [
+        "сетевые подключения",
+        "сетевые адаптеры"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "ncpa.cpl",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.mmsys",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Звук (панель управления)",
+      "phrases": [
+        "панель звука",
+        "звуковая панель",
+        "устройства воспроизведения"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "mmsys.cpl",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.sndvol",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Микшер громкости (классический)",
+      "phrases": [
+        "классический микшер",
+        "старый микшер громкости"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "sndvol.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.sysdm",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Свойства системы",
+      "phrases": [
+        "свойства системы",
+        "свойства компьютера"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "sysdm.cpl",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.envvars",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Переменные среды",
+      "phrases": [
+        "переменные среды",
+        "переменные окружения"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "rundll32.exe",
+          "args": "sysdm.cpl,EditEnvironmentVariables"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.appwiz",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Программы и компоненты",
+      "phrases": [
+        "программы и компоненты",
+        "установка и удаление программ"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "appwiz.cpl",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.powercfg_cpl",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Электропитание",
+      "phrases": [
+        "электропитание",
+        "схемы электропитания"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "powercfg.cpl",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.main_cpl",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Свойства мыши",
+      "phrases": [
+        "свойства мыши",
+        "чувствительность мыши",
+        "скорость мыши"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "main.cpl",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.timedate",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Дата и время (классическое)",
+      "phrases": [
+        "часовой пояс",
+        "изменить время"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "timedate.cpl",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.charmap",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Таблица символов",
+      "phrases": [
+        "таблица символов",
+        "спецсимволы"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "charmap.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.perfmon",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Системный монитор",
+      "phrases": [
+        "системный монитор",
+        "монитор производительности"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "perfmon.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.msconfig",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Конфигурация системы",
+      "phrases": [
+        "конфигурация системы",
+        "мсконфиг"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "msconfig.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.dxdiag",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Средство диагностики DirectX",
+      "phrases": [
+        "диагностика директ икс",
+        "дх диаг",
+        "dxdiag"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "dxdiag.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.lusrmgr",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Локальные пользователи",
+      "phrases": [
+        "локальные пользователи",
+        "пользователи компьютера"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "lusrmgr.msc",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.dfrgui",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Оптимизация дисков",
+      "phrases": [
+        "дефрагментация",
+        "оптимизация дисков"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "dfrgui.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.rstrui",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Восстановление системы (точки)",
+      "phrases": [
+        "точка восстановления",
+        "откати систему"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "rstrui.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.winfeatures",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Компоненты Windows",
+      "phrases": [
+        "компоненты windows",
+        "включение компонентов"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "optionalfeatures.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.mstsc",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Удалённый рабочий стол",
+      "phrases": [
+        "удаленный рабочий стол",
+        "подключение к удаленному компьютеру"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "mstsc.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.fonts_dir",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Папка шрифтов",
+      "phrases": [
+        "папка шрифтов"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "shell:Fonts",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.gpedit",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Редактор групповой политики",
+      "phrases": [
+        "групповая политика",
+        "редактор политик"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "gpedit.msc",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.wordpad_notes",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Записки",
+      "phrases": [
+        "записки",
+        "стикеры",
+        "заметки на рабочем столе"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "explorer.exe",
+          "args": "shell:AppsFolder\\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe!App"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.snippingtool",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Ножницы (приложение)",
+      "phrases": [
+        "приложение ножницы",
+        "инструмент ножницы"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "ms-screensketch:",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.photos",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Фотографии",
+      "phrases": [
+        "фотографии",
+        "просмотр фото",
+        "галерея"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "ms-photos:",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.camera",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Камера",
+      "phrases": [
+        "камеру",
+        "веб камеру",
+        "камера"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "microsoft.windows.camera:",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.clock",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Часы и будильник",
+      "phrases": [
+        "будильник",
+        "часы windows",
+        "секундомер"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "ms-clock:",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.store",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Microsoft Store",
+      "phrases": [
+        "магазин microsoft",
+        "майкрософт стор",
+        "магазин приложений"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "ms-windows-store:",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.xbox",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Xbox",
+      "phrases": [
+        "иксбокс",
+        "приложение xbox"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "xbox:",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.weather_app",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Погода",
+      "phrases": [
+        "приложение погода"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "bingweather:",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.maps",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Карты",
+      "phrases": [
+        "карты",
+        "приложение карты"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "bingmaps:",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.calendar",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Календарь",
+      "phrases": [
+        "календарь"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "outlookcal:",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.mail",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Почта Outlook",
+      "phrases": [
+        "почта outlook",
+        "аутлук"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "outlookmail:",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.gethelp",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Техническая поддержка",
+      "phrases": [
+        "техподдержка windows",
+        "получить помощь"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "ms-contact-support:",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.feedback",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Центр отзывов",
+      "phrases": [
+        "центр отзывов"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "feedback-hub:",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.recorder",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Звукозапись",
+      "phrases": [
+        "звукозапись",
+        "диктофон"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "explorer.exe",
+          "args": "shell:AppsFolder\\Microsoft.WindowsSoundRecorder_8wekyb3d8bbwe!App"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.phonelink",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Связь с телефоном",
+      "phrases": [
+        "связь с телефоном",
+        "телефон"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "ms-phone:",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.quickassist",
+      "folder": [
+        "Windows",
+        "Программы"
+      ],
+      "name": "Быстрая помощь",
+      "phrases": [
+        "быстрая помощь",
+        "удаленная помощь"
+      ],
+      "optional": [
+        "открой",
+        "запусти",
+        "включи",
+        "мне",
+        "покажи"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "quickassist.exe",
+          "args": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.show_desktop",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Показать рабочий стол (вкл/выкл)",
+      "phrases": [
+        "рабочий стол",
+        "переключи рабочий стол"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+d"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.close_app_keys",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Закрыть программу (Alt+F4)",
+      "phrases": [
+        "закрой программу",
+        "закрой приложение",
+        "выйди из программы"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "alt+f4"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.explorer_win",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Открыть проводник (Win+E)",
+      "phrases": [
+        "новое окно проводника"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+e"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.winx",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Меню Win+X",
+      "phrases": [
+        "меню win x",
+        "контекстное меню пуска"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+x"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.notif",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Уведомления",
+      "phrases": [
+        "уведомления",
+        "покажи уведомления"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+n"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.tray",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Скрытые значки трея",
+      "phrases": [
+        "трей",
+        "область уведомлений"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+b"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.taskbar_focus",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Фокус на панель задач",
+      "phrases": [
+        "перейди на панель задач"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+t"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.narrator",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Экранный диктор",
+      "phrases": [
+        "экранный диктор",
+        "диктор"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+ctrl+enter"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.colorfilter_keys",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Цветовой фильтр вкл/выкл",
+      "phrases": [
+        "включи цветовой фильтр",
+        "черно белый экран"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+ctrl+c"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.gpu_reset",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Перезапуск видеодрайвера",
+      "phrases": [
+        "перезапусти видеодрайвер",
+        "сбрось видеодрайвер",
+        "черный экран помоги"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+ctrl+shift+b"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.osk_keys",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Экранная клавиатура (Win+Ctrl+O)",
+      "phrases": [
+        "включи экранную клавиатуру"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+ctrl+o"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.game_shot",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Скриншот игры (Game Bar)",
+      "phrases": [
+        "скриншот игры",
+        "сфоткай игру"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+alt+printscreen"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.game_clip",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Записать последние 30 секунд",
+      "phrases": [
+        "сохрани последние секунды",
+        "запиши что было",
+        "сохрани клип"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+alt+g"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.game_mic",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Микрофон в записи Game Bar",
+      "phrases": [
+        "микрофон в записи"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+alt+m"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.snap_up",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Окно вверх (Win+↑)",
+      "phrases": [
+        "окно вверх",
+        "окно наверх"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+up"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.snap_down",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Окно вниз (Win+↓)",
+      "phrases": [
+        "окно вниз",
+        "окно опусти"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+down"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.snap_layouts",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Макеты привязки",
+      "phrases": [
+        "макеты окон",
+        "раскладка окон"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+z"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.peek",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Подсмотреть рабочий стол",
+      "phrases": [
+        "подсмотри рабочий стол"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+comma"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.minimize_others",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Свернуть все, кроме активного",
+      "phrases": [
+        "сверни остальные окна",
+        "оставь только это окно"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+home"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.alt_tab",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Переключиться на прошлое окно",
+      "phrases": [
+        "прошлое окно",
+        "вернись в прошлое окно",
+        "алт таб"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "alt+tab"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.layout_next",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Следующий язык ввода",
+      "phrases": [
+        "следующий язык",
+        "переключи язык"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+space"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.voice_access",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Голосовой доступ",
+      "phrases": [
+        "голосовой доступ windows"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+ctrl+s"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.copilot",
+      "folder": [
+        "Windows",
+        "Оболочка"
+      ],
+      "name": "Copilot",
+      "phrases": [
+        "копилот",
+        "открой копилот"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "win+c"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.zoom_in",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "Увеличить масштаб",
+      "phrases": [
+        "увеличь масштаб",
+        "приблизь",
+        "крупнее"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+plus"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.zoom_out",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "Уменьшить масштаб",
+      "phrases": [
+        "уменьши масштаб",
+        "отдали",
+        "мельче"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+minus"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.zoom_reset",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "Сбросить масштаб",
+      "phrases": [
+        "сбрось масштаб",
+        "обычный масштаб",
+        "масштаб сто процентов"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+0"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.find",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "Поиск на странице",
+      "phrases": [
+        "найди на странице",
+        "поиск по странице",
+        "контрол эф"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+f"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.print",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "Печать",
+      "phrases": [
+        "распечатай",
+        "печать",
+        "напечатай"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+p"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.save_as",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "Сохранить как",
+      "phrases": [
+        "сохрани как",
+        "сохранить как"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+shift+s"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.new_doc",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "Новый документ",
+      "phrases": [
+        "новый документ",
+        "новый файл",
+        "создай новый файл"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+n"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.open_file",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "Открыть файл (Ctrl+O)",
+      "phrases": [
+        "окно открытия файла",
+        "контрол о"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+o"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.page_down",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "Страница вниз",
+      "phrases": [
+        "страница вниз",
+        "листай вниз",
+        "пролистай вниз"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "pagedown"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.page_up",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "Страница вверх",
+      "phrases": [
+        "страница вверх",
+        "листай вверх",
+        "пролистай вверх"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "pageup"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.go_top",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "В начало",
+      "phrases": [
+        "в начало страницы",
+        "в самый верх",
+        "наверх страницы"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+home"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.go_bottom",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "В конец",
+      "phrases": [
+        "в конец страницы",
+        "в самый низ",
+        "вниз страницы"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+end"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.key_del",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "Delete",
+      "phrases": [
+        "нажми делит",
+        "нажми удалить"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "delete"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.key_back",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "Backspace",
+      "phrases": [
+        "сотри",
+        "стереть символ",
+        "нажми бэкспейс"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "backspace"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.key_up",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "Стрелка вверх",
+      "phrases": [
+        "стрелка вверх"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "up"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.key_down",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "Стрелка вниз",
+      "phrases": [
+        "стрелка вниз"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "down"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.key_left",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "Стрелка влево",
+      "phrases": [
+        "стрелка влево"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "left"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.key_right",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "Стрелка вправо",
+      "phrases": [
+        "стрелка вправо"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "right"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.key_f5",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "Обновить (F5)",
+      "phrases": [
+        "обнови страницу",
+        "перезагрузи страницу",
+        "эф пять"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "f5"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.caps",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "Caps Lock",
+      "phrases": [
+        "капс лок",
+        "большие буквы"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "capslock"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.delete_word",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "Удалить слово",
+      "phrases": [
+        "сотри слово",
+        "удали слово"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+backspace"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.select_line",
+      "folder": [
+        "Windows",
+        "Горячие клавиши"
+      ],
+      "name": "Выделить до начала строки",
+      "phrases": [
+        "выдели строку"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "shift+home"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.close_app",
+      "folder": [
+        "Windows",
+        "Система"
+      ],
+      "name": "Закрыть программу по имени",
+      "phrases": [
+        "закрой {приложение}",
+        "заверши {приложение}"
+      ],
+      "actions": [
+        {
+          "type": "Window.CloseApp",
+          "name": "{приложение}"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.topmost",
+      "folder": [
+        "Windows",
+        "Система"
+      ],
+      "name": "Поверх всех окон (вкл/выкл)",
+      "phrases": [
+        "поверх всех окон",
+        "закрепи окно сверху",
+        "окно поверх всех"
+      ],
+      "actions": [
+        {
+          "type": "Window.Topmost"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.monitor_off",
+      "folder": [
+        "Windows",
+        "Система"
+      ],
+      "name": "Выключить экран",
+      "phrases": [
+        "выключи экран",
+        "выключи монитор",
+        "погаси экран"
+      ],
+      "actions": [
+        {
+          "type": "System.MonitorOff"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.dark_on",
+      "folder": [
+        "Windows",
+        "Система"
+      ],
+      "name": "Тёмная тема Windows",
+      "phrases": [
+        "темная тема",
+        "включи темную тему",
+        "сделай windows темным"
+      ],
+      "actions": [
+        {
+          "type": "System.DarkTheme",
+          "on": true
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.dark_off",
+      "folder": [
+        "Windows",
+        "Система"
+      ],
+      "name": "Светлая тема Windows",
+      "phrases": [
+        "светлая тема",
+        "включи светлую тему",
+        "сделай windows светлым"
+      ],
+      "actions": [
+        {
+          "type": "System.DarkTheme",
+          "on": false
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.bright_up",
+      "folder": [
+        "Windows",
+        "Питание"
+      ],
+      "name": "Ярче",
+      "phrases": [
+        "ярче",
+        "сделай ярче",
+        "прибавь яркость"
+      ],
+      "actions": [
+        {
+          "type": "System.BrightnessStep",
+          "step": 10
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.bright_up_n",
+      "folder": [
+        "Windows",
+        "Питание"
+      ],
+      "name": "Ярче на N",
+      "phrases": [
+        "ярче на {число}",
+        "прибавь яркость на {число}"
+      ],
+      "actions": [
+        {
+          "type": "System.BrightnessStep",
+          "step": "{число}"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.bright_down",
+      "folder": [
+        "Windows",
+        "Питание"
+      ],
+      "name": "Темнее",
+      "phrases": [
+        "темнее",
+        "сделай темнее",
+        "убавь яркость"
+      ],
+      "actions": [
+        {
+          "type": "System.BrightnessStep",
+          "step": -10
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.bright_down_n",
+      "folder": [
+        "Windows",
+        "Питание"
+      ],
+      "name": "Темнее на N",
+      "phrases": [
+        "темнее на {число}",
+        "убавь яркость на {число}"
+      ],
+      "actions": [
+        {
+          "type": "System.BrightnessStep",
+          "step": "-{число}"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.hidden_on",
+      "folder": [
+        "Windows",
+        "Система"
+      ],
+      "name": "Показать скрытые файлы",
+      "phrases": [
+        "покажи скрытые файлы",
+        "показывать скрытые папки"
+      ],
+      "actions": [
+        {
+          "type": "Run.Command.Hidden",
+          "cmd": "reg add HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced /v Hidden /t REG_DWORD /d 1 /f",
+          "powershell": false,
+          "trusted": true
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.hidden_off",
+      "folder": [
+        "Windows",
+        "Система"
+      ],
+      "name": "Спрятать скрытые файлы",
+      "phrases": [
+        "спрячь скрытые файлы",
+        "не показывай скрытые файлы"
+      ],
+      "actions": [
+        {
+          "type": "Run.Command.Hidden",
+          "cmd": "reg add HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced /v Hidden /t REG_DWORD /d 2 /f",
+          "powershell": false,
+          "trusted": true
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.ext_on",
+      "folder": [
+        "Windows",
+        "Система"
+      ],
+      "name": "Показать расширения файлов",
+      "phrases": [
+        "покажи расширения файлов",
+        "показывай расширения"
+      ],
+      "actions": [
+        {
+          "type": "Run.Command.Hidden",
+          "cmd": "reg add HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced /v HideFileExt /t REG_DWORD /d 0 /f",
+          "powershell": false,
+          "trusted": true
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.ext_off",
+      "folder": [
+        "Windows",
+        "Система"
+      ],
+      "name": "Скрыть расширения файлов",
+      "phrases": [
+        "спрячь расширения файлов",
+        "скрой расширения"
+      ],
+      "actions": [
+        {
+          "type": "Run.Command.Hidden",
+          "cmd": "reg add HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced /v HideFileExt /t REG_DWORD /d 1 /f",
+          "powershell": false,
+          "trusted": true
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.explorer_restart",
+      "folder": [
+        "Windows",
+        "Система"
+      ],
+      "name": "Перезапустить проводник",
+      "phrases": [
+        "перезапусти проводник",
+        "перезагрузи проводник",
+        "перезапусти панель задач"
+      ],
+      "actions": [
+        {
+          "type": "Run.Command.Hidden",
+          "cmd": "taskkill /F /IM explorer.exe & start explorer.exe",
+          "powershell": false,
+          "trusted": true
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.flush_dns",
+      "folder": [
+        "Windows",
+        "Система"
+      ],
+      "name": "Очистить кэш DNS",
+      "phrases": [
+        "очисти кэш днс",
+        "сбрось днс",
+        "очисти днс"
+      ],
+      "actions": [
+        {
+          "type": "Run.Command.Hidden",
+          "cmd": "ipconfig /flushdns",
+          "powershell": false,
+          "trusted": true
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.kill_hung",
+      "folder": [
+        "Windows",
+        "Система"
+      ],
+      "name": "Закрыть зависшие программы",
+      "phrases": [
+        "закрой зависшие программы",
+        "убей зависшие программы",
+        "что то зависло"
+      ],
+      "actions": [
+        {
+          "type": "Run.Command.Hidden",
+          "cmd": "taskkill /F /FI \"STATUS eq NOT RESPONDING\"",
+          "powershell": false,
+          "trusted": true
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.clear_temp",
+      "folder": [
+        "Windows",
+        "Система"
+      ],
+      "name": "Очистить временные файлы",
+      "phrases": [
+        "очисти временные файлы",
+        "удали временные файлы",
+        "почисти мусор"
+      ],
+      "actions": [
+        {
+          "type": "Run.Command.Hidden",
+          "cmd": "Remove-Item \"$env:TEMP\\*\" -Recurse -Force -ErrorAction SilentlyContinue",
+          "powershell": true,
+          "trusted": false
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.clip_read",
+      "folder": [
+        "Windows",
+        "Система"
+      ],
+      "name": "Прочитать буфер обмена",
+      "phrases": [
+        "прочитай буфер обмена",
+        "что в буфере обмена",
+        "что я скопировал"
+      ],
+      "actions": [
+        {
+          "type": "System.Clipboard",
+          "text": null
+        }
+      ],
+      "reply": {
+        "clips": []
+      }
+    },
+    {
+      "id": "windows.clip_clear",
+      "folder": [
+        "Windows",
+        "Система"
+      ],
+      "name": "Очистить буфер обмена",
+      "phrases": [
+        "очисти буфер обмена",
+        "сотри буфер обмена"
+      ],
+      "actions": [
+        {
+          "type": "System.Clipboard",
+          "text": ""
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.screensaver",
+      "folder": [
+        "Windows",
+        "Система"
+      ],
+      "name": "Заставка",
+      "phrases": [
+        "включи заставку",
+        "заставка"
+      ],
+      "actions": [
+        {
+          "type": "Launch.File",
+          "path": "scrnsave.scr",
+          "args": "/s"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.unmute_bit",
+      "folder": [
+        "Windows",
+        "Система"
+      ],
+      "name": "Звук на 30",
+      "phrases": [
+        "верни нормальную громкость",
+        "нормальная громкость"
+      ],
+      "actions": [
+        {
+          "type": "System.VolumeSet",
+          "level": 30
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "windows.ip",
+      "folder": [
+        "Windows",
+        "Информация"
+      ],
+      "name": "Мой IP-адрес",
+      "phrases": [
+        "мой ip",
+        "какой у меня ip",
+        "айпи адрес"
+      ],
+      "actions": [
+        {
+          "type": "System.Info",
+          "what": "ip"
+        }
+      ],
+      "reply": {
+        "clips": []
+      }
+    },
+    {
+      "id": "windows.internet",
+      "folder": [
+        "Windows",
+        "Информация"
+      ],
+      "name": "Проверка интернета",
+      "phrases": [
+        "есть ли интернет",
+        "проверь интернет",
+        "работает ли интернет"
+      ],
+      "actions": [
+        {
+          "type": "System.Info",
+          "what": "internet"
+        }
+      ],
+      "reply": {
+        "clips": []
+      }
+    },
+    {
+      "id": "windows.uptime",
+      "folder": [
+        "Windows",
+        "Информация"
+      ],
+      "name": "Время работы компьютера",
+      "phrases": [
+        "сколько работает компьютер",
+        "время работы компьютера",
+        "аптайм"
+      ],
+      "actions": [
+        {
+          "type": "System.Info",
+          "what": "uptime"
+        }
+      ],
+      "reply": {
+        "clips": []
+      }
+    },
+    {
+      "id": "windows.disk",
+      "folder": [
+        "Windows",
+        "Информация"
+      ],
+      "name": "Свободное место на дисках",
+      "phrases": [
+        "сколько места на диске",
+        "свободное место",
+        "сколько памяти на диске"
+      ],
+      "actions": [
+        {
+          "type": "System.Info",
+          "what": "disk"
+        }
+      ],
+      "reply": {
+        "clips": []
+      }
+    },
+    {
+      "id": "windows.cpu_ram",
+      "folder": [
+        "Windows",
+        "Информация"
+      ],
+      "name": "Загрузка процессора и памяти",
+      "phrases": [
+        "сколько оперативки занято",
+        "загрузка оперативной памяти"
+      ],
+      "actions": [
+        {
+          "type": "System.Info",
+          "what": "load"
+        }
+      ],
+      "reply": {
+        "clips": []
+      }
+    }
+  ]
 }

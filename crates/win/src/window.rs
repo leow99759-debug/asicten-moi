@@ -148,6 +148,37 @@ pub fn close_all() -> Result<usize, String> {
     Ok(wins.len())
 }
 
+/// «Закрой телеграм»: WM_CLOSE to that app's windows (its ✕: may go to tray or ask to save).
+pub fn close_app(name: &str) -> Result<usize, String> {
+    let wins: Vec<HWND> = app_windows()
+        .into_iter()
+        .filter(|&h| exe_of(h).is_some_and(|exe| crate::apps::exe_matches(name, &exe)))
+        .collect();
+    if wins.is_empty() {
+        return Err(format!("программа «{name}» не открыта"));
+    }
+    for &h in &wins {
+        // SAFETY: valid handle, WM_CLOSE takes no params.
+        let _ = unsafe { PostMessageW(Some(h), WM_CLOSE, WPARAM(0), LPARAM(0)) };
+    }
+    Ok(wins.len())
+}
+
+/// Toggle «поверх всех окон» on the active window; returns the new state.
+pub fn toggle_topmost() -> Result<bool, String> {
+    use windows::Win32::UI::WindowsAndMessaging::{
+        HWND_NOTOPMOST, HWND_TOPMOST, SWP_NOMOVE, SWP_NOSIZE, WS_EX_TOPMOST,
+    };
+    let h = foreground()?;
+    // SAFETY: valid handle.
+    let on = unsafe { GetWindowLongW(h, GWL_EXSTYLE) } as u32 & WS_EX_TOPMOST.0 == 0;
+    let after = if on { HWND_TOPMOST } else { HWND_NOTOPMOST };
+    // SAFETY: valid handle; position and size are kept.
+    unsafe { SetWindowPos(h, Some(after), 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE) }
+        .map_err(|e| e.to_string())?;
+    Ok(on)
+}
+
 /// Keep an overlay out of screenshots and screen recordings (Windows 10 2004+).
 pub fn hide_from_capture(hwnd: isize) {
     // SAFETY: the handle comes from a live Tauri window; failure only means older Windows.

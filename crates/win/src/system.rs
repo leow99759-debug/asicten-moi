@@ -27,6 +27,9 @@ pub fn perform(action: &Action) -> Option<Out> {
         Action::Lock => done(win::lock()),
         Action::SetPowerPlan { plan } => done(power_plan(*plan)),
         Action::Brightness { level } => n(level).and_then(|l| done(brightness(l))),
+        Action::BrightnessStep { step } => n(step).and_then(|d| done(brightness_step(d))),
+        Action::MonitorOff => done(win::monitor_off()),
+        Action::DarkTheme { on } => done(win::dark_theme(*on)),
         Action::Screenshot { region: true } => done(shell_open("ms-screenclip:", "", None, false)),
         Action::Screenshot { region: false } => shot(),
         Action::OpenSettings { uri } => {
@@ -47,6 +50,8 @@ pub fn perform(action: &Action) -> Option<Out> {
             None => win::get_clipboard().map(Some),
         },
         Action::Info { what } if what.starts_with("rate:") => rate(&what[5..]).map(Some),
+        Action::Info { what } if what == "ip" => local_ip().map(Some),
+        Action::Info { what } if what == "internet" => Ok(Some(internet())),
         Action::Info { what } => win::info(what).map(Some),
         _ => return None,
     })
@@ -106,6 +111,41 @@ fn brightness(level: f64) -> Result<(), String> {
     .map_err(|_| "яркость меняется только на встроенном экране".into())
 }
 
+/// Relative laptop brightness (first panel only; external monitors ignore WMI).
+fn brightness_step(delta: f64) -> Result<(), String> {
+    let d = delta.clamp(-100.0, 100.0) as i32;
+    let script = format!(
+        "$c=(Get-CimInstance -Namespace root/WMI -ClassName WmiMonitorBrightness | Select-Object -First 1).CurrentBrightness; \
+         $b=[math]::Max(0,[math]::Min(100,$c+({d}))); \
+         (Get-CimInstance -Namespace root/WMI -ClassName WmiMonitorBrightnessMethods | Select-Object -First 1 | \
+         Invoke-CimMethod -MethodName WmiSetBrightness -Arguments @{{Timeout=1;Brightness=[byte]$b}}) | Out-Null"
+    );
+    run_hidden(
+        "powershell",
+        &["-NoProfile", "-NonInteractive", "-Command", &script],
+    )
+    .map(|_| ())
+    .map_err(|_| "яркость меняется только на встроенном экране".into())
+}
+
+/// Local LAN address: a UDP «connect» only picks the route, no packet leaves the PC.
+fn local_ip() -> Result<String, String> {
+    let s = std::net::UdpSocket::bind("0.0.0.0:0").map_err(|e| e.to_string())?;
+    s.connect("8.8.8.8:80")
+        .map_err(|_| jarvis_core::NO_INTERNET.to_owned())?;
+    let ip = s.local_addr().map_err(|e| e.to_string())?.ip();
+    Ok(format!("Ваш локальный IP-адрес {ip}"))
+}
+
+/// Can we reach the internet (TCP to Cloudflare DNS, 3 s)?
+fn internet() -> String {
+    let addr = std::net::SocketAddr::from(([1, 1, 1, 1], 443));
+    match std::net::TcpStream::connect_timeout(&addr, std::time::Duration::from_secs(3)) {
+        Ok(_) => "Интернет работает, сэр".into(),
+        Err(_) => "Сэр, интернета нет".into(),
+    }
+}
+
 /// Toast notifications off/on (closest public switch to «Не беспокоить»).
 fn dnd(on: bool) -> Result<(), String> {
     let v = if on { "0" } else { "1" };
@@ -151,7 +191,7 @@ mod win {
     };
     use windows::Win32::System::Shutdown::LockWorkStation;
     use windows::Win32::System::SystemInformation::{
-        GetLocalTime, GlobalMemoryStatusEx, MEMORYSTATUSEX,
+        GetLocalTime, GetTickCount64, GlobalMemoryStatusEx, MEMORYSTATUSEX,
     };
     use windows::Win32::System::Threading::GetSystemTimes;
     use windows::Win32::UI::Shell::{
@@ -174,6 +214,87 @@ mod win {
     pub fn lock() -> Result<(), String> {
         // SAFETY: plain Win32 call.
         unsafe { LockWorkStation() }.map_err(e)
+    }
+
+    pub fn monitor_off() -> Result<(), String> {
+        use windows::Win32::Foundation::{LPARAM, WPARAM};
+        use windows::Win32::UI::WindowsAndMessaging::{
+            PostMessageW, HWND_BROADCAST, SC_MONITORPOWER, WM_SYSCOMMAND,
+        };
+        // let the spoken reply start before the screen goes dark
+        std::thread::sleep(std::time::Duration::from_millis(600));
+        // SAFETY: broadcast post, 2 = power off; no pointers involved.
+        unsafe {
+            PostMessageW(
+                Some(HWND_BROADCAST),
+                WM_SYSCOMMAND,
+                WPARAM(SC_MONITORPOWER as usize),
+                LPARAM(2),
+            )
+        }
+        .map_err(e)
+    }
+
+    /// Apps + taskbar theme (HKCU Personalize), then tell running apps to repaint.
+    pub fn dark_theme(on: bool) -> Result<(), String> {
+        use windows::core::w;
+        use windows::Win32::Foundation::{LPARAM, WPARAM};
+        use windows::Win32::UI::WindowsAndMessaging::{
+            SendMessageTimeoutW, HWND_BROADCAST, SMTO_ABORTIFHUNG, WM_SETTINGCHANGE,
+        };
+        use winreg::enums::{HKEY_CURRENT_USER, KEY_SET_VALUE};
+        let key = winreg::RegKey::predef(HKEY_CURRENT_USER)
+            .open_subkey_with_flags(
+                r"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize",
+                KEY_SET_VALUE,
+            )
+            .map_err(|err| err.to_string())?;
+        let light = u32::from(!on);
+        for v in ["AppsUseLightTheme", "SystemUsesLightTheme"] {
+            key.set_value(v, &light).map_err(|err| err.to_string())?;
+        }
+        let area = w!("ImmersiveColorSet");
+        // SAFETY: `area` is a static NUL-terminated string; timeout bounds hung windows.
+        unsafe {
+            SendMessageTimeoutW(
+                HWND_BROADCAST,
+                WM_SETTINGCHANGE,
+                WPARAM(0),
+                LPARAM(area.as_ptr() as isize),
+                SMTO_ABORTIFHUNG,
+                1000,
+                None,
+            )
+        };
+        Ok(())
+    }
+
+    /// Fixed drives with size, via GetLogicalDrives + GetDiskFreeSpaceExW.
+    fn drives() -> Vec<(char, u64, u64)> {
+        use windows::core::HSTRING;
+        use windows::Win32::Storage::FileSystem::{
+            GetDiskFreeSpaceExW, GetDriveTypeW, GetLogicalDrives,
+        };
+        const DRIVE_FIXED: u32 = 3;
+        const GB: u64 = 1 << 30;
+        // SAFETY: no arguments.
+        let mask = unsafe { GetLogicalDrives() };
+        (0..26u8)
+            .filter(|i| mask & (1 << i) != 0)
+            .filter_map(|i| {
+                let letter = char::from(b'A' + i);
+                let root = HSTRING::from(format!("{letter}:\\"));
+                // SAFETY: NUL-terminated root path alive for the calls; out-pointers to locals.
+                unsafe {
+                    if GetDriveTypeW(&root) != DRIVE_FIXED {
+                        return None;
+                    }
+                    let (mut free, mut total) = (0u64, 0u64);
+                    GetDiskFreeSpaceExW(&root, Some(&mut free), Some(&mut total), None).ok()?;
+                    Some((letter, free / GB, total / GB))
+                }
+            })
+            .collect()
     }
 
     pub fn empty_recycle_bin() -> Result<(), String> {
@@ -316,6 +437,9 @@ mod win {
                     s.ACLineStatus == 1,
                 )
             }
+            // SAFETY: no arguments.
+            "uptime" => info::uptime_phrase(unsafe { GetTickCount64() } / 1000),
+            "disk" => info::disk_phrase(&drives()),
             "load" | "cpu" | "ram" => {
                 let mut m = MEMORYSTATUSEX {
                     dwLength: std::mem::size_of::<MEMORYSTATUSEX>() as u32,
@@ -337,6 +461,12 @@ mod win {
         Err(NO.into())
     }
     pub fn lock() -> Result<(), String> {
+        Err(NO.into())
+    }
+    pub fn monitor_off() -> Result<(), String> {
+        Err(NO.into())
+    }
+    pub fn dark_theme(_: bool) -> Result<(), String> {
         Err(NO.into())
     }
     pub fn empty_recycle_bin() -> Result<(), String> {

@@ -1,0 +1,348 @@
+{
+  "id": "discord",
+  "name": "Discord",
+  "description": "Микрофон, звук, звонки, серверы и каналы голосом (стандартные горячие клавиши Discord).",
+  "category": "Соцсети и общение",
+  "version": "1.0.0",
+  "icon": "discord",
+  "popular": true,
+  "commands": [
+    {
+      "id": "discord.mute",
+      "folder": [
+        "Discord",
+        "Управление"
+      ],
+      "name": "Микрофон вкл/выкл",
+      "phrases": [
+        "выключи микрофон в дискорде",
+        "замьють меня",
+        "мут",
+        "включи микрофон в дискорде"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+shift+m"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "discord.exe"
+      }
+    },
+    {
+      "id": "discord.deafen",
+      "folder": [
+        "Discord",
+        "Управление"
+      ],
+      "name": "Звук вкл/выкл (наушники)",
+      "phrases": [
+        "выключи звук в дискорде",
+        "заглуши дискорд",
+        "включи звук в дискорде"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+shift+d"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "discord.exe"
+      }
+    },
+    {
+      "id": "discord.switcher",
+      "folder": [
+        "Discord",
+        "Управление"
+      ],
+      "name": "Быстрый переход",
+      "phrases": [
+        "найди сервер",
+        "быстрый переход",
+        "найди канал"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+k"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "discord.exe"
+      }
+    },
+    {
+      "id": "discord.answer",
+      "folder": [
+        "Discord",
+        "Управление"
+      ],
+      "name": "Принять звонок",
+      "phrases": [
+        "прими звонок",
+        "ответь на звонок",
+        "принять звонок"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+enter"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "discord.exe"
+      }
+    },
+    {
+      "id": "discord.decline",
+      "folder": [
+        "Discord",
+        "Управление"
+      ],
+      "name": "Отклонить звонок",
+      "phrases": [
+        "отклони звонок",
+        "сбрось звонок"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "esc"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "discord.exe"
+      }
+    },
+    {
+      "id": "discord.next_server",
+      "folder": [
+        "Discord",
+        "Управление"
+      ],
+      "name": "Следующий сервер",
+      "phrases": [
+        "следующий сервер"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+alt+down"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "discord.exe"
+      }
+    },
+    {
+      "id": "discord.prev_server",
+      "folder": [
+        "Discord",
+        "Управление"
+      ],
+      "name": "Предыдущий сервер",
+      "phrases": [
+        "предыдущий сервер"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+alt+up"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "discord.exe"
+      }
+    },
+    {
+      "id": "discord.next_channel",
+      "folder": [
+        "Discord",
+        "Управление"
+      ],
+      "name": "Следующий канал",
+      "phrases": [
+        "следующий канал"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "alt+down"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "discord.exe"
+      }
+    },
+    {
+      "id": "discord.prev_channel",
+      "folder": [
+        "Discord",
+        "Управление"
+      ],
+      "name": "Предыдущий канал",
+      "phrases": [
+        "предыдущий канал"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "alt+up"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "discord.exe"
+      }
+    },
+    {
+      "id": "discord.unread",
+      "folder": [
+        "Discord",
+        "Управление"
+      ],
+      "name": "К непрочитанному каналу",
+      "phrases": [
+        "непрочитанный канал",
+        "к непрочитанному"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "alt+shift+down"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "discord.exe"
+      }
+    },
+    {
+      "id": "discord.upload",
+      "folder": [
+        "Discord",
+        "Управление"
+      ],
+      "name": "Загрузить файл",
+      "phrases": [
+        "отправь файл",
+        "прикрепи файл"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+shift+u"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "discord.exe"
+      }
+    },
+    {
+      "id": "discord.emoji",
+      "folder": [
+        "Discord",
+        "Управление"
+      ],
+      "name": "Эмодзи",
+      "phrases": [
+        "эмодзи в дискорде"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+e"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "discord.exe"
+      }
+    },
+    {
+      "id": "discord.settings",
+      "folder": [
+        "Discord",
+        "Управление"
+      ],
+      "name": "Настройки Discord",
+      "phrases": [
+        "настройки дискорда"
+      ],
+      "actions": [
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+comma"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "ok"
+        ]
+      },
+      "when": {
+        "foreground": "discord.exe"
+      }
+    }
+  ]
+}

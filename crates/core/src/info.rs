@@ -106,6 +106,43 @@ pub fn load_phrase(cpu: u8, ram: u8) -> String {
     )
 }
 
+/// «Компьютер работает 2 дня 3 часа 5 минут».
+pub fn uptime_phrase(secs: u64) -> String {
+    let (d, h, m) = (
+        (secs / 86_400) as i64,
+        (secs / 3600 % 24) as i64,
+        (secs / 60 % 60) as i64,
+    );
+    let mut parts = Vec::new();
+    if d > 0 {
+        parts.push(format!("{d} {}", plural(d, "день", "дня", "дней")));
+    }
+    if h > 0 {
+        parts.push(format!("{h} {}", plural(h, "час", "часа", "часов")));
+    }
+    if m > 0 || parts.is_empty() {
+        parts.push(format!("{m} {}", plural(m, "минуту", "минуты", "минут")));
+    }
+    format!("Компьютер работает {}, сэр", parts.join(" "))
+}
+
+/// Fixed drives `(letter, free GB, total GB)` → «Диск C: свободно 120 из 476 гигабайт».
+pub fn disk_phrase(drives: &[(char, u64, u64)]) -> String {
+    if drives.is_empty() {
+        return "Сэр, не удалось прочитать диски".into();
+    }
+    drives
+        .iter()
+        .map(|&(l, free, total)| {
+            format!(
+                "Диск {l}: свободно {free} из {total} {}",
+                plural(total as i64, "гигабайта", "гигабайт", "гигабайт")
+            )
+        })
+        .collect::<Vec<_>>()
+        .join(". ")
+}
+
 /// NBU daily rates JSON (`bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json`,
 /// hryvnias per 1 unit) → «Доллар — 41 гривна 25 копеек, сэр».
 pub fn rate_phrase(json: &str, code: &str) -> Option<String> {
@@ -196,6 +233,16 @@ mod tests {
         assert_eq!(
             load_phrase(12, 73),
             "Загрузка процессора 12 процентов, памяти 73 процента"
+        );
+        assert_eq!(
+            uptime_phrase(2 * 86_400 + 3 * 3600 + 5 * 60 + 9),
+            "Компьютер работает 2 дня 3 часа 5 минут, сэр"
+        );
+        assert_eq!(uptime_phrase(40), "Компьютер работает 0 минут, сэр");
+        assert_eq!(uptime_phrase(3600), "Компьютер работает 1 час, сэр");
+        assert_eq!(
+            disk_phrase(&[('C', 120, 476), ('D', 1, 931)]),
+            "Диск C: свободно 120 из 476 гигабайт. Диск D: свободно 1 из 931 гигабайта"
         );
     }
 }
