@@ -116,7 +116,10 @@ fn input_or_window(action: &Action) -> Result<(), String> {
         Action::WindowMinimize => window::show(SW_MINIMIZE),
         Action::WindowMaximize => window::show(SW_MAXIMIZE),
         Action::WindowRestore => window::show(SW_RESTORE),
-        Action::WindowMinimizeAll => keys::press(&keys::parse_combo("win+d")?),
+        // Win+M, not Win+D: no toggle (a second «сверни всё» doesn't bring them back),
+        // «верни все окна» = Win+Shift+M
+        Action::WindowMinimizeAll => keys::press(&keys::parse_combo("win+m")?),
+        Action::WindowCloseAll => window::close_all().map(|_| ()),
         Action::WindowFocus { target } => window::focus(target),
         Action::WindowSnap { side } => keys::press(&keys::parse_combo(match side {
             Side::Left => "win+left",

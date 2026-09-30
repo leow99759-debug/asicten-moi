@@ -26,9 +26,11 @@
      "actions": [
        {"type": "System.PowerPlan", "plan": "balanced"},
        {"type": "System.DND", "on": true},
-       {"type": "System.VolumeSet", "level": 30}
+       {"type": "System.VolumeSet", "level": 30},
+       {"type": "Launch.Find", "name": "spotify"},
+       {"type": "Launch.Find", "name": "visual studio code"}
      ],
-     "reply": {"clips": ["ok"], "text": "Рабочий режим, сэр. Не буду отвлекать"}},
+     "reply": {"clips": ["ok"], "text": "Рабочий режим, сэр. Код и музыка открыты, не буду отвлекать"}},
     {"id": "modes.movie_on", "folder": ["Режимы"], "name": "Режим фильма",
      "phrases": ["режим фильма", "режим кино", "кинорежим"], "optional": ["включи", "запусти", "активируй"],
      "actions": [

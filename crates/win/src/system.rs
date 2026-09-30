@@ -27,12 +27,8 @@ pub fn perform(action: &Action) -> Option<Out> {
         Action::Lock => done(win::lock()),
         Action::SetPowerPlan { plan } => done(power_plan(*plan)),
         Action::Brightness { level } => n(level).and_then(|l| done(brightness(l))),
-        Action::Screenshot { region } => done(if *region {
-            shell_open("ms-screenclip:", "", None, false)
-        } else {
-            // Win+PrtScn saves to Pictures\Screenshots
-            crate::keys::parse_combo("win+printscreen").and_then(|k| win::press(&k))
-        }),
+        Action::Screenshot { region: true } => done(shell_open("ms-screenclip:", "", None, false)),
+        Action::Screenshot { region: false } => shot(),
         Action::OpenSettings { uri } => {
             let uri = if uri.starts_with("ms-settings:") {
                 uri.clone()
@@ -54,6 +50,16 @@ pub fn perform(action: &Action) -> Option<Out> {
         Action::Info { what } => win::info(what).map(Some),
         _ => return None,
     })
+}
+
+#[cfg(windows)]
+fn shot() -> Out {
+    crate::screenshot::take().map(|_| None)
+}
+
+#[cfg(not(windows))]
+fn shot() -> Out {
+    Err("скриншот только в Windows".into())
 }
 
 /// Hryvnia rate from the NBU via the built-in curl.exe (Windows 10 1803+), §8.
@@ -146,8 +152,6 @@ mod win {
     use windows::Win32::UI::Shell::{
         SHEmptyRecycleBinW, SHERB_NOCONFIRMATION, SHERB_NOPROGRESSUI, SHERB_NOSOUND,
     };
-
-    pub use crate::keys::press;
 
     fn e(err: windows::core::Error) -> String {
         err.message()
@@ -323,9 +327,6 @@ mod win {
         Err(NO.into())
     }
     pub fn lock() -> Result<(), String> {
-        Err(NO.into())
-    }
-    pub fn press(_: &[u16]) -> Result<(), String> {
         Err(NO.into())
     }
     pub fn empty_recycle_bin() -> Result<(), String> {

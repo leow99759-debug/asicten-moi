@@ -12,7 +12,11 @@ transparency: number,
 /**
  * Glass blur, 0–100 %.
  */
-blur: number, animations: boolean, avatar: boolean, hud: boolean, on_top: boolean, 
+blur: number, animations: boolean, avatar: boolean, hud: boolean, 
+/**
+ * Listening pill at the top of the screen: «Слушаю…», live transcript, ✓ result.
+ */
+pill: boolean, on_top: boolean, 
 /**
  * Desktop avatar top-left corner, physical px; `None` = bottom-right corner (§3.6).
  */

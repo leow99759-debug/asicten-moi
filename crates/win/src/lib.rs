@@ -12,6 +12,8 @@ pub mod keys;
 pub mod online;
 pub mod recorder;
 #[cfg(windows)]
+pub mod screenshot;
+#[cfg(windows)]
 pub mod speech;
 pub mod system;
 #[cfg(windows)]

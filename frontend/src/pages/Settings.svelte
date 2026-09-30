@@ -35,9 +35,10 @@
     { id: "about", label: t("set.tab.about") },
   ];
 
-  const engines: { id: VoiceEngine | "fish" | "openai"; icon: IconName; title: string; sub: string; soon?: boolean }[] = [
+  const engines: { id: VoiceEngine | "fish" | "eleven" | "openai"; icon: IconName; title: string; sub: string; soon?: boolean }[] = [
     { id: "jarvis", icon: "sparkles", title: t("voice.jarvis"), sub: t("voice.jarvis.sub") },
     { id: "windows", icon: "monitor", title: t("voice.windows"), sub: t("voice.windows.sub") },
+    { id: "eleven", icon: "globe", title: "ElevenLabs", sub: t("voice.fish.sub") },
     { id: "fish", icon: "globe", title: "Fish Audio", sub: t("voice.fish.sub") },
     { id: "openai", icon: "globe", title: "OpenAI", sub: t("voice.online.sub"), soon: true },
   ];
@@ -162,6 +163,9 @@
             {/if}
             <Toggle label={t("panel.avatar")} checked={c.ui.avatar} onchange={(v) => set(() => (c.ui.avatar = v))} />
           </SettingRow>
+          <SettingRow icon="mic" label={t("set.pill")} desc={t("set.pill.sub")}>
+            <Toggle label={t("set.pill")} checked={c.ui.pill} onchange={(v) => set(() => (c.ui.pill = v))} />
+          </SettingRow>
           <SettingRow icon="target" label={t("set.hud")} desc={t("set.hud.sub")}>
             {#if c.ui.hud}
               <button type="button" class="btn" onclick={() => hudPreview()}>{t("hud.preview")}</button>
@@ -188,7 +192,7 @@
               disabled={e.soon}
               class="engine card"
               class:on={c.voice_engine === e.id}
-              onclick={() => (e.id === "fish" ? (tab = "ai") : set(() => (c.voice_engine = e.id as VoiceEngine)))}>
+              onclick={() => (e.id === "fish" || e.id === "eleven" ? (tab = "ai") : set(() => (c.voice_engine = e.id as VoiceEngine)))}>
               <span class="eic"><Icon name={e.icon} size={18} /></span>
               <span class="etx">
                 <span class="et">{e.title}{#if e.soon}<span class="soon">{t("soon.badge")}</span>{/if}</span>
@@ -248,6 +252,12 @@
           </SettingRow>
         </Group>
         <Group title={t("ai.voice")}>
+          <SettingRow icon="volume" label={t("ai.eleven")} desc={t("ai.eleven.sub")} wide>
+            <TextField secret label={t("ai.eleven")} value={c.online.eleven_key} onchange={(v) => set(() => (c.online.eleven_key = v))} />
+          </SettingRow>
+          <SettingRow icon="person" label={t("ai.eleven.voice")} desc={t("ai.eleven.voice.sub")} wide>
+            <TextField label={t("ai.eleven.voice")} value={c.online.eleven_voice} onchange={(v) => set(() => (c.online.eleven_voice = v))} />
+          </SettingRow>
           <SettingRow icon="volume" label={t("ai.fish")} desc={t("ai.fish.sub")} wide>
             <TextField secret label={t("ai.fish")} value={c.online.fish_key} onchange={(v) => set(() => (c.online.fish_key = v))} />
           </SettingRow>

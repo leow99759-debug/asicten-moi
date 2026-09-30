@@ -2,6 +2,7 @@
 
 use windows::core::BOOL;
 use windows::Win32::Foundation::{CloseHandle, HWND, LPARAM, RECT, WPARAM};
+use windows::Win32::Graphics::Dwm::{DwmGetWindowAttribute, DWMWA_CLOAKED};
 use windows::Win32::Graphics::Gdi::{
     EnumDisplayMonitors, GetMonitorInfoW, HDC, HMONITOR, MONITORINFO,
 };
@@ -9,9 +10,10 @@ use windows::Win32::System::Threading::{
     OpenProcess, QueryFullProcessImageNameW, PROCESS_NAME_WIN32, PROCESS_QUERY_LIMITED_INFORMATION,
 };
 use windows::Win32::UI::WindowsAndMessaging::{
-    EnumWindows, GetForegroundWindow, GetWindowRect, GetWindowTextW, GetWindowThreadProcessId,
-    IsIconic, IsWindowVisible, PostMessageW, SetForegroundWindow, SetWindowPos, ShowWindow,
-    SHOW_WINDOW_CMD, SWP_NOZORDER, SW_RESTORE, WM_CLOSE,
+    EnumWindows, GetClassNameW, GetForegroundWindow, GetWindow, GetWindowLongW, GetWindowRect,
+    GetWindowTextW, GetWindowThreadProcessId, IsIconic, IsWindowVisible, PostMessageW,
+    SetForegroundWindow, SetWindowDisplayAffinity, SetWindowPos, ShowWindow, GWL_EXSTYLE, GW_OWNER,
+    SHOW_WINDOW_CMD, SWP_NOZORDER, SW_RESTORE, WDA_EXCLUDEFROMCAPTURE, WM_CLOSE, WS_EX_TOOLWINDOW,
 };
 
 use crate::keys;
@@ -90,6 +92,66 @@ fn visible_windows() -> Vec<HWND> {
     // SAFETY: callback only touches `v` through the pointer we pass.
     let _ = unsafe { EnumWindows(Some(cb), LPARAM(&mut v as *mut _ as isize)) };
     v
+}
+
+fn class(h: HWND) -> String {
+    let mut buf = [0u16; 128];
+    // SAFETY: buffer is valid for its length.
+    let n = unsafe { GetClassNameW(h, &mut buf) };
+    String::from_utf16_lossy(&buf[..n.max(0) as usize])
+}
+
+/// Windows that show in Alt+Tab: visible, unowned, titled, not tool windows, not cloaked
+/// (other virtual desktops, suspended UWP), not the desktop/taskbar, not Jarvis itself.
+fn app_windows() -> Vec<HWND> {
+    const SHELL: [&str; 5] = [
+        "Progman",
+        "WorkerW",
+        "Shell_TrayWnd",
+        "Shell_SecondaryTrayWnd",
+        "Windows.UI.Core.CoreWindow",
+    ];
+    let me = std::process::id();
+    visible_windows()
+        .into_iter()
+        .filter(|&h| {
+            let mut pid = 0u32;
+            let mut cloaked = 0u32;
+            // SAFETY: valid handle from the enumeration, out-pointers to locals.
+            let (owned, ex, cloak) = unsafe {
+                GetWindowThreadProcessId(h, Some(&mut pid));
+                (
+                    GetWindow(h, GW_OWNER).is_ok_and(|o| !o.0.is_null()),
+                    GetWindowLongW(h, GWL_EXSTYLE) as u32,
+                    DwmGetWindowAttribute(h, DWMWA_CLOAKED, (&mut cloaked as *mut u32).cast(), 4),
+                )
+            };
+            pid != me
+                && !owned
+                && ex & WS_EX_TOOLWINDOW.0 == 0
+                && (cloak.is_err() || cloaked == 0)
+                && !title(h).is_empty()
+                && !SHELL.contains(&class(h).as_str())
+        })
+        .collect()
+}
+
+/// «Закрой все окна»: WM_CLOSE to every app window, so each app closes the way its ✕ does
+/// (editors still ask to save). Returns how many were asked.
+pub fn close_all() -> Result<usize, String> {
+    let wins = app_windows();
+    for &h in &wins {
+        // SAFETY: valid handle, WM_CLOSE takes no params.
+        let _ = unsafe { PostMessageW(Some(h), WM_CLOSE, WPARAM(0), LPARAM(0)) };
+    }
+    tracing::info!(n = wins.len(), "close all windows");
+    Ok(wins.len())
+}
+
+/// Keep an overlay out of screenshots and screen recordings (Windows 10 2004+).
+pub fn hide_from_capture(hwnd: isize) {
+    // SAFETY: the handle comes from a live Tauri window; failure only means older Windows.
+    let _ = unsafe { SetWindowDisplayAffinity(HWND(hwnd as *mut _), WDA_EXCLUDEFROMCAPTURE) };
 }
 
 /// Bring a window to front by title substring or process exe name.

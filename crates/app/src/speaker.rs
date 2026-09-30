@@ -1,6 +1,6 @@
 //! Voice output front: phrase pack clips (§6.1) with a text fallback. The UI always gets
 //! the line as a `Say` event; silent mode (§2.3) keeps it text-only.
-//! Text without a clip goes to Fish Audio when the user set a key, else to the neural voice
+//! Text without a clip goes to ElevenLabs / Fish Audio when the user set a key, else to the neural voice
 //! (Piper via sherpa-onnx, §6.2), sentence by sentence.
 
 use std::path::{Path, PathBuf};
@@ -69,7 +69,7 @@ impl Speaker {
     }
 
     pub fn say(&self, line: &Line) {
-        let (silent, volume, speed, fx, engine, fish) = {
+        let (silent, volume, speed, fx, engine, cloud) = {
             let c = self.config.lock().unwrap_or_else(|e| e.into_inner());
             (
                 c.silent_mode,
@@ -77,7 +77,7 @@ impl Speaker {
                 c.voice_speed,
                 c.voice_fx,
                 c.voice_engine,
-                c.online.fish().map(|(k, v)| (k.to_owned(), v.to_owned())),
+                c.online.cloud_voice(),
             )
         };
         // no recording (or Windows voice): speak the category's words
@@ -122,9 +122,9 @@ impl Speaker {
         }
         let Some(text) = text else { return };
         let mut rest = tts::sentences(&text);
-        // Fish Audio key set: Jarvis voice online in ~300-char chunks (first plays while the
-        // next is made); Piper takes over from the first failed chunk
-        if let (VoiceEngine::Jarvis, Some((key, voice))) = (engine, &fish) {
+        // ElevenLabs / Fish key set: online voice in ~600-char chunks; Piper takes over from
+        // the first failed chunk
+        if let (VoiceEngine::Jarvis, Some(voice)) = (engine, &cloud) {
             while !rest.is_empty() {
                 let mut chunk = String::new();
                 let mut n = 0;
@@ -133,10 +133,10 @@ impl Speaker {
                     chunk.push(' ');
                     n += 1;
                 }
-                match jarvis_win::online::fish_tts(key, voice, chunk.trim()) {
-                    Ok(s) => player.play_samples(&s, jarvis_win::online::FISH_RATE),
+                match jarvis_win::online::cloud_tts(voice, chunk.trim()) {
+                    Ok(s) => player.play_samples(&s, jarvis_win::online::CLOUD_RATE),
                     Err(e) => {
-                        tracing::warn!("fish: {e}");
+                        tracing::warn!("cloud voice: {e}");
                         break;
                     }
                 }

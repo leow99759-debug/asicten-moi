@@ -91,6 +91,9 @@ pub enum Action {
     WindowRestore,
     #[serde(rename = "Window.MinimizeAll")]
     WindowMinimizeAll,
+    /// Politely close every app window (WM_CLOSE: apps may still ask to save).
+    #[serde(rename = "Window.CloseAll")]
+    WindowCloseAll,
     #[serde(rename = "Window.Focus")]
     WindowFocus {
         target: String,

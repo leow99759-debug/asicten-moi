@@ -15,6 +15,7 @@ export const DEFAULTS: { [T in ActionType]: Extract<Action, { type: T }> } = {
   "Window.Maximize": { type: "Window.Maximize" },
   "Window.Restore": { type: "Window.Restore" },
   "Window.MinimizeAll": { type: "Window.MinimizeAll" },
+  "Window.CloseAll": { type: "Window.CloseAll" },
   "Window.Focus": { type: "Window.Focus", target: "" },
   "Window.Snap": { type: "Window.Snap", side: "left" },
   "Window.MoveToMonitor": { type: "Window.MoveToMonitor", n: 2 },

@@ -51,6 +51,13 @@ pub struct Config {
     pub online: Online,
 }
 
+/// Who voices dynamic text online (see [`Online::cloud_voice`]).
+#[derive(Debug, Clone, PartialEq)]
+pub enum CloudVoice {
+    Eleven { key: String, voice: String },
+    Fish { key: String, voice: String },
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
 #[serde(default)]
 #[ts(export)]
@@ -61,6 +68,10 @@ pub struct Online {
     /// Fish Audio key: any text without a recording is spoken in the Jarvis voice online.
     pub fish_key: String,
     pub fish_voice: String,
+    /// ElevenLabs key: when set, it voices text instead of Fish (studio-grade Russian).
+    pub eleven_key: String,
+    /// Voice ID from elevenlabs.io (premade or Voice Library).
+    pub eleven_voice: String,
     /// Google Cloud OAuth «Desktop app» client for Classroom homework.
     pub classroom_id: String,
     pub classroom_secret: String,
@@ -76,6 +87,9 @@ impl Default for Online {
             fish_key: String::new(),
             // «ДЖАРВИС» (ru) on fish.audio, same voice as the recorded extra phrases
             fish_voice: "4c3eaacc1a0545cdb0295bfddf3e3785".into(),
+            // «Daniel»: calm British newsreader, the closest premade to Jarvis
+            eleven_voice: "onwK4e9ZLuTAKqWW03F9".into(),
+            eleven_key: String::new(),
             classroom_id: String::new(),
             classroom_secret: String::new(),
             classroom_token: String::new(),
@@ -91,9 +105,18 @@ impl Online {
             .filter(|k| !k.is_empty())
     }
 
-    pub fn fish(&self) -> Option<(&str, &str)> {
-        let k = self.fish_key.trim();
-        (!k.is_empty()).then_some((k, self.fish_voice.trim()))
+    /// Online voice for text without a recording: ElevenLabs first, then Fish Audio.
+    pub fn cloud_voice(&self) -> Option<CloudVoice> {
+        let pick = |key: &str, voice: &str| {
+            let k = key.trim();
+            (!k.is_empty()).then(|| (k.to_owned(), voice.trim().to_owned()))
+        };
+        pick(&self.eleven_key, &self.eleven_voice)
+            .map(|(key, voice)| CloudVoice::Eleven { key, voice })
+            .or_else(|| {
+                pick(&self.fish_key, &self.fish_voice)
+                    .map(|(key, voice)| CloudVoice::Fish { key, voice })
+            })
     }
 }
 
@@ -179,6 +202,8 @@ pub struct UiPrefs {
     pub animations: bool,
     pub avatar: bool,
     pub hud: bool,
+    /// Listening pill at the top of the screen: «Слушаю…», live transcript, ✓ result.
+    pub pill: bool,
     pub on_top: bool,
     /// Desktop avatar top-left corner, physical px; `None` = bottom-right corner (§3.6).
     pub avatar_pos: Option<[i32; 2]>,
@@ -193,6 +218,7 @@ impl Default for UiPrefs {
             animations: true,
             avatar: true,
             hud: false,
+            pill: true,
             on_top: false,
             avatar_pos: None,
         }

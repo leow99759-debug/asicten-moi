@@ -5,11 +5,14 @@ import { on } from "../lib/ipc";
 import { loadConfig } from "../lib/settings.svelte";
 import { applyUi } from "../lib/settings.svelte";
 import { inTauri } from "../lib/window";
+import { resultLine, type PillResult } from "../lib/pill";
 
 export const live = $state({
   state: "idle" as AssistantState,
   level: 0,
   transcript: "",
+  /** Last command's result until the next utterance starts. */
+  result: null as PillResult | null,
 });
 
 export const isActive = (s: AssistantState) => s === "listening" || s === "processing" || s === "speaking";
@@ -40,6 +43,10 @@ export async function connectLive(demoState: AssistantState = "listening"): Prom
       if (s === "listening") live.transcript = "";
     }),
     on("level", (l) => (live.level = Math.max(l.mic, l.tts))),
-    on("transcript", (t) => (live.transcript = t.text)),
+    on("transcript", (t) => {
+      if (!t.is_final) live.result = null;
+      live.transcript = t.text;
+    }),
+    on("outcome", (o) => (live.result = resultLine(o))),
   ]);
 }

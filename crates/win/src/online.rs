@@ -1,10 +1,10 @@
 //! Online services over the built-in curl.exe (Windows 10 1803+): news digest (SPEC §8)
-//! with an optional Gemini summary, Fish Audio speech. Keys go in temp header files, not argv.
+//! with an optional Gemini summary, ElevenLabs / Fish Audio speech. Keys go in temp header files, not argv.
 
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicU32, Ordering};
 
-use jarvis_core::config::Online;
+use jarvis_core::config::{CloudVoice, Online};
 use jarvis_core::news;
 
 use crate::backend::run_hidden;
@@ -14,7 +14,8 @@ const FETCH_SEC: &str = "4";
 const SLOW_SEC: &str = "15";
 /// Tried after the configured model, in case Google retires it.
 const MODEL_ALIAS: &str = "gemini-flash-lite-latest";
-pub const FISH_RATE: u32 = 24_000;
+/// Both voices return raw 16-bit mono PCM at this rate.
+pub const CLOUD_RATE: u32 = 24_000;
 
 fn get(url: &str) -> Option<String> {
     run_hidden("curl", &["-sfL", "-m", FETCH_SEC, "-A", "Mozilla/5.0", url])
@@ -115,21 +116,31 @@ fn gemini(key: &str, model: &str, prompt: &str) -> Result<String, String> {
     news::gemini_text(&reply)
 }
 
-/// Text in the Fish Audio Jarvis voice: mono samples at [`FISH_RATE`].
-pub fn fish_tts(key: &str, voice: &str, text: &str) -> Result<Vec<f32>, String> {
-    let body = serde_json::json!({
-        "text": text, "reference_id": voice, "format": "pcm", "sample_rate": FISH_RATE,
-    });
+/// Text in the online voice: mono samples at [`CLOUD_RATE`].
+pub fn cloud_tts(voice: &CloudVoice, text: &str) -> Result<Vec<f32>, String> {
     let out = Temp::new("pcm", b"")?;
-    post(
-        "https://api.fish.audio/v1/tts",
-        &format!("Authorization: Bearer {key}\nmodel: s2.1-pro-free"),
-        &body.to_string(),
-        Some(&out),
-    )?;
+    match voice {
+        CloudVoice::Eleven { key, voice } => post(
+            &format!(
+                "https://api.elevenlabs.io/v1/text-to-speech/{voice}?output_format=pcm_{CLOUD_RATE}"
+            ),
+            &format!("xi-api-key: {key}"),
+            &serde_json::json!({"text": text, "model_id": "eleven_multilingual_v2"}).to_string(),
+            Some(&out),
+        ),
+        CloudVoice::Fish { key, voice } => post(
+            "https://api.fish.audio/v1/tts",
+            &format!("Authorization: Bearer {key}\nmodel: s2.1-pro-free"),
+            &serde_json::json!({
+                "text": text, "reference_id": voice, "format": "pcm", "sample_rate": CLOUD_RATE,
+            })
+            .to_string(),
+            Some(&out),
+        ),
+    }?;
     let pcm = std::fs::read(&out.0).map_err(|e| e.to_string())?;
     if pcm.len() < 2 {
-        return Err("fish: пустой ответ".into());
+        return Err("голос: пустой ответ".into());
     }
     Ok(pcm
         .chunks_exact(2)

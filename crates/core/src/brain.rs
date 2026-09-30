@@ -520,10 +520,27 @@ mod tests {
             (None, "джарвис выключи себя", "basic.quit"),
             (None, "включи тихий режим", "modes.silent_on"),
             (None, "выключи компьютер", "basic.shutdown"),
+            (None, "сделай тише на 20", "basic.volume_down_n"),
+            (None, "тише на двадцать процентов", "basic.volume_down_n"),
+            (None, "джарвис громче на 10", "basic.volume_up_n"),
+            (None, "сделай тише", "basic.volume_down"),
+            (None, "закрой все окна", "basic.close_all"),
+            (None, "джарвис сверни все вкладки", "basic.minimize_all"),
+            (None, "скриншот экрана", "basic.screenshot"),
+            (None, "скриншот области", "windows.snip"),
+            (None, "покажи скриншоты", "basic.screenshots"),
         ] {
             *dry.foreground.lock().expect("lock") = fg.map(str::to_owned);
             let got: Vec<String> = b.handle(u).commands.into_iter().map(|o| o.id).collect();
             assert_eq!(got, vec![id.to_owned()], "{u} ({fg:?})");
         }
+        let before = dry.actions().len();
+        b.handle("тише на 20 процентов");
+        assert_eq!(
+            dry.actions()[before..],
+            [Action::VolumeDown {
+                step: Num::Value(20.0)
+            }]
+        );
     }
 }

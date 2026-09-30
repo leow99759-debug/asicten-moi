@@ -10,6 +10,14 @@ gemini_keys: Array<string>, gemini_model: string,
  */
 fish_key: string, fish_voice: string, 
 /**
+ * ElevenLabs key: when set, it voices text instead of Fish (studio-grade Russian).
+ */
+eleven_key: string, 
+/**
+ * Voice ID from elevenlabs.io (premade or Voice Library).
+ */
+eleven_voice: string, 
+/**
  * Google Cloud OAuth «Desktop app» client for Classroom homework.
  */
 classroom_id: string, classroom_secret: string, 
