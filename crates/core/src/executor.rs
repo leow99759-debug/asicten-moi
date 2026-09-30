@@ -102,6 +102,11 @@ impl Assistant for DryRun {
                 then_command: id,
             },
             Job::Remind(text) => Action::Reminder { sec, text },
+            // dry-run log only: the phrase stands in for a command id
+            Job::RunPhrase(text) => Action::Timer {
+                sec,
+                then_command: text,
+            },
         })
     }
 }

@@ -12,7 +12,10 @@ use crate::commands::{Command, Reply};
 use crate::db::Status;
 use crate::executor::{Assistant, Executor, StepResult};
 use crate::nlu::chain::plan;
-use crate::nlu::matcher::{Matcher, SlotValue};
+use crate::nlu::delay::{split_delay, Delay};
+use crate::nlu::matcher::{Match, Matcher, SlotValue};
+use crate::nlu::normalize_utterance;
+use crate::scheduler::Job;
 
 #[derive(Debug, Clone, PartialEq, Serialize, TS)]
 #[ts(export)]
@@ -187,13 +190,29 @@ impl Brain {
         };
         let fg = self.executor.foreground_exe();
         let rank = |i: usize| self.commands[i].context_rank(fg.as_deref());
-        for m in plan(
-            utterance,
-            &self.matcher,
-            &self.commands,
-            self.threshold,
-            &rank,
-        ) {
+        let plan = |u: &str| plan(u, &self.matcher, &self.commands, self.threshold, &rank);
+        let mut matches = plan(utterance);
+        if let Some(d) = split_delay(&normalize_utterance(utterance)) {
+            // the command owns the time itself (reminder, shutdown in N): keep it
+            let own = plan(&format!("{} через {}", d.rest, d.span));
+            let timed = |m: &[Match]| {
+                m.first().is_some_and(|m| {
+                    m.slots
+                        .values()
+                        .any(|v| matches!(v, SlotValue::Duration(_)))
+                })
+            };
+            if timed(&own) {
+                matches = own;
+            } else if !timed(&matches) {
+                if let Some(first) = plan(&d.rest).first() {
+                    out.commands
+                        .push(self.delay(&d, &self.commands[first.index]));
+                    return out;
+                }
+            }
+        }
+        for m in matches {
             let o = self.execute(&self.commands[m.index], &m.slots);
             let stop = o.status != Status::Done;
             out.commands.push(o);
@@ -202,6 +221,28 @@ impl Brain {
             }
         }
         out
+    }
+
+    /// «через N минут X»: schedule the phrase, reply now.
+    fn delay(&self, d: &Delay, cmd: &Command) -> CommandOutcome {
+        let res = self.assistant.schedule(
+            std::time::Duration::from_secs_f64(d.sec),
+            Job::RunPhrase(d.rest.clone()),
+        );
+        CommandOutcome {
+            id: "delay".into(),
+            name: format!("Через {}: {}", d.span, cmd.name.to_lowercase()),
+            status: if res.is_ok() {
+                Status::Done
+            } else {
+                Status::Error
+            },
+            steps: Vec::new(),
+            reply: Reply {
+                clips: vec!["ok".into()],
+                text: Some("Хорошо, сэр".into()),
+            },
+        }
     }
 
     /// Run a command by id (timers, UI «▶ Test», history repeat).
@@ -545,11 +586,42 @@ mod tests {
             (None, "скриншот экрана", "basic.screenshot"),
             (None, "скриншот области", "windows.snip"),
             (None, "покажи скриншоты", "basic.screenshots"),
+            (None, "смени язык", "windows.switch_layout"),
+            (None, "через 5 секунд смени язык", "delay"),
+            (
+                None,
+                "джарвис через пять минут сделай громкость 20",
+                "delay",
+            ),
+            (None, "выключи звук через 10 минут", "delay"),
+            (
+                None,
+                "через 2 минуты напомни что нужно идти спать",
+                "basic.remind",
+            ),
+            (
+                None,
+                "напомни через 2 минуты что нужно идти спать",
+                "basic.remind",
+            ),
+            (None, "через час выключи компьютер", "basic.shutdown_in"),
+            (None, "отмени все таймеры", "basic.cancel_timers"),
         ] {
             *dry.foreground.lock().expect("lock") = fg.map(str::to_owned);
             let got: Vec<String> = b.handle(u).commands.into_iter().map(|o| o.id).collect();
             assert_eq!(got, vec![id.to_owned()], "{u} ({fg:?})");
         }
+        // delayed: nothing runs now, the phrase is scheduled and matches later
+        let before = dry.actions().len();
+        b.handle("через 5 минут сделай громкость 20");
+        assert_eq!(
+            dry.actions()[before..],
+            [Action::Timer {
+                sec: Num::Value(300.0),
+                then_command: "громкость 20".into()
+            }]
+        );
+        assert_eq!(b.handle("громкость 20").commands[0].id, "basic.volume_set");
         let before = dry.actions().len();
         b.handle("тише на 20 процентов");
         assert_eq!(

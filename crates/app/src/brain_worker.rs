@@ -282,6 +282,11 @@ pub fn spawn(
                         });
                     }
                     Work::Reload(cmds) => brain = Brain::new(cmds, executor(), assistant.clone()),
+                    Work::Job(Job::RunPhrase(text)) => {
+                        let mut o = brain.handle(&text);
+                        o.phrase = format!("таймер: {text}");
+                        publish(o);
+                    }
                     Work::Job(Job::Remind(text)) => {
                         // «Сэр, напоминаю» clip, then the reminder itself (online voice / Piper)
                         speaker.say_text(&["remind"], "Сэр, напоминаю");

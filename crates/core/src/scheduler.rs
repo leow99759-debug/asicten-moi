@@ -10,6 +10,8 @@ pub enum Job {
     RunCommand(String),
     /// Say + toast this text.
     Remind(String),
+    /// Handle this phrase as if heard now («через 5 минут смени язык»).
+    RunPhrase(String),
 }
 
 enum Ctl {
