@@ -2,8 +2,7 @@
 import { listen } from "@tauri-apps/api/event";
 import type { AssistantState } from "../lib/bindings/AssistantState";
 import { on } from "../lib/ipc";
-import { loadConfig } from "../lib/settings.svelte";
-import { applyUi } from "../lib/settings.svelte";
+import { applyUi, loadConfig } from "../lib/settings.svelte";
 import { inTauri } from "../lib/window";
 import { resultLine, type PillResult } from "../lib/pill";
 
@@ -37,7 +36,7 @@ export async function connectLive(demoState: AssistantState = "listening"): Prom
   }
   await loadConfig();
   await Promise.all([
-    listen("config", () => loadConfig()),
+    listen("config", () => loadConfig(true)),
     on("state", (s) => {
       live.state = s;
       if (s === "listening") live.transcript = "";

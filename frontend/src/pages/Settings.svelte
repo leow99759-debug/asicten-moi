@@ -10,7 +10,7 @@
   import TextField from "../components/TextField.svelte";
   import Logo from "../components/Logo.svelte";
   import Icon, { type IconName } from "../components/Icon.svelte";
-  import { cfg, loadConfig, saved } from "../lib/settings.svelte";
+  import { cfg, loadConfig, pickAccent, saved } from "../lib/settings.svelte";
   import { app, SWATCHES } from "../lib/app.svelte";
   import { avatarEdit, classroomConnect, classroomDisconnect, hudPreview, micDevices, previewVoice, setConfig } from "../lib/commands";
   import type { VoiceEngine } from "../lib/bindings/VoiceEngine";
@@ -137,7 +137,7 @@
                   class="sw"
                   class:on={c.ui.accent === hex}
                   style="--c: {hex}"
-                  onclick={() => set(() => (c.ui.accent = hex))}>
+                  onclick={() => pickAccent(hex)}>
                   <Icon name="check" size={12} stroke={3} />
                 </button>
               {/each}

@@ -21,7 +21,7 @@ export const DEFAULTS: Config = {
   voice_speed: 1.0,
   voice_fx: true,
   hotkeys: { push_to_talk: "Ctrl+Alt+J", toggle_window: "Ctrl+Alt+H", toggle_mic: "Ctrl+Alt+M" },
-  ui: { accent: "#3b82f6", transparency: 30, blur: 90, animations: true, avatar: true, hud: false, pill: true, on_top: false, avatar_pos: null },
+  ui: { accent: "#4486ff", transparency: 30, blur: 90, animations: true, avatar: true, hud: false, pill: true, on_top: false, avatar_pos: null },
   mode_phrases: {
     prefix_on: "перейди в режим префикса",
     prefix_off: "выключи режим префикса",
@@ -41,8 +41,18 @@ export function hexToRgb(hex: string): string | null {
   return `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`;
 }
 
-/** Push look & feel prefs into CSS variables / window flags. */
-export function applyUi(c: Config = cfg.value): void {
+let shownAccent = "";
+
+/** Push look & feel prefs into CSS variables / window flags. `fade` = cross-fade a theme change. */
+export function applyUi(c: Config = cfg.value, fade = false): void {
+  const changed = shownAccent !== "" && shownAccent !== c.ui.accent;
+  shownAccent = c.ui.accent;
+  const still = !c.ui.animations || matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (fade && changed && !still && document.startViewTransition) document.startViewTransition(() => paint(c));
+  else paint(c);
+}
+
+function paint(c: Config): void {
   const root = document.documentElement;
   const rgb = hexToRgb(c.ui.accent);
   if (rgb) {
@@ -74,9 +84,16 @@ export function saved(): void {
   timer = setTimeout(() => setConfig($state.snapshot(cfg.value)), 300);
 }
 
-export async function loadConfig(): Promise<void> {
+export async function loadConfig(fade = false): Promise<void> {
   const c = await getConfig();
   if (c) cfg.value = c;
   lastOnTop = cfg.value.ui.on_top;
-  applyUi();
+  applyUi(cfg.value, fade);
+}
+
+/** Theme swatch click / voice: the whole window cross-fades to the new colour. */
+export function pickAccent(hex: string, save = true): void {
+  cfg.value.ui.accent = hex;
+  applyUi(cfg.value, true);
+  if (save) saved();
 }

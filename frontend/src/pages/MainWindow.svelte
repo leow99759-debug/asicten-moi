@@ -1,8 +1,7 @@
 <script lang="ts">
-  // ОСНОВНОЕ ОКНО (video26 t08): history + control panel on the left, the orb glowing in
-  // from the right edge behind them, the last command as a glass toast over the orb.
+  // ОСНОВНОЕ ОКНО (video26 t08): history + control panel on the left, the last command as a
+  // glass toast over the orb (the orb itself lives in App.svelte, shared by every page).
   import HistoryList from "../components/HistoryList.svelte";
-  import Orb from "../components/Orb.svelte";
   import Slider from "../components/Slider.svelte";
   import Toggle from "../components/Toggle.svelte";
   import Icon from "../components/Icon.svelte";
@@ -12,7 +11,6 @@
   import { cfg, saved } from "../lib/settings.svelte";
   import { t } from "../lib/i18n";
 
-  const level = $derived(Math.max(app.micLevel, app.ttsLevel));
   const active = $derived(app.state === "listening" || app.state === "speaking" || app.state === "processing");
   const micOff = $derived(app.state === "mic_off");
   const last = $derived(app.history[0]);
@@ -24,8 +22,6 @@
 </script>
 
 <div class="main">
-  <div class="stage" aria-hidden="true"><Orb {level} {active} /></div>
-
   <div class="col">
     <header class="hd">
       <h1 class="t-display">{t("title.main")}</h1>
@@ -113,16 +109,6 @@
   .main {
     position: relative;
     min-height: 100%;
-  }
-  /* the orb bleeds off the right edge like the video */
-  .stage {
-    position: absolute;
-    top: 50%;
-    right: -16%;
-    width: min(760px, 72%, calc(100vh - 80px));
-    aspect-ratio: 1;
-    translate: 0 -50%;
-    pointer-events: none;
   }
   .col {
     position: relative;
@@ -254,10 +240,6 @@
     color: var(--warn);
   }
   @media (max-width: 900px) {
-    .stage {
-      right: -40%;
-      opacity: 0.6;
-    }
     .toast {
       display: none;
     }

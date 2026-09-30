@@ -1,6 +1,7 @@
 <script lang="ts">
-  // Navigation rail (video26/video30): logo on top, icon buttons, selected = outlined glass
-  // square; mic mute and profile at the bottom. Labels live in tooltips.
+  // Navigation rail (video26/video30, Luxify tour): logo on top, icon buttons; the selected
+  // frame slides to the new button instead of jumping. Mic + profile at the bottom, labels
+  // in tooltips that slide out to the right.
   import Icon, { type IconName } from "./Icon.svelte";
   import Logo from "./Logo.svelte";
   import { app, toggleMic, type Page } from "../lib/app.svelte";
@@ -14,6 +15,16 @@
     { page: "settings", icon: "settings" },
   ];
 
+  const btns: Partial<Record<Page, HTMLButtonElement>> = {};
+  let ind = $state({ y: 0, on: false, moved: false });
+  let vh = $state(0); // profile sits at the bottom: re-measure on resize
+  $effect(() => {
+    void vh;
+    const b = btns[app.page];
+    if (!b) return void (ind.on = false);
+    ind = { y: b.offsetTop, on: true, moved: ind.on };
+  });
+
   const micOff = $derived(app.state === "mic_off");
   const busy = $derived(app.state === "listening" || app.state === "processing" || app.state === "speaking");
 </script>
@@ -25,13 +36,17 @@
     class:active={app.page === page}
     aria-current={app.page === page ? "page" : undefined}
     aria-label={t(`nav.${page}`)}
-    title={t(`nav.${page}`)}
+    bind:this={btns[page]}
     onclick={() => (app.page = page)}>
     <Icon name={icon} size={19} />
+    <span class="tip">{t(`nav.${page}`)}</span>
   </button>
 {/snippet}
 
+<svelte:window bind:innerHeight={vh} />
+
 <nav class="rail" aria-label={t("nav.aria")}>
+  <span class="ind" class:on={ind.on} class:moved={ind.moved} style="translate: 0 {ind.y}px" aria-hidden="true"></span>
   <div class="brand" class:busy data-tauri-drag-region>
     <Logo size={30} />
   </div>
@@ -49,9 +64,9 @@
       class:muted={micOff}
       aria-pressed={micOff}
       aria-label={micOff ? t("mic.on") : t("mic.off")}
-      title={micOff ? t("mic.on") : t("mic.off")}
       onclick={toggleMic}>
       <Icon name={micOff ? "micOff" : "mic"} size={18} />
+      <span class="tip">{micOff ? t("mic.on") : t("mic.off")}</span>
     </button>
     {@render nav("profile", "user")}
   </div>
@@ -59,6 +74,8 @@
 
 <style>
   .rail {
+    position: relative;
+    z-index: 6;
     width: 64px;
     flex: none;
     display: flex;
@@ -66,8 +83,60 @@
     align-items: center;
     padding: 14px 0 16px;
     box-sizing: border-box;
-    border-right: 1px solid var(--divider);
-    background: rgba(255, 255, 255, 0.012);
+    border-radius: 0 16px 16px 0;
+    background: rgba(255, 255, 255, 0.035);
+    box-shadow: inset -1px 0 0 var(--divider);
+  }
+  /* selected frame: white outline + inner glow (Luxify), slides between buttons */
+  .ind {
+    position: absolute;
+    top: 0;
+    left: 12px;
+    width: 40px;
+    height: 40px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: inset 0 0 14px rgba(255, 255, 255, 0.09);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--t-base) ease;
+  }
+  .ind.on {
+    opacity: 1;
+  }
+  .ind.moved {
+    transition:
+      translate 400ms var(--ease-out),
+      opacity var(--t-base) ease;
+  }
+  .tip {
+    position: absolute;
+    left: calc(100% + 12px);
+    top: 50%;
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--stroke-strong);
+    background: #3a3b40;
+    color: var(--text);
+    font-size: 12.5px;
+    line-height: 16px;
+    font-weight: 500;
+    white-space: nowrap;
+    box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.6);
+    translate: -4px -50%;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 160ms ease,
+      translate 160ms var(--ease-out);
+  }
+  .item:hover .tip,
+  .item:focus-visible .tip {
+    opacity: 1;
+    translate: 0 -50%;
+    transition-delay: 350ms;
   }
   .brand {
     height: 40px;
@@ -96,6 +165,7 @@
     gap: 10px;
   }
   .item {
+    position: relative;
     width: 40px;
     height: 40px;
     display: grid;
@@ -115,14 +185,17 @@
     background: var(--fill);
     color: var(--text);
   }
-  .item:active {
-    transform: scale(0.94);
+  .item:active :global(svg) {
+    transform: scale(0.9);
+  }
+  .item :global(svg) {
+    transition: transform var(--t-fast) var(--ease-out);
   }
   .item.active {
     color: var(--text);
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.28);
-    box-shadow: var(--rim);
+  }
+  .item.active:hover {
+    background: transparent;
   }
   .mic.muted {
     color: var(--err);

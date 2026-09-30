@@ -5,7 +5,7 @@ import type { HistoryEntry } from "./bindings/HistoryEntry";
 import { on } from "./ipc";
 import { history as loadHistory, setMode, uiSnapshot } from "./commands";
 import { inTauri } from "./window";
-import { applyUi, cfg, loadConfig, saved } from "./settings.svelte";
+import { applyUi, cfg, loadConfig, pickAccent, saved } from "./settings.svelte";
 import { t } from "./i18n";
 
 export type Page = "main" | "editor" | "addons" | "ai" | "settings" | "profile";
@@ -24,25 +24,22 @@ export const app = $state({
   commandCount: 0,
 });
 
-/** Theme swatches (§3.1, §10.4) and the Russian names Jarvis understands («тема фиолетовая»). */
+/** Theme swatches = core config::THEMES (Luxify palette); names are shown as tooltips. */
 export const SWATCHES: Record<string, string> = {
-  синий: "#3b82f6",
-  фиолетовый: "#6d5ef6",
-  пурпурный: "#a21caf",
-  розовый: "#d946ef",
-  зеленый: "#22c55e",
-  оранжевый: "#f97316",
-  красный: "#f43f5e",
-  белый: "#f1f5f9",
+  синий: "#4486ff",
+  фиолетовый: "#8b5cf6",
+  розовый: "#ec4899",
+  красный: "#ef4444",
+  оранжевый: "#f59e0b",
+  зелёный: "#22c55e",
+  голубой: "#06b6d4",
+  серый: "#94a3b8",
 };
 
-/** «Джарвис, сделай тему фиолетовой» (UiCommand set_theme): Russian name or #hex. */
+/** «Джарвис, сделай тему фиолетовой»: the core resolves the name, saves it and sends #hex. */
 export function setAccent(color: string): void {
-  const key = color.toLowerCase().replace("ё", "е").replace(/(ая|ое|ую|ой)$/, "ый");
-  const hex = SWATCHES[key] ?? (/^#[0-9a-f]{6}$/i.test(color) ? color : null);
-  if (!hex) return;
-  cfg.value.ui.accent = hex;
-  saved();
+  const hex = /^#[0-9a-f]{6}$/i.test(color) ? color : SWATCHES[color.toLowerCase()];
+  if (hex) pickAccent(hex, false);
 }
 
 export function togglePrefix(on: boolean): void {

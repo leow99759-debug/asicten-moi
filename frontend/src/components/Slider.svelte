@@ -30,7 +30,7 @@
 </div>
 
 <style>
-  /* Fluent slider: 4 px track, 20 px thumb with an accent core that grows on hover */
+  /* Luxify slider: a thick 14 px bar filled with the theme colour; the whole bar is the handle */
   .slider {
     display: flex;
     align-items: center;
@@ -47,25 +47,21 @@
     cursor: pointer;
   }
   input::-webkit-slider-runnable-track {
-    height: 4px;
-    border-radius: 2px;
-    background: linear-gradient(to right, var(--accent) var(--p), rgba(255, 255, 255, 0.16) var(--p));
+    height: 14px;
+    border-radius: 6px;
+    box-shadow: inset 0 0 0 1px var(--stroke);
+    background: linear-gradient(to right, var(--accent) var(--p), rgba(255, 255, 255, 0.06) var(--p));
+    transition: filter var(--t-fast) ease;
+  }
+  input:hover::-webkit-slider-runnable-track {
+    filter: brightness(1.12);
   }
   input::-webkit-slider-thumb {
     appearance: none;
-    width: 20px;
-    height: 20px;
-    margin-top: -8px;
-    border-radius: 50%;
-    background: radial-gradient(circle, var(--accent) 0 5px, #454a55 5.5px);
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 1px 3px rgba(0, 0, 0, 0.4);
-    transition: background var(--t-fast) ease;
-  }
-  input:hover::-webkit-slider-thumb {
-    background: radial-gradient(circle, var(--accent) 0 6px, #454a55 6.5px);
-  }
-  input:active::-webkit-slider-thumb {
-    background: radial-gradient(circle, var(--accent) 0 4px, #454a55 4.5px);
+    width: 4px;
+    height: 14px;
+    border-radius: 2px;
+    background: transparent;
   }
   .val {
     min-width: 40px;

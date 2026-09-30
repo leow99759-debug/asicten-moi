@@ -41,21 +41,18 @@
       const cy = h / 2;
       const base = Math.min(w, h) * 0.42;
       const breathe = Math.sin(t * 1.25) * 0.5 + 0.5; // ~5 s cycle
-      // video26: flat translucent discs (wide dim halo → dense core); inner ones wobble like
-      // liquid. Each disc = one path + one fill, soft edge from a thin radial fade.
+      // video26 / Luxify: flat translucent discs with crisp edges (wide dim halo → dense core);
+      // inner ones wobble like liquid. Each disc = one path + one solid fill.
       const rings = [
-        { r: 1.0, a: 0.13 + glow * 0.04, lag: 0.2, wob: 0.006 },
-        { r: 0.8, a: 0.22 + glow * 0.05, lag: 0.45, wob: 0.012 },
-        { r: 0.61, a: 0.4 + glow * 0.07, lag: 0.7, wob: 0.022 },
-        { r: 0.44, a: 0.78 + glow * 0.12, lag: 1, wob: 0.03 },
+        { r: 1.0, a: 0.2 + glow * 0.04, lag: 0.2, wob: 0.006 },
+        { r: 0.8, a: 0.24 + glow * 0.05, lag: 0.45, wob: 0.012 },
+        { r: 0.61, a: 0.42 + glow * 0.07, lag: 0.7, wob: 0.022 },
+        { r: 0.44, a: 0.8 + glow * 0.12, lag: 1, wob: 0.03 },
       ];
       for (const [i, ring] of rings.entries()) {
         const swell = 1 + breathe * 0.02 + smooth * 0.18 * ring.lag;
         const r = base * ring.r * swell;
-        const g = ctx.createRadialGradient(cx, cy, r * 0.94, cx, cy, r * 1.02);
-        g.addColorStop(0, `rgba(${rgb}, ${Math.min(1, ring.a)})`);
-        g.addColorStop(1, `rgba(${rgb}, 0)`);
-        ctx.fillStyle = g;
+        ctx.fillStyle = `rgba(${rgb}, ${Math.min(1, ring.a)})`;
         ctx.beginPath();
         const wob = ring.wob * (1 + smooth * 2.5);
         for (let k = 0; k <= 64; k++) {

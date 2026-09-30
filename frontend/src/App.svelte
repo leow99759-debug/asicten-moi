@@ -10,11 +10,33 @@
   import Settings from "./pages/Settings.svelte";
   import Editor from "./pages/Editor.svelte";
   import Addons from "./pages/Addons.svelte";
+  import Orb from "./components/Orb.svelte";
   import { app, connect } from "./lib/app.svelte";
   import { windowMaterial } from "./lib/commands";
 
   let settingsTab = $state("general");
+  let win: HTMLDivElement;
+  // cards rise in only right after a page switch, not whenever one mounts later (Luxify tour)
+  let entering = $state(true);
+  $effect(() => {
+    void app.page;
+    entering = true;
+    const id = setTimeout(() => (entering = false), 700);
+    return () => clearTimeout(id);
+  });
+  const level = $derived(Math.max(app.micLevel, app.ttsLevel));
+  const active = $derived(app.state === "listening" || app.state === "speaking" || app.state === "processing");
+
   onMount(() => {
+    // window open (hidden window = destroyed webview, so mount = open): soft zoom-in like Luxify
+    if (document.documentElement.dataset.motion !== "off" && !matchMedia("(prefers-reduced-motion: reduce)").matches)
+      win.animate(
+        [
+          { opacity: 0, transform: "scale(0.975) translateY(8px)" },
+          { opacity: 1, transform: "none" },
+        ],
+        { duration: 420, easing: "cubic-bezier(0.23, 1, 0.32, 1)" },
+      );
     const q = new URLSearchParams(location.search);
     settingsTab = q.get("tab") ?? "general";
     const p = q.get("page");
@@ -27,17 +49,20 @@
   });
 </script>
 
-<div class="window">
+<div class="window" bind:this={win}>
   <Sidebar />
   <div class="right">
+    <!-- one orb spot for every page: live canvas on the main page, static rings elsewhere -->
+    <div class="orb" aria-hidden="true">
+      {#if app.page === "main"}<Orb {level} {active} />{:else}<div class="rings"></div>{/if}
+    </div>
     <header class="titlebar" data-tauri-drag-region>
       <div class="listen"><ListeningBar /></div>
       <WindowControls />
     </header>
     <main class="layer">
-      {#if app.page !== "main"}<div class="glow" aria-hidden="true"></div>{/if}
       {#key app.page}
-        <div class="page">
+        <div class="page" class:enter={entering}>
           {#if app.page === "main"}
             <MainWindow />
           {:else if app.page === "editor"}
@@ -78,6 +103,7 @@
   .right {
     flex: 1;
     min-width: 0;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -105,26 +131,37 @@
     position: relative;
     overflow: hidden;
   }
-  /* static orb rings peeking in from the right edge (video26/30), no animation = free */
-  .glow {
+  /* Luxify: big accent rings from the right edge on every page. Same geometry as the canvas
+     Orb (disc radii 1 / .8 / .61 / .44 of 42 % box), alphas pre-composited; static = free. */
+  .orb {
     position: absolute;
-    right: -300px;
     top: 50%;
-    width: 640px;
-    height: 640px;
-    translate: 0 -40%;
-    border-radius: 50%;
+    right: 0;
+    height: 124%;
+    aspect-ratio: 1;
+    transform: translate(44%, -50%);
     pointer-events: none;
-    background: radial-gradient(
-      circle,
-      rgba(var(--accent-rgb), 0.55) 0 22%,
-      rgba(var(--accent-rgb), 0.3) 22.5% 31%,
-      rgba(var(--accent-rgb), 0.16) 31.5% 40%,
-      rgba(var(--accent-rgb), 0.07) 40.5% 50%,
-      transparent 50.5%
-    );
-    filter: blur(1px);
-    opacity: 0.7;
+  }
+  .rings {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 44% 40%, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.025) 20%, transparent 37%),
+      radial-gradient(
+        circle closest-side,
+        rgba(var(--accent-rgb), 0.91) 0 35.9%,
+        rgba(var(--accent-rgb), 0.65) 37.4% 49.7%,
+        rgba(var(--accent-rgb), 0.39) 51.7% 65.2%,
+        rgba(var(--accent-rgb), 0.2) 67.9% 81.5%,
+        transparent 84.8%
+      );
+  }
+  @media (max-width: 900px) {
+    .orb {
+      transform: translate(62%, -50%);
+      opacity: 0.6;
+    }
   }
   .page {
     position: absolute;
@@ -139,6 +176,28 @@
     @starting-style {
       opacity: 0;
       translate: 0 6px;
+    }
+  }
+  /* page switch: blocks rise in a 40 ms staircase (Luxify t-rise) */
+  .page.enter :global(:is(.ph, .hd, .tabs, .toolbar, .split, .group, .card.panel, .empty)) {
+    animation: rise 500ms var(--ease-out) both;
+  }
+  .page.enter :global(:is(.ph, .hd, .tabs, .toolbar, .split, .group, .card.panel, .empty):nth-child(2)) {
+    animation-delay: 40ms;
+  }
+  .page.enter :global(:is(.ph, .hd, .tabs, .toolbar, .split, .group, .card.panel, .empty):nth-child(3)) {
+    animation-delay: 80ms;
+  }
+  .page.enter :global(:is(.ph, .hd, .tabs, .toolbar, .split, .group, .card.panel, .empty):nth-child(4)) {
+    animation-delay: 120ms;
+  }
+  .page.enter :global(:is(.ph, .hd, .tabs, .toolbar, .split, .group, .card.panel, .empty):nth-child(n + 5)) {
+    animation-delay: 160ms;
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
     }
   }
 </style>

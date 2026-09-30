@@ -1,5 +1,5 @@
 <script lang="ts">
-  // Fluent toggle: 40×20, knob grows on hover and stretches while pressed.
+  // Luxify/Fluent toggle: 40×20, accent knob on a dark track when off; knob grows on hover, stretches while pressed.
   let {
     checked = false,
     label,
@@ -34,14 +34,14 @@
     padding: 0;
     border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.14);
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
     cursor: pointer;
     transition:
       background-color var(--t-base) ease,
       border-color var(--t-base) ease;
   }
   .toggle:hover {
-    background: rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.11);
   }
   .knob {
     position: absolute;
@@ -51,7 +51,7 @@
     height: 12px;
     margin-top: -6px;
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.55);
+    background: var(--accent);
     transition:
       translate var(--t-base) var(--spring),
       width var(--t-fast) var(--ease-out),

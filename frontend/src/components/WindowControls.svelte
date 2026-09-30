@@ -1,5 +1,5 @@
 <script lang="ts">
-  // Windows 11 caption buttons: 46×40, close turns red on hover.
+  // Windows 11 caption buttons: 44×38; close glyph in the theme colour (Luxify), red on hover.
   import Icon from "./Icon.svelte";
   import { minimize, close, toggleMaximize } from "../lib/window";
   import { t } from "../lib/i18n";
@@ -18,7 +18,7 @@
     <Icon name={maximized ? "restore" : "maximize"} size={14} stroke={1.5} />
   </button>
   <button type="button" class="close" aria-label={t("window.close")} title={t("window.close")} onclick={close}>
-    <Icon name="x" size={16} stroke={1.5} />
+    <Icon name="x" size={17} stroke={2} />
   </button>
 </div>
 
@@ -45,6 +45,9 @@
   }
   button:active {
     background: var(--fill-press);
+  }
+  .close {
+    color: var(--accent-text);
   }
   .close:hover {
     background: #c42b1c;

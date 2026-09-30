@@ -30,8 +30,8 @@
   --text-3: #6c717b;
 
   /* accent (set from settings by applyUi) */
-  --accent: #3d7ff5;
-  --accent-rgb: 61, 127, 245;
+  --accent: #4486ff;
+  --accent-rgb: 68, 134, 255;
   --accent-soft: rgba(var(--accent-rgb), 0.14);
   --accent-text: color-mix(in srgb, var(--accent) 78%, white);
   --on-accent: #fff;
@@ -131,14 +131,26 @@ select {
   width: 10px;
   height: 10px;
 }
+/* thin thumb in the theme colour, no arrows (Luxify) */
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--accent-rgb), 0.55);
   border-radius: 10px;
   border: 3px solid transparent;
   background-clip: padding-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.18);
+  background-color: rgba(var(--accent-rgb), 0.85);
+}
+::-webkit-scrollbar-button,
+::-webkit-scrollbar-corner {
+  display: none;
+}
+
+/* theme change (swatch / voice): the whole window cross-fades, cheap snapshot */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease-out);
 }
 
 /* ---------- type roles ---------- */

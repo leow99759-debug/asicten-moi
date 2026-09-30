@@ -214,6 +214,47 @@ impl Default for ModePhrases {
     }
 }
 
+/// Theme swatches (Luxify palette), same order as the settings page.
+pub const THEMES: [(&str, &str); 8] = [
+    ("синий", "#4486ff"),
+    ("фиолетовый", "#8b5cf6"),
+    ("розовый", "#ec4899"),
+    ("красный", "#ef4444"),
+    ("оранжевый", "#f59e0b"),
+    ("зелёный", "#22c55e"),
+    ("голубой", "#06b6d4"),
+    ("серый", "#94a3b8"),
+];
+
+/// «сделай тему фиолетовой» → `#8b5cf6`; also takes `#rrggbb`. Word stems, so any case ending works.
+pub fn theme_hex(said: &str) -> Option<String> {
+    let s = said.trim().to_lowercase().replace('ё', "е");
+    if s.len() == 7 && s.starts_with('#') && s[1..].chars().all(|c| c.is_ascii_hexdigit()) {
+        return Some(s);
+    }
+    const STEMS: [(&str, usize); 13] = [
+        ("син", 0),
+        ("фиолет", 1),
+        ("сирен", 1),
+        ("розов", 2),
+        ("пурпур", 2),
+        ("красн", 3),
+        ("оранж", 4),
+        ("желт", 4),
+        ("зелен", 5),
+        ("голуб", 6),
+        ("бирюз", 6),
+        ("сер", 7),
+        ("бел", 7),
+    ];
+    s.split_whitespace().find_map(|w| {
+        STEMS
+            .iter()
+            .find(|(stem, _)| w.starts_with(stem))
+            .map(|&(_, i)| THEMES[i].1.to_owned())
+    })
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
 #[serde(default)]
 #[ts(export)]
@@ -237,7 +278,7 @@ pub struct UiPrefs {
 impl Default for UiPrefs {
     fn default() -> Self {
         Self {
-            accent: "#3b82f6".into(),
+            accent: THEMES[0].1.into(),
             transparency: 30,
             blur: 90,
             animations: true,
@@ -297,6 +338,15 @@ impl Config {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn theme_names_resolve() {
+        assert_eq!(theme_hex("фиолетовую").as_deref(), Some("#8b5cf6"));
+        assert_eq!(theme_hex("на зелёный").as_deref(), Some("#22c55e"));
+        assert_eq!(theme_hex("Жёлтой").as_deref(), Some("#f59e0b"));
+        assert_eq!(theme_hex("#AABBCC").as_deref(), Some("#aabbcc"));
+        assert_eq!(theme_hex("квадратный"), None);
+    }
 
     #[test]
     fn missing_file_writes_defaults() {
