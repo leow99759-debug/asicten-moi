@@ -15,7 +15,8 @@ use jarvis_core::voice::{self, Player, VoicePack};
 use jarvis_core::Config;
 
 pub struct Speaker {
-    pack: Option<VoicePack>,
+    /// Phrase pack per voice card (Джарвис / Джарвис (фильм)).
+    packs: Vec<(VoiceEngine, VoicePack)>,
     player: Option<Player>,
     tts: Option<Arc<Tts>>,
     sink: Arc<dyn EventSink>,
@@ -24,9 +25,9 @@ pub struct Speaker {
     said: Mutex<String>,
 }
 
-/// Preferred voice pack under assets: our curated Jarvis pack, else Priler's original.
-fn pack_dir(assets: &Path) -> Option<PathBuf> {
-    ["voice-jarvis", "voices-priler/jarvis-og"]
+/// Voice pack under assets for this card, else our film pack, else Priler's original.
+fn pack_dir(assets: &Path, own: &str) -> Option<PathBuf> {
+    [own, "voice-jarvis", "voices-priler/jarvis-og"]
         .iter()
         .map(|rel| assets.join(rel))
         .find(|p| p.exists())
@@ -34,16 +35,22 @@ fn pack_dir(assets: &Path) -> Option<PathBuf> {
 
 impl Speaker {
     pub fn new(assets: &Path, sink: Arc<dyn EventSink>, config: Arc<Mutex<Config>>) -> Self {
-        let pack = pack_dir(assets).and_then(|d| match VoicePack::load(&d, "ru") {
-            Ok(p) => {
-                tracing::info!(dir = %d.display(), categories = ?p.categories().collect::<Vec<_>>(), "voice pack");
-                Some(p)
-            }
-            Err(e) => {
-                tracing::warn!("voice pack: {e}");
-                None
-            }
-        });
+        let packs = [VoiceEngine::Jarvis, VoiceEngine::Film]
+            .into_iter()
+            .filter_map(|e| {
+                let d = pack_dir(assets, e.pack()?.0)?;
+                match VoicePack::load(&d, "ru") {
+                    Ok(p) => {
+                        tracing::info!(dir = %d.display(), clips = p.categories().count(), "voice pack");
+                        Some((e, p))
+                    }
+                    Err(e) => {
+                        tracing::warn!("voice pack: {e}");
+                        None
+                    }
+                }
+            })
+            .collect();
         let player = Player::new()
             .map_err(|e| tracing::warn!("speaker: {e}"))
             .ok();
@@ -59,7 +66,7 @@ impl Speaker {
                 });
         }
         Self {
-            pack,
+            packs,
             player,
             tts,
             sink,
@@ -77,7 +84,7 @@ impl Speaker {
                 c.voice_speed,
                 c.voice_fx,
                 c.voice_engine,
-                c.online.cloud_voice(),
+                c.online.cloud_voice(c.voice_engine),
             )
         };
         // no recording (or Windows voice): speak the category's words
@@ -92,12 +99,15 @@ impl Speaker {
                     .map(str::to_owned)
             });
         // category recording first (variety), then a recording of this exact text
-        let clip = match (engine, &self.pack) {
-            (VoiceEngine::Jarvis, Some(p)) => p
-                .pick(&line.clips)
-                .or_else(|| text.as_deref().and_then(|t| p.by_text(t))),
-            _ => None,
-        };
+        let pack = self
+            .packs
+            .iter()
+            .find(|(e, _)| *e == engine)
+            .map(|(_, p)| p);
+        let clip = pack.and_then(|p| {
+            p.pick(&line.clips)
+                .or_else(|| text.as_deref().and_then(|t| p.by_text(t)))
+        });
         if let Some(t) = text.clone().or_else(|| {
             clip.and_then(|c| c.file_stem())
                 .map(|s| s.to_string_lossy().into_owned())
@@ -108,7 +118,7 @@ impl Speaker {
             return;
         };
         let spoken = clip
-            .and_then(|c| self.pack.as_ref().and_then(|p| p.text_of(c)))
+            .and_then(|c| pack.and_then(|p| p.text_of(c)))
             .map(str::to_owned)
             .or_else(|| text.clone())
             .unwrap_or_default();
@@ -124,7 +134,7 @@ impl Speaker {
         let mut rest = tts::sentences(&text);
         // ElevenLabs / Fish key set: online voice in ~600-char chunks; Piper takes over from
         // the first failed chunk
-        if let (VoiceEngine::Jarvis, Some(voice)) = (engine, &cloud) {
+        if let Some(voice) = cloud.as_ref().filter(|_| engine != VoiceEngine::Windows) {
             while !rest.is_empty() {
                 let mut chunk = String::new();
                 let mut n = 0;
@@ -145,7 +155,7 @@ impl Speaker {
         }
         for sentence in rest {
             let neural = match (engine, &self.tts) {
-                (VoiceEngine::Jarvis, Some(t)) => t
+                (VoiceEngine::Jarvis | VoiceEngine::Film, Some(t)) => t
                     .synth(&sentence, speed)
                     .map(|(s, rate)| {
                         if fx {

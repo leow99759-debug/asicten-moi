@@ -29,7 +29,7 @@ export const DEFAULTS: Config = {
     silent_off: "выключи тихий режим",
     mic_off: "хватит слушать",
   },
-  online: { gemini_keys: ["", ""], gemini_model: "gemini-2.5-flash-lite", fish_key: "", fish_voice: "4c3eaacc1a0545cdb0295bfddf3e3785", eleven_key: "", eleven_voice: "onwK4e9ZLuTAKqWW03F9", classroom_id: "", classroom_secret: "", classroom_token: "" },
+  online: { gemini_keys: ["", ""], gemini_model: "gemini-2.5-flash-lite", fish_key: "", fish_voice: "", eleven_key: "", eleven_voice: "onwK4e9ZLuTAKqWW03F9", classroom_id: "", classroom_secret: "", classroom_token: "" },
 };
 
 export const cfg = $state<{ value: Config }>({ value: structuredClone(DEFAULTS) });

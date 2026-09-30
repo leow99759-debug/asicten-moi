@@ -105,7 +105,7 @@ def main() -> None:
         rel = f"{cat}/{stem}.wav"
         clean(cache / rel, ru / rel)
         texts[rel] = text
-    meta = {"id": "jarvis", "name": "Джарвис", "author": "RU dub originals + Fish Audio", "texts": texts}
+    meta = {"id": "jarvis-film", "name": "Джарвис (фильм)", "author": "RU dub originals + Fish Audio", "texts": texts}
     (out / "voice.json").write_text(json.dumps(meta, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     print(f"{len(texts)} clips → {out}")
 

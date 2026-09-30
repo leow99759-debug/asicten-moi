@@ -179,10 +179,8 @@ fn preview_voice(state: tauri::State<'_, AppState>) {
     if let Some(s) = state.speaker.get().cloned() {
         std::thread::spawn(move || {
             s.stop();
-            s.say_text(
-                &[],
-                "Добрый день, сэр. Все системы работают в штатном режиме.",
-            );
+            // a recorded category line, so the card's own voice plays
+            s.say_text(&["status"], "Все системы работают в штатном режиме, сэр.");
         });
     }
 }

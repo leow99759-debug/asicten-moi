@@ -46,7 +46,8 @@
   };
 
   const voices: { id: string; icon: string; title: string; sub: string; soon?: boolean }[] = [
-    { id: "jarvis", icon: "i:sparkles", title: t("voice.jarvis"), sub: t("addons.voice.jarvis") },
+    { id: "jarvis", icon: "i:sparkles", title: t("voice.jarvis"), sub: t("voice.jarvis.sub") },
+    { id: "film", icon: "i:film", title: t("voice.film"), sub: t("addons.voice.jarvis") },
     { id: "windows", icon: "windows", title: t("voice.windows"), sub: t("voice.windows.sub") },
     { id: "fish", icon: "i:globe", title: "Fish Audio", sub: t("voice.online.sub"), soon: true },
     { id: "openai", icon: "i:globe", title: "OpenAI", sub: t("voice.online.sub"), soon: true },

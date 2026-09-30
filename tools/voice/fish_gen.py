@@ -1,6 +1,6 @@
 """Generate missing Jarvis phrases with Fish Audio (SPEC §6.1, build time only).
 
-Usage: FISH_API_KEY=... python tools/voice/fish_gen.py phrases.tsv out_dir
+Usage: FISH_API_KEY=... [FISH_VOICE=id] python tools/voice/fish_gen.py phrases.tsv out_dir
 phrases.tsv: `category<TAB>file_stem<TAB>text` per line. Existing files are skipped.
 Originals (Jarvis-Sound, Priler, film cuts) always win; list only phrases they lack.
 Stdlib only. Output: 24 kHz mono 16-bit WAV (the player resamples).
@@ -16,7 +16,8 @@ from pathlib import Path
 
 API = "https://api.fish.audio/v1/tts"
 MODEL = "s2.1-pro-free"  # free under Fair Use, supports Russian
-VOICE = "4c3eaacc1a0545cdb0295bfddf3e3785"  # «ДЖАРВИС» (ru) on fish.audio
+# «ДЖАРВИС» (ru) on fish.audio; FISH_VOICE = any other model id
+VOICE = os.environ.get("FISH_VOICE", "4c3eaacc1a0545cdb0295bfddf3e3785")
 RATE = 24_000
 
 

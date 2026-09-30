@@ -37,6 +37,7 @@
 
   const engines: { id: VoiceEngine | "fish" | "eleven" | "openai"; icon: IconName; title: string; sub: string; soon?: boolean }[] = [
     { id: "jarvis", icon: "sparkles", title: t("voice.jarvis"), sub: t("voice.jarvis.sub") },
+    { id: "film", icon: "film", title: t("voice.film"), sub: t("voice.film.sub") },
     { id: "windows", icon: "monitor", title: t("voice.windows"), sub: t("voice.windows.sub") },
     { id: "eleven", icon: "globe", title: "ElevenLabs", sub: t("voice.fish.sub") },
     { id: "fish", icon: "globe", title: "Fish Audio", sub: t("voice.fish.sub") },
@@ -234,7 +235,7 @@
             <Slider label={t("panel.volume")} value={c.voice_volume} oninput={(v) => set(() => (c.voice_volume = v))} />
           </SettingRow>
           <SettingRow icon="film" label={t("voice.fx")} desc={t("voice.fx.sub")}>
-            <Toggle label={t("voice.fx")} checked={c.voice_fx} disabled={c.voice_engine !== "jarvis"} onchange={(v) => set(() => (c.voice_fx = v))} />
+            <Toggle label={t("voice.fx")} checked={c.voice_fx} disabled={c.voice_engine === "windows"} onchange={(v) => set(() => (c.voice_fx = v))} />
           </SettingRow>
         </Group>
         {#if c.voice_engine === "windows"}
@@ -261,8 +262,8 @@
           <SettingRow icon="volume" label={t("ai.fish")} desc={t("ai.fish.sub")} wide>
             <TextField secret label={t("ai.fish")} value={c.online.fish_key} onchange={(v) => set(() => (c.online.fish_key = v))} />
           </SettingRow>
-          <SettingRow icon="person" label={t("ai.fish.voice")} wide>
-            <TextField label={t("ai.fish.voice")} value={c.online.fish_voice} onchange={(v) => set(() => (c.online.fish_voice = v))} />
+          <SettingRow icon="person" label={t("ai.fish.voice")} desc={t("ai.fish.voice.sub")} wide>
+            <TextField label={t("ai.fish.voice")} placeholder={t("ai.fish.voice.auto")} value={c.online.fish_voice} onchange={(v) => set(() => (c.online.fish_voice = v))} />
           </SettingRow>
         </Group>
         <Group title={t("gc.title")}>

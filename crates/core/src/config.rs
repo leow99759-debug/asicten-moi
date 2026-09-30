@@ -85,8 +85,8 @@ impl Default for Online {
             gemini_keys: vec![String::new(), String::new()],
             gemini_model: "gemini-2.5-flash-lite".into(),
             fish_key: String::new(),
-            // «ДЖАРВИС» (ru) on fish.audio, same voice as the recorded extra phrases
-            fish_voice: "4c3eaacc1a0545cdb0295bfddf3e3785".into(),
+            // empty = the chosen pack's own voice ([`VoiceEngine::pack`])
+            fish_voice: String::new(),
             // «Daniel»: calm British newsreader, the closest premade to Jarvis
             eleven_voice: "onwK4e9ZLuTAKqWW03F9".into(),
             eleven_key: String::new(),
@@ -105,8 +105,14 @@ impl Online {
             .filter(|k| !k.is_empty())
     }
 
-    /// Online voice for text without a recording: ElevenLabs first, then Fish Audio.
-    pub fn cloud_voice(&self) -> Option<CloudVoice> {
+    /// Online voice for text without a recording: ElevenLabs first, then Fish Audio in the
+    /// pack's own voice unless the user set another model.
+    pub fn cloud_voice(&self, engine: VoiceEngine) -> Option<CloudVoice> {
+        let own = engine.pack().map_or(JARVIS_FISH, |p| p.1);
+        let fish = match self.fish_voice.trim() {
+            "" | JARVIS_FISH | FILM_FISH => own,
+            v => v,
+        };
         let pick = |key: &str, voice: &str| {
             let k = key.trim();
             (!k.is_empty()).then(|| (k.to_owned(), voice.trim().to_owned()))
@@ -114,8 +120,7 @@ impl Online {
         pick(&self.eleven_key, &self.eleven_voice)
             .map(|(key, voice)| CloudVoice::Eleven { key, voice })
             .or_else(|| {
-                pick(&self.fish_key, &self.fish_voice)
-                    .map(|(key, voice)| CloudVoice::Fish { key, voice })
+                pick(&self.fish_key, fish).map(|(key, voice)| CloudVoice::Fish { key, voice })
             })
     }
 }
@@ -124,11 +129,28 @@ impl Online {
 #[serde(rename_all = "snake_case")]
 #[ts(export)]
 pub enum VoiceEngine {
-    /// Phrase pack + neural voice, offline (§6.1–6.2).
+    /// Phrase pack + neural voice, offline (§6.1–6.2): lines in the Luxify-style Jarvis voice.
     #[default]
     Jarvis,
+    /// Same, with the RU film dub originals.
+    Film,
     /// Built-in Windows voice (§6.3).
     Windows,
+}
+
+/// Fish Audio voices of the built-in packs.
+pub const JARVIS_FISH: &str = "78384906f98747bcab6ed67dd3ffa8aa";
+pub const FILM_FISH: &str = "4c3eaacc1a0545cdb0295bfddf3e3785";
+
+impl VoiceEngine {
+    /// Phrase pack dir under assets + its Fish Audio voice; `None` = Windows voice.
+    pub fn pack(self) -> Option<(&'static str, &'static str)> {
+        match self {
+            Self::Jarvis => Some(("voice-jarvis-v2", JARVIS_FISH)),
+            Self::Film => Some(("voice-jarvis", FILM_FISH)),
+            Self::Windows => None,
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
@@ -306,5 +328,27 @@ mod tests {
         std::fs::write(&path, "{not json").expect("write");
         assert_eq!(Config::load(&path).expect("load"), Config::default());
         assert!(path.with_extension("json.bak").exists());
+    }
+
+    #[test]
+    fn fish_follows_the_pack_unless_custom() {
+        let fish = |o: &Online, e| match o.cloud_voice(e) {
+            Some(CloudVoice::Fish { voice, .. }) => voice,
+            v => panic!("{v:?}"),
+        };
+        let mut o = Online {
+            fish_key: "k".into(),
+            fish_voice: FILM_FISH.into(), // old saved default
+            ..Online::default()
+        };
+        assert_eq!(fish(&o, VoiceEngine::Jarvis), JARVIS_FISH);
+        assert_eq!(fish(&o, VoiceEngine::Film), FILM_FISH);
+        o.fish_voice = "mine".into();
+        assert_eq!(fish(&o, VoiceEngine::Film), "mine");
+        o.eleven_key = "e".into();
+        assert!(matches!(
+            o.cloud_voice(VoiceEngine::Jarvis),
+            Some(CloudVoice::Eleven { .. })
+        ));
     }
 }
