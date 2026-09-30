@@ -18,7 +18,7 @@ pub use library::{
 pub use pathvars::{expand, AppLocator, APP_VARS};
 
 /// Slot placeholders allowed in phrases (§4.1).
-pub const SLOTS: [&str; 4] = ["{число}", "{время}", "{текст}", "{приложение}"];
+pub const SLOTS: [&str; 5] = ["{число}", "{время}", "{текст}", "{приложение}", "{кому}"];
 
 fn yes() -> bool {
     true

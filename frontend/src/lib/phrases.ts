@@ -7,6 +7,7 @@ export const SLOT_EXAMPLE: Record<string, string> = {
   "{время}": "10 минут",
   "{текст}": "привет",
   "{приложение}": "телеграм",
+  "{кому}": "маме",
 };
 export const SLOTS = Object.keys(SLOT_EXAMPLE);
 

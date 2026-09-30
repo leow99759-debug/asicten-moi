@@ -1,12 +1,88 @@
 {
   "id": "telegram",
   "name": "Telegram",
-  "description": "Запуск, поиск чатов, избранное, папки, переход между чатами — горячими клавишами Telegram Desktop.",
+  "description": "Написать сообщение голосом (с подтверждением перед отправкой), поиск чатов, избранное, папки, переход между чатами — горячими клавишами Telegram Desktop.",
   "category": "Соцсети и общение",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "icon": "telegram",
   "popular": true,
   "commands": [
+    {
+      "id": "telegram.send",
+      "folder": [
+        "Telegram",
+        "Сообщения"
+      ],
+      "name": "Написать сообщение в Telegram",
+      "phrases": [
+        "напиши {кому} в телеграм {текст}",
+        "напиши {кому} в телеграме {текст}",
+        "отправь {кому} в телеграм {текст}",
+        "отправь {кому} в телеграме {текст}",
+        "напиши в телеграм {кому} сообщение {текст}",
+        "напиши в телеграме {кому} сообщение {текст}"
+      ],
+      "actions": [
+        {
+          "type": "Launch.Find",
+          "name": "Telegram"
+        },
+        {
+          "type": "Lux.PauseMS",
+          "ms": 1500
+        },
+        {
+          "type": "Keys.Press",
+          "keys": "esc"
+        },
+        {
+          "type": "Keys.Press",
+          "keys": "esc"
+        },
+        {
+          "type": "Keys.Press",
+          "keys": "ctrl+f"
+        },
+        {
+          "type": "Lux.PauseMS",
+          "ms": 300
+        },
+        {
+          "type": "Keys.Type",
+          "text": "{кому}"
+        },
+        {
+          "type": "Lux.PauseMS",
+          "ms": 1200
+        },
+        {
+          "type": "Keys.Press",
+          "keys": "enter"
+        },
+        {
+          "type": "Lux.PauseMS",
+          "ms": 800
+        },
+        {
+          "type": "Keys.Type",
+          "text": "{текст}"
+        },
+        {
+          "type": "Ask",
+          "question": "Отправить сообщение, сэр?"
+        },
+        {
+          "type": "Keys.Press",
+          "keys": "enter"
+        }
+      ],
+      "reply": {
+        "clips": [
+          "done"
+        ]
+      },
+      "chainable": false
+    },
     {
       "id": "telegram.search",
       "folder": [

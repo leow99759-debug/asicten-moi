@@ -611,6 +611,40 @@ mod tests {
             let got: Vec<String> = b.handle(u).commands.into_iter().map(|o| o.id).collect();
             assert_eq!(got, vec![id.to_owned()], "{u} ({fg:?})");
         }
+        // Telegram: recipient stem goes to chat search, text is typed, Enter only after «да»
+        *dry.foreground.lock().expect("lock") = None;
+        for (u, to, text) in [
+            (
+                "джарвис напиши маме в телеграм привет скоро буду",
+                "мам",
+                "привет скоро буду",
+            ),
+            (
+                "напиши в телеграм ивану петрову сообщение я опоздаю",
+                "иван петров",
+                "я опоздаю",
+            ),
+        ] {
+            let before = dry.actions().len();
+            assert_eq!(b.handle(u).commands[0].id, "telegram.send", "{u}");
+            let acts = dry.actions()[before..].to_vec();
+            let at = |a: Action| acts.iter().position(|x| *x == a);
+            let typed_to = at(Action::KeysType { text: to.into() });
+            let typed = at(Action::KeysType { text: text.into() });
+            let asked = at(Action::Ask {
+                question: "Отправить сообщение, сэр?".into(),
+            });
+            assert!(
+                typed_to < typed && typed < asked && typed_to.is_some(),
+                "{u}: {acts:?}"
+            );
+            assert_eq!(
+                acts.last(),
+                Some(&Action::KeysPress {
+                    keys: "enter".into()
+                })
+            );
+        }
         // delayed: nothing runs now, the phrase is scheduled and matches later
         let before = dry.actions().len();
         b.handle("через 5 минут сделай громкость 20");

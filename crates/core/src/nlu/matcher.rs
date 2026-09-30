@@ -1,5 +1,5 @@
 //! Phrase matcher (SPEC §4.2): exact → fuzzy tokens → synonyms, required + optional words,
-//! slots `{число}` `{время}` `{текст}` `{приложение}`. Embeddings are an optional later tier.
+//! slots `{число}` `{время}` `{текст}` `{приложение}` `{кому}`. Embeddings are an optional later tier.
 
 use std::collections::{BTreeMap, HashMap};
 
@@ -325,8 +325,26 @@ fn slot_value(name: &str, span: &[String]) -> Option<SlotValue> {
             }
             parse_duration(&span.join(" ")).map(SlotValue::Duration)
         }
+        "{кому}" => Some(SlotValue::Text(recipient(span))),
         _ => Some(SlotValue::Text(span.join(" "))),
     }
+}
+
+/// «маме», «ивану петрову» → «мам», «иван петров»: case ending dropped so a
+/// prefix search (Telegram chats) finds «Мама», «Иван Петров».
+fn recipient(span: &[String]) -> String {
+    span.iter()
+        .map(|w| {
+            let n = w.chars().count();
+            let vowel_end = w.ends_with(['а', 'е', 'и', 'у', 'ю', 'я', 'ы', 'о']);
+            if n > 2 && vowel_end {
+                w.chars().take(n - 1).collect()
+            } else {
+                w.clone()
+            }
+        })
+        .collect::<Vec<String>>()
+        .join(" ")
 }
 
 #[cfg(test)]
